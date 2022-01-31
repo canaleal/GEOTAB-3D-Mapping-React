@@ -1,0 +1,14 @@
+
+Overview:
+https://developers.arcgis.com/javascript/latest/
+
+
+Documentation:
+https://developers.arcgis.com/javascript/latest/sample-code/intro-layers/
+
+
+UI:
+https://developers.arcgis.com/javascript/latest/view-ui/
+
+Burlington Ontario:
+https://burlington.maps.arcgis.com/apps/MapSeries/index.html?appid=1d1783b1e626434f95076cba33a5e540

@@ -1,0 +1,333 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <!--
+      ArcGIS API for JavaScript, https://js.arcgis.com
+      For more information about the intro-mapview sample, read the original sample description at developers.arcgis.com.
+      https://developers.arcgis.com/javascript/latest/intro-mapview/index.html
+      -->
+    <title>Intro to MapView - Create a 2D map - 4.8</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .vh-90 {
+            min-height: 90vh;
+        }
+    </style>
+
+
+   
+    <link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+    <script src="https://js.arcgis.com/4.8/"></script>
+</head>
+
+<body>
+
+    <div class="container">
+
+    
+
+        <div class="row py-5 vh-90">
+            <div class="col-3">
+                <h1>ESRI Test</h1>
+                <p>Use geocoding to transform your addresses into points on a map and set up multimodal routes. Create maps that display data dynamically as soon as it is updated and improve the quality of your decisions by referencing the most up-to-date data.</p>
+                <a href="https://developers.arcgis.com/javascript/latest/" target="_blank">Overview of ESRI</a>
+           
+                <h5 class="pt-5">Map Contains:</h5>
+                <ul>
+                    <li>Potholes</li>
+                    <li>Persons</li>
+                    <li>Crashes</li>
+                    <li>Cyclists</li>
+                </ul>
+
+                
+            </div>
+            <div class="col-9">
+                <div id="viewDiv"></div>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <script>
+        require(["esri/Map", "esri/views/MapView"], function (
+            Map,
+            MapView
+        ) {
+            const map = new Map({
+                basemap: "streets-navigation-vector"
+            });
+
+            const view = new MapView({
+                container: "viewDiv",
+                map: map,
+                zoom: 13,
+                center: {
+                    latitude: 43.32,
+                    longitude: -79.92
+                }
+            });
+
+
+            let elements = [
+                {
+                    "lat": "43.33149153492195",
+                    "long": "-79.9125539062267",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.33136915018279",
+                    "long": "-79.91240645673888",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.33115234280934",
+                    "long": "-79.91256654475414",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.330812957274986",
+                    "long": "-79.91305523448497",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.33039389396477",
+                    "long": "-79.91358605264088",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.329913538131116",
+                    "long": "-79.91420112764695",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32965152425698",
+                    "long": "-79.91458028347259",
+                    "color": "#00FF00",
+                    "object": "person"
+                },
+                {
+                    "lat": "43.32925696906832",
+                    "long": "-79.91512795299853",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32925696906832",
+                    "long": "-79.91512795299853",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.3287827333237",
+                    "long": "-79.91585256190979",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32848393991927",
+                    "long": "-79.91619801499539",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32817518519053",
+                    "long": "-79.91661087356114",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32786642889236",
+                    "long": "-79.91707428623694",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.3276005754376",
+                    "long": "-79.91742816500762",
+                    "color": "#00FF00",
+                    "object": "person"
+                },
+                {
+                    "lat": "43.32724278235204",
+                    "long": "-79.91788315199842",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.326884987159",
+                    "long": "-79.9183212876192",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32622072368548",
+                    "long": "-79.91926496434091",
+                    "color": "#FF000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32595486302804",
+                    "long": "-79.91965254585158",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32538866022852",
+                    "long": "-79.92042770887294",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32479793422648",
+                    "long": "-79.92121972326446",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32377200343318",
+                    "long": "-79.92261838697694",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32293607539173",
+                    "long": "-79.92378955719397",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32184881538617",
+                    "long": "-79.92529775481165",
+                    "color": "#FF00FF",
+                    "object": "cyclist"
+                },
+                {
+                    "lat": "43.32133161299387",
+                    "long": "-79.92601393803794",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.320838925731366",
+                    "long": "-79.92662901304402",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32037075419514",
+                    "long": "-79.92731149353021",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.320092608022584",
+                    "long": "-79.92769064935587",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.319918670237264",
+                    "long": "-79.92795184559131",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.319785343139614",
+                    "long": "-79.92809508223652",
+                    "color": "#0000FF",
+                    "object": "crash"
+                },
+                {
+                    "lat": "43.319992996136016",
+                    "long": "-79.92846581237715",
+                    "color": "#000000",
+                    "object": "speeding"
+                },
+                {
+                    "lat": "43.32083432831977",
+                    "long": "-79.92951902300395",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32137758671817",
+                    "long": "-79.93025205760021",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                },
+                {
+                    "lat": "43.32246025786825",
+                    "long": "-79.93168442405273",
+                    "color": "#FF0000",
+                    "object": "pothole"
+                }
+
+            ];
+
+            var i = 0, len = elements.length;     
+            while (i < len) {
+   
+                try {
+                    let comment = `<p> ${elements[i]['object']} at ${elements[i]['lat']},${elements[i]['long']} </p>`
+
+                    view.graphics.add({
+                        symbol: {
+                            type: "text",
+                            color: elements[i]['color'],
+                            text: "\ue61d", // esri-icon-map-pin
+                            font: {
+                                size: 25,
+                                family: "CalciteWebCoreIcons"
+                            }
+                        },
+                        geometry: {
+                            type: "point",
+                            longitude: parseFloat(elements[i]['long']),
+                            latitude: parseFloat(elements[i]['lat'])
+                        },
+                        popupTemplate: {
+                            title: elements[i]['object'],
+                            content: comment
+                        }
+                    });
+                }
+                catch (err) {
+                    console.log(error)
+
+                }
+
+                i++
+            }
+
+
+        });
+    </script>
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+
+</html>
