@@ -35,41 +35,44 @@
 
 <body>
 
-    <div class="container">
+    <nav class="navbar navbar-light bg-white">
+        <a class="navbar-brand" href="#">
+          <img src="https://img.favpng.com/9/15/11/vector-graphics-cube-three-dimensional-space-illustration-portable-network-graphics-png-favpng-r3L8TQWh5PCxLxJ6C6jktb9jd.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+          Waterdown
+        </a>
+      </nav>
+      
+    <div class="container-fluid">
 
     
 
-        <div class="row py-5 vh-90">
-            <div class="col-3">
-                <h1>ESRI Test</h1>
-                <p>Use geocoding to transform your addresses into points on a map and set up multimodal routes. Create maps that display data dynamically as soon as it is updated and improve the quality of your decisions by referencing the most up-to-date data.</p>
-                <a href="https://developers.arcgis.com/javascript/latest/" target="_blank">Overview of ESRI</a>
-           
-                <h5 class="pt-5">Map Contains:</h5>
-                <ul>
-                    <li>Potholes</li>
-                    <li>Persons</li>
-                    <li>Crashes</li>
-                    <li>Cyclists</li>
-                </ul>
+        <div class="row vh-90">
 
-                
-            </div>
-            <div class="col-9">
+            <div class="col-12 p-0">
                 <div id="viewDiv"></div>
             </div>
+
+            
         </div>
+
+
+      
     </div>
+
+
     
 
 
     <script>
-        require(["esri/Map", "esri/views/MapView"], function (
+        require(["esri/Map", "esri/widgets/Search", "esri/views/SceneView"], function (
             Map,
-            MapView
+            Search,
+            MapView,
+            SceneView
         ) {
             const map = new Map({
-                basemap: "streets-navigation-vector"
+                basemap: "topo-vector",
+                ground: "world-elevation"
             });
 
             const view = new MapView({
@@ -81,6 +84,17 @@
                     longitude: -79.92
                 }
             });
+            
+
+
+            var searchWidget = new Search({
+                    view: view
+                });
+
+                // Add the search widget to the top right corner of the view
+                view.ui.add(searchWidget, {
+                    position: "top-right"
+                });
 
 
             let elements = [
