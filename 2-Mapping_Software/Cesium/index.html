@@ -1,0 +1,42 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.80/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.80/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="cesiumContainer" style="width: 100%; height:100%"></div>
+    <script>
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5M2YyY2Y0ZS0wYmFkLTQxZjktODY3OC1jZjI2MDM0NDBmMzIiLCJpZCI6ODE1MjEsImlhdCI6MTY0NDAxMzc2M30.U5FixwSGBYPGEgzpMoXksQJmYaLOWWwAwD2x_ZRjFqU';
+        var viewer = new Cesium.Viewer('cesiumContainer', {
+            baseLayerPicker: true,
+            vrButton: true,
+            geocoder: false,
+            navigationHelpButton: false,
+            selectionIndicator: false,
+            shadows: true,
+            timeline: false,
+            sceneModePicker: true,
+            
+            imageryProvider: Cesium.createWorldImagery(),
+        });
+
+        var tileset = viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
+            url: "http://127.0.0.1:5500/2-Mapping_Software/Cesium/WallSurface/tileset.json"
+        }))
+
+        tileset.style = new Cesium.Cesium3DTileStyle({
+            color: "rgba(255, 255, 255, 0.5)",
+        });
+
+      
+        Cesium.when(tileset.readyPromise).then(function (tileset) { viewer.flyTo(tileset) })
+
+
+    </script>
+</body>
+
+</html>
+view rawdenHaagApp.html hosted with ❤ by GitHub
