@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <meta name="description" content="Use Viewer to start building new applications or easily embed Cesium into existing applications.">
+    <meta name="cesium-sandcastle-labels" content="Beginner, Showcases">
+    <title>Cesium Demo</title>
+    <script type="text/javascript" src="../Sandcastle-header.js"></script>
+    <script
+      type="text/javascript"
+      src="../CesiumUnminified/Cesium.js"
+      
+    ></script>
+
+  </head>
+  <body
+    class="sandcastle-loading"
+    data-sandcastle-bucket="bucket-requirejs.html"
+  >
+<style>
+  @import url(../templates/bucket.css);
+</style>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="loadingOverlay">
+  <h1>Loading...</h1>
+</div>
+<div id="toolbar"></div>
+<script id="cesium_sandcastle_script">
+function startup(Cesium) {
+    'use strict';
+//Sandcastle_Begin
+// Grant CesiumJS access to your ion assets
+Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5M2YyY2Y0ZS0wYmFkLTQxZjktODY3OC1jZjI2MDM0NDBmMzIiLCJpZCI6ODE1MjEsImlhdCI6MTY0NDAxMzc2M30.U5FixwSGBYPGEgzpMoXksQJmYaLOWWwAwD2x_ZRjFqU";
+
+const viewer = new Cesium.Viewer("cesiumContainer");
+
+(async () => {
+  try {
+    const resource = await Cesium.IonResource.fromAssetId(810236);
+    const dataSource = await Cesium.KmlDataSource.load(resource, {
+      camera: viewer.scene.camera,
+      canvas: viewer.scene.canvas,
+    });
+    await viewer.dataSources.add(dataSource);
+    await viewer.zoomTo(dataSource);
+  } catch (error) {
+    console.log(error);
+  }
+})();
+//Sandcastle_End
+    Sandcastle.finishedLoading();
+}
+if (typeof Cesium !== 'undefined') {
+    window.startupCalled = true;
+    startup(Cesium);
+}
+</script>
+</body>
+</html>
