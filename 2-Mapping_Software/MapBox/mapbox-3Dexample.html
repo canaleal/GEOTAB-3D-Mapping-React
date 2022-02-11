@@ -6,13 +6,13 @@
   <title>Display buildings in 3D</title>
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
-  
+ 
   <link type="text/css" rel="stylesheet" href="./css/style.css" />
 </head>
 
@@ -44,6 +44,12 @@
         <span class="link-text">Filter</span>
       </a>
     </div>
+
+    <div class="nav-item ">
+      <nav id="menu"></nav>
+    </div>
+
+
     <div class="nav-item ">
       <a id="search-btn" class="nav-link">
         <i class="fa fa-calendar fa-2x" aria-hidden="true"></i>
@@ -51,26 +57,36 @@
       </a>
     </div>
 
+   
+    
+
 
     <div class="nav-item">
       <a id="open-modal-btn" class="nav-link">
-        <i class="fa fa-photo fa-2x" aria-hidden="true"></i>
+        <i class="fa fa-gear fa-2x" aria-hidden="true"></i>
         <span class="link-text">Screenshot</span>
       </a>
     </div>
   </navbar>
 
-  <nav id="menu"></nav>
+  
 
   <main>
+    
     <div id="map"></div>
+
+    
   </main>
 
+  
+ 
+ 
+
   <div class="modal">
-    <p class="message">Download All Images</p>
+    <p class="message">Tempor quis occaecat minim Lorem culpa pariatur sit mollit aute. Ut nulla aliqua reprehenderit duis pariatur laborum quis aute fugiat duis quis ipsum cillum. Sit est aliqua commodo aliquip officia elit. Veniam Lorem laboris anim eiusmod ipsum ut. Proident sint consectetur est anim mollit labore.</p>
     <div class="options">
-      <button id="download-btn" class="btn">Yes</button>
-      <button id="close-modal-btn" class="btn">No</button>
+      <button id="download-btn" class="btn">Cancel</button>
+      <button id="close-modal-btn" class="btn">Save</button>
     </div>
   </div>
 

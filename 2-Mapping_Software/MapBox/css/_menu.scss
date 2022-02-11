@@ -1,16 +1,11 @@
+
+
 #menu {
 	background: #fff;
-	position: absolute;
-	z-index: 1;
-	top: 10px;
-	left: 200px;
-	border-radius: 3px;
-	width: 120px;
-	border: 1px solid rgba(0, 0, 0, 0.4);
-	font-family: 'Open Sans', sans-serif;
+	
 
 	a {
-		font-size: 13px;
+		font-size: medium;
 		color: #404040;
 		display: block;
 		margin: 0;
@@ -26,7 +21,7 @@
 	}
 
 	a:hover {
-		background-color: #f8f8f8;
+		background-color: #f0efef;
 		color: #404040;
 	}
 
