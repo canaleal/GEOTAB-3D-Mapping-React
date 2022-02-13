@@ -21,14 +21,15 @@ const AppLayout = () => {
   };
 
   const pedestrianOptions = [
-    { label: "Jaywalking", value: "Jaywalking" },
     { label: "Crossing", value: "Crossing" },
+    { label: "Jaywalking", value: "Jaywalking" },
     { label: "All", value: "All" },
   ];
   return (
     <Layout className="h-screen">
       <Header className="">
-        {/* <div className="logo" /> */}
+        <div>
+        </div>
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
           <Menu.Item key="1">Civilians</Menu.Item>
           <Menu.Item key="2">Road Conditions</Menu.Item>
@@ -36,7 +37,7 @@ const AppLayout = () => {
       </Header>
       <Layout>
         <Sider width={300} className="p-2" theme="light">
-          <div>
+          <div className="border-2 rounded-md p-3">
             <Radio.Group
               optionType="button"
               buttonStyle="solid"
@@ -55,7 +56,9 @@ const AppLayout = () => {
               <Radio.Button value="all">All</Radio.Button>
             </Radio.Group>
             <Radio.Group optionType="button" buttonStyle="solid"></Radio.Group>
+            
             <Radio.Group
+            defaultValue={"All"}
               options={pedestrianOptions}
               optionType="button"
               buttonStyle="solid"
@@ -63,6 +66,11 @@ const AppLayout = () => {
               onChange={handlePedestrianFilterChange}
             ></Radio.Group>
           </div>
+
+          <div className="border-2 mt-2 rounded-md p-3">
+            <img src={require("../../images/pedestrian.png")}></img>
+          </div>
+
         </Sider>
         <Layout className="pl-5 pt-5">
           <Content className="">
