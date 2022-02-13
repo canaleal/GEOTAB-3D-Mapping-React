@@ -6,35 +6,32 @@ mapboxgl.accessToken =
 
 const Map = () => {
   const mapContainer = useRef(null);
-  const map = useRef(null);
   const [lng, setLng] = useState(-76.48098);
   const [lat, setLat] = useState(44.22976);
   const [zoom, setZoom] = useState(15.5);
-  const [toggleableLayerIds, setToggleableLayerIds] = useState([])
-  useEffect(() => {
-    // initialize map only once
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox-map-design/ckhqrf2tz0dt119ny6azh975y",
-      center: [lng, lat],
-      pitch: 45,
-      zoom: zoom,
-      bearing: -17.6,
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!map.current) return; // wait for map to initialize
-    map.current.on("move", () => {
-      setLng(map.current.getCenter().lng.toFixed(4));
-      setLat(map.current.getCenter().lat.toFixed(4));
-      setZoom(map.current.getZoom().toFixed(2));
-    });
-  });
-
   
+  useEffect(() => {
+    const map = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox-map-design/ckhqrf2tz0dt119ny6azh975y',
+      center: [lng, lat],
+      zoom: zoom
+    });
 
-  return <div ref={mapContainer} className="map-container w-4/5 h-5/6" />;
+    // Add navigation control (the +/- zoom buttons)
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    map.on('move', () => {
+      setLng(map.getCenter().lng.toFixed(4));
+      setLat(map.getCenter().lat.toFixed(4));
+      setZoom(map.getZoom().toFixed(2));
+    });
+
+    // Clean up on unmount
+    return () => map.remove();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return <div ref={mapContainer} className="h-full w-full" />;
 };
 
 export default Map;

@@ -1,11 +1,9 @@
-import { Layout, Menu, Breadcrumb, Radio } from "antd";
+import { Layout, Menu, Radio, Slider } from "antd";
 import { GiWalk } from "react-icons/gi";
 import Map from "../map/Map";
 import { useState } from "react";
 import { MdDirectionsBike } from "react-icons/md";
 import { IoIosCar } from "react-icons/io";
-
-const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
 const AppLayout = () => {
@@ -20,7 +18,6 @@ const AppLayout = () => {
     setPedestrianFilter(e.target.value);
   };
 
-  const pedestrianOptions = [];
   return (
     <Layout className="h-screen">
       <Header className="">
@@ -79,9 +76,12 @@ const AppLayout = () => {
             <img alt="chart" src={require("../../images/pedestrian.png")}></img>
           </div>
         </Sider>
-        <Layout className="pl-5 pt-5">
-          <Content className="">
+        <Layout>
+          <Content>
             <Map />
+            {/* <div className="absolute bottom-5 left-0 mx-auto bg-gray-500 p-4 rounded-md w-3/5">
+              <Slider></Slider>
+            </div> */}
           </Content>
         </Layout>
       </Layout>
