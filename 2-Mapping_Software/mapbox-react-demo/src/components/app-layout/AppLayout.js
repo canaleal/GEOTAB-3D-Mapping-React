@@ -37,22 +37,22 @@ const AppLayout = () => {
               onChange={handleCivFilterChange}
               style={{ display: "flex" }}
             >
-              <Radio.Button value="pedestrian" className="grow text-center">
+              <Radio.Button value="Pedestrian" className="grow text-center">
                 <GiWalk className="inline" />
               </Radio.Button>
-              <Radio.Button value="bike" className="grow text-center">
+              <Radio.Button value="Bike" className="grow text-center">
                 <MdDirectionsBike className="inline" />
               </Radio.Button>
-              <Radio.Button value="traffic" className="grow text-center">
+              <Radio.Button value="Traffic" className="grow text-center">
                 <IoIosCar className="inline" />
               </Radio.Button>
-              <Radio.Button value="all" className="grow text-center">
+              <Radio.Button value="All" className="grow text-center">
                 All
               </Radio.Button>
             </Radio.Group>
 
             <div className="mt-2">
-              <Radio.Group
+              {(civFilter==="Pedestrian") && <Radio.Group
                 defaultValue={"All"}
                 buttonStyle="solid"
                 value={pedestrianFilter}
@@ -68,7 +68,7 @@ const AppLayout = () => {
                 <Radio.Button value="All" className="grow text-center">
                   All
                 </Radio.Button>
-              </Radio.Group>
+              </Radio.Group>} 
             </div>
           </div>
 
