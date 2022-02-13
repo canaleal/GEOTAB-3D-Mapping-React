@@ -1,11 +1,13 @@
-import { Layout, Menu, Radio, Slider } from "antd";
+import { Layout, Menu, Radio } from "antd";
 import { GiWalk } from "react-icons/gi";
 import Map from "../map/Map";
 import { useState } from "react";
 import { MdDirectionsBike } from "react-icons/md";
 import { IoIosCar } from "react-icons/io";
-const { Header, Content, Sider } = Layout;
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
+const { Header, Content, Sider } = Layout;
 const AppLayout = () => {
   const [civFilter, setCivFilter] = useState();
   const [pedestrianFilter, setPedestrianFilter] = useState();
@@ -52,23 +54,25 @@ const AppLayout = () => {
             </Radio.Group>
 
             <div className="mt-2">
-              {(civFilter==="Pedestrian") && <Radio.Group
-                defaultValue={"All"}
-                buttonStyle="solid"
-                value={pedestrianFilter}
-                onChange={handlePedestrianFilterChange}
-                style={{ display: "flex" }}
-              >
-                <Radio.Button value="Crossing" className="grow text-center">
-                  Crossing
-                </Radio.Button>
-                <Radio.Button value="Jaywalking" className="grow text-center">
-                  Jaywalking
-                </Radio.Button>
-                <Radio.Button value="All" className="grow text-center">
-                  All
-                </Radio.Button>
-              </Radio.Group>} 
+              {civFilter === "Pedestrian" && (
+                <Radio.Group
+                  defaultValue={"All"}
+                  buttonStyle="solid"
+                  value={pedestrianFilter}
+                  onChange={handlePedestrianFilterChange}
+                  style={{ display: "flex" }}
+                >
+                  <Radio.Button value="Crossing" className="grow text-center">
+                    Crossing
+                  </Radio.Button>
+                  <Radio.Button value="Jaywalking" className="grow text-center">
+                    Jaywalking
+                  </Radio.Button>
+                  <Radio.Button value="All" className="grow text-center">
+                    All
+                  </Radio.Button>
+                </Radio.Group>
+              )}
             </div>
           </div>
 
@@ -77,11 +81,29 @@ const AppLayout = () => {
           </div>
         </Sider>
         <Layout>
-          <Content>
+          <Content className="relative">
             <Map />
-            {/* <div className="absolute bottom-5 left-0 mx-auto bg-gray-500 p-4 rounded-md w-3/5">
-              <Slider></Slider>
-            </div> */}
+            <div className="px-20 pb-10 box-border absolute bottom-4 w-full">
+              <div className="bg-black/70 p-7 rounded-md">
+                <Slider
+                  railStyle={{ background: "#d1d1d1", height: 12 }}
+                  trackStyle={{
+                    transition: "0.3s ease background-color",
+                    height: 12,
+                    background: "#d1d1d1"
+                  }}
+                  handleStyle={{
+                    height: 20,
+                    width: 20,
+                    borderRadius: "50%",
+                    background: "#ffffff",
+                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
+                    border: "none",
+                  }}
+                  className="-translate-y-1"
+                />
+              </div>
+            </div>
           </Content>
         </Layout>
       </Layout>
