@@ -10,11 +10,21 @@ const { Header, Content, Sider } = Layout;
 
 const AppLayout = () => {
   const [civFilter, setCivFilter] = useState();
+  const [pedestrianFilter, setPedestrianFilter] = useState();
 
   const handleCivFilterChange = (e) => {
     setCivFilter(e.target.value);
   };
 
+  const handlePedestrianFilterChange = (e) => {
+    setPedestrianFilter(e.target.value);
+  };
+
+  const pedestrianOptions = [
+    { label: "Jaywalking", value: "Jaywalking" },
+    { label: "Crossing", value: "Crossing" },
+    { label: "All", value: "All" },
+  ];
   return (
     <Layout className="h-screen">
       <Header className="">
@@ -45,6 +55,13 @@ const AppLayout = () => {
               <Radio.Button value="all">All</Radio.Button>
             </Radio.Group>
             <Radio.Group optionType="button" buttonStyle="solid"></Radio.Group>
+            <Radio.Group
+              options={pedestrianOptions}
+              optionType="button"
+              buttonStyle="solid"
+              value={pedestrianFilter}
+              onChange={handlePedestrianFilterChange}
+            ></Radio.Group>
           </div>
         </Sider>
         <Layout className="pl-5 pt-5">
