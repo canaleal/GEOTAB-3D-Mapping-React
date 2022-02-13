@@ -1,19 +1,13 @@
 import "./App.css";
-import Header from "./components/header/Header";
-import Map from "./components/map/Map";
-import Sidebar from "./components/sidebar/Sidebar";
-import Slider from "./components/slider/Slider";
+import AppLayout from "./components/app-layout/AppLayout";
 
 
 function App() {
   
 
   return (
-    <div className="App">
-      <Header></Header>
-      <Sidebar></Sidebar>
-      <Slider></Slider>
-      {/* <Map></Map> */}
+    <div>
+      <AppLayout></AppLayout>
     </div>
   );
 }

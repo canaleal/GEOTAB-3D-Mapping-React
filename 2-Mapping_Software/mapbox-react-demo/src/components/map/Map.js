@@ -34,7 +34,7 @@ const Map = () => {
 
   
 
-  return <div ref={mapContainer} className="map-container h-screen" />;
+  return <div ref={mapContainer} className="map-container w-4/5 h-5/6" />;
 };
 
 export default Map;
