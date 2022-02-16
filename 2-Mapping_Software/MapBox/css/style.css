@@ -41,7 +41,7 @@ h1 {
 }
 
 main {
-  margin-left: 5rem;
+  margin-left: 15rem;
   padding: 0rem;
 }
 
@@ -237,7 +237,7 @@ main {
         -ms-flex-direction: column;
             flex-direction: column;
     top: 0;
-    width: 5rem;
+    width: 15rem;
     height: 100vh;
   }
   .nav:hover {
@@ -327,6 +327,18 @@ main {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+}
+
+#map_menu {
+  background: #efefef;
+  padding: 10px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.session {
+  background: #efefef;
+  padding: 10px;
+  margin-bottom: 20px;
 }
 
 #menu {
