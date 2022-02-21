@@ -1,18 +1,25 @@
 import { Layout, Menu, Radio } from "antd";
 import { GiWalk } from "react-icons/gi";
 import Map from "../map/Map";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { MdDirectionsBike } from "react-icons/md";
 import { IoIosCar } from "react-icons/io";
 import Slider from "rc-slider";
+import BlackBar from "../black-bar/BlackBar";
+
+
 import "rc-slider/assets/index.css";
 
 const { Header, Content, Sider } = Layout;
 const AppLayout = () => {
+ 
+  const [yearFilter, setYearFilter] = useState(2016);
   const [civFilter, setCivFilter] = useState();
   const [pedestrianFilter, setPedestrianFilter] = useState();
 
+
   const handleCivFilterChange = (e) => {
+    console.log(e)
     setCivFilter(e.target.value);
   };
 
@@ -22,16 +29,33 @@ const AppLayout = () => {
 
   return (
     <Layout className="h-screen">
-      <Header className="">
-        <div></div>
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
-          <Menu.Item key="1">Civilians</Menu.Item>
-          <Menu.Item key="2">Road Conditions</Menu.Item>
-        </Menu>
-      </Header>
+
+      <BlackBar/>
+
+      {/* <div className="flex flex-row py-2 px-4 bg-white-500">
+
+        <div className="w-4/12 ">
+          <span className="txt-xl">A.I.M</span>
+        </div>
+
+        <div className="w-8/12">
+          2
+        </div>
+      </div> */}
+
+
+      <Header >  
+          <Menu theme="dark"  mode="horizontal" defaultSelectedKeys={["1"]}>
+            <Menu.Item key="1">Civilians</Menu.Item>
+            <Menu.Item key="2">Road Conditions</Menu.Item>
+          </Menu>
+        </Header>
+      
+
+
       <Layout>
-        <Sider width={300} className="p-2" theme="light">
-          <div className="border-2 rounded-md p-3">
+        <Sider width={400} className="px-4 py-4" theme="light">
+          <div className="border-2 rounded-md ">
             <Radio.Group
               optionType="button"
               buttonStyle="solid"
@@ -53,7 +77,7 @@ const AppLayout = () => {
               </Radio.Button>
             </Radio.Group>
 
-            <div className="mt-2">
+            <div className="py-2">
               {civFilter === "Pedestrian" && (
                 <Radio.Group
                   defaultValue={"All"}
@@ -76,19 +100,57 @@ const AppLayout = () => {
             </div>
           </div>
 
-          <div className="border-2 mt-2 rounded-md p-3">
-            <img alt="chart" src={require("../../images/pedestrian.png")}></img>
+
+          <div className="p-2 my-4 border rounded-lg border-red-500">
+            <p>Proident ex dolor cupidatat voluptate nulla veniam esse id incididunt ut enim in nostrud do. Aliquip velit id elit in exercitation tempor dolor nostrud sit reprehenderit commodo tempor aute proident. Nulla excepteur cupidatat officia amet labore occaecat anim quis et velit aliquip ullamco officia. Aliquip ex mollit sit elit culpa Lorem veniam sit minim duis cillum ea consequat.</p>
           </div>
+
+
+          <div className="p-2 my-4 border rounded-lg">
+            <h1>Pedestrians</h1>
+          </div>
+
+          
         </Sider>
+
+
+        
         <Layout>
           <Content className="relative">
-            <Map />
-            <div className="px-20 pb-10 box-border absolute bottom-4 w-full">
+
+            <Map time={yearFilter}/>
+
+
+
+            
+
+            <div className="px-20 pb-8 box-border absolute bottom-4 w-full">
               <div className="bg-black/70 px-7 pt-7 pb-3 rounded-md">
-                <Slider
-                  min={0}
-                  max={28}
+
+              <Slider
+                  
+                  min={2015}
+                  max={2020}
                   dots={true}
+                  
+                  dotStyle={{
+                    height: 15,
+                    width: 2,
+                    border: 0,
+                    marginBottom: 11,
+                    backgroundColor: "#d1d1d1",
+                    transform: "translateX(0.2rem)"
+                  }}
+                  onChange={value => console.log(value)}
+                 
+                />
+                {/* <Slider
+                  ref={sliderRef}
+                  min={2015}
+                  max={2020}
+                  dots={true}
+                  value={yearFilter}
+                  onChange={handleYearFilterChange}
                   railStyle={{ background: "#d1d1d1", height: 12 }}
                   trackStyle={{
                     transition: "0.3s ease background-color",
@@ -112,12 +174,17 @@ const AppLayout = () => {
                     transform: "translateX(0.2rem)"
                   }}
                   className="-translate-y-1"
-                />
+                /> */}
               </div>
             </div>
+
           </Content>
         </Layout>
+
+        
       </Layout>
+
+      
     </Layout>
   );
 };
