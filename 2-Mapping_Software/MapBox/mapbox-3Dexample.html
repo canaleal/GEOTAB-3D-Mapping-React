@@ -12,7 +12,7 @@
 
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
- 
+
   <link type="text/css" rel="stylesheet" href="./css/style.css" />
 </head>
 
@@ -25,6 +25,8 @@
     href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
 
 
+
+
   <navbar class="nav">
     <div class="nav-item">
       <a href="#" class="nav-link logo">
@@ -32,9 +34,9 @@
         <span class="link-text">A.I.M</span>
       </a>
     </div>
-    
+
     <div class="nav-item ">
-      <a id="search-btn" class="nav-link">
+      <a id="filter-btn" class="nav-link">
         <i class="fa fa-filter fa-2x" aria-hidden="true"></i>
         <span class="link-text">Filter</span>
       </a>
@@ -47,36 +49,33 @@
 
 
     <div class="nav-item ">
-      <a id="search-btn" class="nav-link">
+      <a id="map-btn" class="nav-link">
         <i class="fa fa-map fa-2x" aria-hidden="true"></i>
         <span class="link-text">Map</span>
       </a>
     </div>
 
-    <div class="nav-item">
-       
-        <div id="map_menu">
-          <input id="satellite-streets-v11" type="radio" name="rtoggle" value="satellite-streets-v11" checked="checked">
-          <!-- See a list of Mapbox-hosted public styles at -->
-          <!-- https://docs.mapbox.com/api/maps/styles/#mapbox-styles -->
-          <label for="satellite-streets-v11">satellite</label>
-          <input id="light-v10" type="radio" name="rtoggle" value="light">
-          <label for="light-v10">light</label>
-          <input id="dark-v10" type="radio" name="rtoggle" value="dark">
-          <label for="dark-v10">dark</label>
-          <input id="streets-v11" type="radio" name="rtoggle" value="streets">
-          <label for="streets-v11">streets</label>
-          <input id="outdoors-v11" type="radio" name="rtoggle" value="outdoors">
-          <label for="outdoors-v11">outdoors</label>
-          </div>
+    <div id="map_menu">
+      <input id="satellite-streets-v11" type="radio" name="rtoggle" value="satellite-streets-v11">
+      <label for="satellite-streets-v11">satellite</label>
+      <input id="light-v10" type="radio" name="rtoggle" value="light">
+      <label for="light-v10">light</label>
+      <input id="dark-v10" type="radio" name="rtoggle" value="dark">
+      <label for="dark-v10">dark</label>
+      <input id="streets-v11" type="radio" name="rtoggle" value="streets" checked='checked'>
+      <label for="streets-v11">streets</label>
+      <input id="outdoors-v11" type="radio" name="rtoggle" value="outdoors">
+      <label for="outdoors-v11">outdoors</label>
     </div>
 
 
 
+
+
     <div class="nav-item ">
-      <a id="search-btn" class="nav-link">
+      <a id="calender-btn" class="nav-link">
         <i class="fa fa-calendar fa-2x" aria-hidden="true"></i>
-        <span class="link-text">Year</span>
+        <span class="link-text" id="year">Year</span>
       </a>
     </div>
     <div class="nav-item">
@@ -93,46 +92,53 @@
           <label for='2017'>2017</label>
           <input id='2018' type='radio' name='toggle' value='2018'>
           <label for='2018'>2018</label>
+          <input id='2019' type='radio' name='toggle' value='2019'>
+          <label for='2019'>2019</label>
           <input id='2020' type='radio' name='toggle' value='2020'>
           <label for='2020'>2020</label>
         </div>
       </div>
     </div>
-    
-   
-    
+
+
+    <div class="nav-item">
+      <div class="slidecontainer">
+        <input type="range" min="2015" max="2020" value="2015" step="1" class="slider" id="myRange">
+      </div>
+    </div>
+
+    <div class="nav-item ">
+      <a id="play-pause-btn" class="nav-link">
+        <i class="fa fa-play fa-2x" aria-hidden="true"></i>
+        <span class="link-text">Play</span>
+      </a>
+    </div>
 
 
     <div class="nav-item">
       <a id="open-modal-btn" class="nav-link">
-        <i class="fa fa-gear fa-2x" aria-hidden="true"></i>
-        <span class="link-text">Settings</span>
+        <i class="fa fa-exclamation fa-2x" aria-hidden="true"></i>
+        <span class="link-text">Help</span>
       </a>
     </div>
+
+
+    
   </navbar>
 
-  
+
 
   <main>
-    
-    <div id="map"></div>
 
-    
+    <div id="map"></div>
+   
+
   </main>
 
+
   
- 
- 
 
-  <div class="modal">
-    <p class="message">Tempor quis occaecat minim Lorem culpa pariatur sit mollit aute. Ut nulla aliqua reprehenderit duis pariatur laborum quis aute fugiat duis quis ipsum cillum. Sit est aliqua commodo aliquip officia elit. Veniam Lorem laboris anim eiusmod ipsum ut. Proident sint consectetur est anim mollit labore.</p>
-    <div class="options">
-      <button id="download-btn" class="btn">Cancel</button>
-      <button id="close-modal-btn" class="btn">Save</button>
-    </div>
-  </div>
-
-  <script defer src="./js/map_builder.js"></script>
+  <script defer src="./js/simple_builder.js"></script>
 
 </body>
 

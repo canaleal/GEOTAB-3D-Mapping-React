@@ -41,7 +41,7 @@ h1 {
 }
 
 main {
-  margin-left: 15rem;
+  margin-left: 20rem;
   padding: 0rem;
 }
 
@@ -51,83 +51,6 @@ main {
     margin: 0;
     margin-bottom: 5rem;
   }
-}
-
-.grid {
-  display: -ms-grid;
-  display: grid;
-  gap: 1rem;
-  -ms-grid-columns: (minmax(400px, 1fr))[auto-fit];
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  grid-auto-rows: 400px;
-  grid-auto-flow: dense;
-  margin-bottom: 1rem;
-}
-
-.tall {
-  grid-row: span 2;
-}
-
-.wide {
-  grid-column: span 2;
-}
-
-/* Small screens */
-@media only screen and (max-width: 600px) {
-  .tall {
-    grid-row: span 2;
-  }
-  .wide {
-    grid-column: span 1;
-  }
-}
-
-.card {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  background: #353535;
-  font-size: 3rem;
-  color: #fff;
-  -webkit-box-shadow: rgba(3, 8, 20, 0.1) 0px 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0px 0.075rem 0.175rem;
-          box-shadow: rgba(3, 8, 20, 0.1) 0px 0.15rem 0.5rem, rgba(2, 8, 20, 0.1) 0px 0.075rem 0.175rem;
-  height: 100%;
-  width: 100%;
-  border-radius: 4px;
-  -webkit-transition: all 1s;
-  transition: all 1s;
-  overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.card:hover {
-  -webkit-box-shadow: rgba(2, 8, 20, 0.1) 0px 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0px 0.175em 0.5em;
-          box-shadow: rgba(2, 8, 20, 0.1) 0px 0.35em 1.175em, rgba(2, 8, 20, 0.08) 0px 0.175em 0.5em;
-  -webkit-transform: scale(1.01);
-          transform: scale(1.01);
-  cursor: pointer;
-}
-
-.nsfw {
-  -webkit-filter: blur(8px);
-          filter: blur(8px);
-}
-
-.nsfw:hover {
-  -webkit-filter: none;
-          filter: none;
 }
 
 .nav {
@@ -158,6 +81,7 @@ main {
 
 .nav .nav-item {
   width: 100%;
+  background-color: #242423;
 }
 
 .nav .nav-item:last-child {
@@ -172,7 +96,8 @@ main {
       -ms-flex-align: center;
           align-items: center;
   height: 5rem;
-  color: #fff;
+  padding: 1rem;
+  color: #dfdfdf;
   text-decoration: none;
   -webkit-filter: grayscale(100%) opacity(0.7);
           filter: grayscale(100%) opacity(0.7);
@@ -237,11 +162,11 @@ main {
         -ms-flex-direction: column;
             flex-direction: column;
     top: 0;
-    width: 15rem;
+    width: 20rem;
     height: 100vh;
   }
   .nav:hover {
-    width: 15rem;
+    width: 20rem;
   }
   .nav:hover .link-text {
     display: inline;
@@ -376,10 +301,7 @@ main {
 }
 
 .slidecontainer {
-  height: 10vh;
-  margin-left: 5rem;
-  padding-left: 10rem;
-  padding-right: 10rem;
+  padding: 1rem;
 }
 
 /* The slider itself */

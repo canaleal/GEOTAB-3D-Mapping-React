@@ -1,7 +1,7 @@
 .nav {
 	z-index: 2;
 	position: fixed;
-	background-color: $dark;
+	background-color: $bg-color;
 	transition: width $fast-spd ease;
 	overflow: hidden;
 	display: flex;
@@ -11,7 +11,7 @@
 		text-transform: uppercase;
 		margin-bottom: 1rem;
 		color: $white;
-		background: $dark-light;
+		background: $element-light;
 		letter-spacing: 0.3ch;
 		width: 100%;
 
@@ -22,6 +22,7 @@
 
 	.nav-item {
 		width: 100%;
+		background-color: $element-light;
 
 		&:last-child {
 			margin-top: auto;
@@ -31,7 +32,8 @@
 			display: flex;
 			align-items: center;
 			height: 5rem;
-			color: $white;
+			padding: 1rem;
+			color: $text;
 			text-decoration: none;
 			filter: grayscale(100%) opacity(0.7);
 			transition: $fast-spd;
@@ -49,7 +51,7 @@
 
 			&:hover {
 				filter: grayscale(0%) opacity(1);
-				background: $dark-hover;
+				background: $element-hover;
 				color: $highlight;
 				cursor: pointer;
 
@@ -88,11 +90,11 @@
 	.nav {
 		flex-direction: column;
 		top: 0;
-		width: 15rem;
+		width: 20rem;
 		height: 100vh;
 
 		&:hover {
-			width: 15rem;
+			width: 20rem;
 
 			.link-text {
 				display: inline;
