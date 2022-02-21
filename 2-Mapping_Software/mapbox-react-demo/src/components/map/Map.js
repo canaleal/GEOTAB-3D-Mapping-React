@@ -10,6 +10,11 @@ const Map = () => {
   const [lat, setLat] = useState(44.22976);
   const [zoom, setZoom] = useState(15.5);
   
+
+
+
+
+
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainer.current,
@@ -18,8 +23,65 @@ const Map = () => {
       zoom: zoom
     });
 
-    // Add navigation control (the +/- zoom buttons)
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    map.on('load', () => {
+
+       
+
+        // Add zoom and rotation controls to the map.
+        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+         // Add full screen controls to the map
+         map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
+
+
+
+
+         map.addSource('mapbox-dem', {
+          'type': 'raster-dem',
+          'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+          'tileSize': 512,
+          'maxzoom': 14
+        });
+        // add the DEM source as a terrain layer with exaggerated height
+        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+
+
+
+
+        map.addSource('Boundry', {
+          'type': 'geojson',
+          'data': 'url',
+      });
+  
+      // Add a new layer to visualize the bounderies.
+      map.addLayer({
+          'id': 'Boundry',
+          'type': 'fill',
+          'source': 'Boundry', // reference the data source
+          'layout': {},
+          'paint': {
+              'fill-color': ['get', 'fill'], // blue color fill
+              'fill-opacity': 0.3 //Set opacity of the polygon
+          }
+      });
+      // Add a black outline around the polygon.
+      map.addLayer({
+          'id': 'outline',
+          'type': 'line',
+          'source': 'Boundry',
+          'layout': {},
+          'paint': {
+              'line-color': '#ffffff',
+              'line-width': 1
+          }
+      });
+
+
+         map.resize()
+
+    })
+
+    
 
     map.on('move', () => {
       setLng(map.getCenter().lng.toFixed(4));
