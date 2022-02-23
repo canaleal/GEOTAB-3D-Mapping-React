@@ -13,7 +13,7 @@ import PedestrianChart from "../visualizations/PedestrianChart";
 const { Header, Content, Sider } = Layout;
 const AppLayout = () => {
   const [yearFilter, setYearFilter] = useState(2016);
-  const [civFilter, setCivFilter] = useState();
+  const [civFilter, setCivFilter] = useState("Pedestrian");
   const [pedestrianFilter, setPedestrianFilter] = useState();
 
   const handleCivFilterChange = (e) => {
@@ -49,10 +49,10 @@ const AppLayout = () => {
               <Radio.Button value="Pedestrian" className="grow text-center">
                 <GiWalk className="inline" />
               </Radio.Button>
-              <Radio.Button value="Bike" className="grow text-center">
+              <Radio.Button value="Bike" disabled className="grow text-center">
                 <MdDirectionsBike className="inline" />
               </Radio.Button>
-              <Radio.Button value="Traffic" className="grow text-center">
+              <Radio.Button value="Traffic" disabled className="grow text-center">
                 <IoIosCar className="inline" />
               </Radio.Button>
               <Radio.Button value="All" className="grow text-center">
