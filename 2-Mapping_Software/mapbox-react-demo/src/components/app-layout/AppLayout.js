@@ -7,19 +7,16 @@ import { IoIosCar } from "react-icons/io";
 import Slider from "rc-slider";
 import BlackBar from "../black-bar/BlackBar";
 
-
 import "rc-slider/assets/index.css";
+import TimeSlider from "../time-slider/TimeSlider";
 
 const { Header, Content, Sider } = Layout;
 const AppLayout = () => {
- 
   const [yearFilter, setYearFilter] = useState(2016);
   const [civFilter, setCivFilter] = useState();
   const [pedestrianFilter, setPedestrianFilter] = useState();
 
-
   const handleCivFilterChange = (e) => {
-    console.log(e)
     setCivFilter(e.target.value);
   };
 
@@ -29,29 +26,13 @@ const AppLayout = () => {
 
   return (
     <Layout className="h-screen">
-
-      <BlackBar/>
-
-      {/* <div className="flex flex-row py-2 px-4 bg-white-500">
-
-        <div className="w-4/12 ">
-          <span className="txt-xl">A.I.M</span>
-        </div>
-
-        <div className="w-8/12">
-          2
-        </div>
-      </div> */}
-
-
-      <Header >  
-          <Menu theme="dark"  mode="horizontal" defaultSelectedKeys={["1"]}>
-            <Menu.Item key="1">Civilians</Menu.Item>
-            <Menu.Item key="2">Road Conditions</Menu.Item>
-          </Menu>
-        </Header>
-      
-
+      <BlackBar />
+      <Header>
+        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
+          <Menu.Item key="1">Civilians</Menu.Item>
+          <Menu.Item key="2">Road Conditions</Menu.Item>
+        </Menu>
+      </Header>
 
       <Layout>
         <Sider width={400} className="px-4 py-4" theme="light">
@@ -100,91 +81,35 @@ const AppLayout = () => {
             </div>
           </div>
 
-
           <div className="p-2 my-4 border rounded-lg border-red-500">
-            <p>Proident ex dolor cupidatat voluptate nulla veniam esse id incididunt ut enim in nostrud do. Aliquip velit id elit in exercitation tempor dolor nostrud sit reprehenderit commodo tempor aute proident. Nulla excepteur cupidatat officia amet labore occaecat anim quis et velit aliquip ullamco officia. Aliquip ex mollit sit elit culpa Lorem veniam sit minim duis cillum ea consequat.</p>
+            <p>
+              Proident ex dolor cupidatat voluptate nulla veniam esse id
+              incididunt ut enim in nostrud do. Aliquip velit id elit in
+              exercitation tempor dolor nostrud sit reprehenderit commodo tempor
+              aute proident. Nulla excepteur cupidatat officia amet labore
+              occaecat anim quis et velit aliquip ullamco officia. Aliquip ex
+              mollit sit elit culpa Lorem veniam sit minim duis cillum ea
+              consequat.
+            </p>
           </div>
-
 
           <div className="p-2 my-4 border rounded-lg">
             <h1>Pedestrians</h1>
           </div>
-
-          
         </Sider>
 
-
-        
         <Layout>
           <Content className="relative">
-
-            <Map time={yearFilter}/>
-
-
-
-            
+            <Map time={yearFilter} />
 
             <div className="px-20 pb-8 box-border absolute bottom-4 w-full">
               <div className="bg-black/70 px-7 pt-7 pb-3 rounded-md">
-
-              <Slider
-                  
-                  min={2015}
-                  max={2020}
-                  dots={true}
-                  
-                  dotStyle={{
-                    height: 15,
-                    width: 2,
-                    border: 0,
-                    marginBottom: 11,
-                    backgroundColor: "#d1d1d1",
-                    transform: "translateX(0.2rem)"
-                  }}
-                  onChange={value => console.log(value)}
-                 
-                />
-                {/* <Slider
-                  ref={sliderRef}
-                  min={2015}
-                  max={2020}
-                  dots={true}
-                  value={yearFilter}
-                  onChange={handleYearFilterChange}
-                  railStyle={{ background: "#d1d1d1", height: 12 }}
-                  trackStyle={{
-                    transition: "0.3s ease background-color",
-                    height: 12,
-                    background: "#d1d1d1"
-                  }}
-                  handleStyle={{
-                    height: 20,
-                    width: 20,
-                    borderRadius: "50%",
-                    background: "white",
-                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.9)",
-                    border: "none",
-                  }}
-                  dotStyle={{
-                    height: 15,
-                    width: 2,
-                    border: 0,
-                    marginBottom: 11,
-                    backgroundColor: "#d1d1d1",
-                    transform: "translateX(0.2rem)"
-                  }}
-                  className="-translate-y-1"
-                /> */}
+                <TimeSlider value={yearFilter} onSliderChange={(year)=>{setYearFilter(year)}}/>
               </div>
             </div>
-
           </Content>
         </Layout>
-
-        
       </Layout>
-
-      
     </Layout>
   );
 };

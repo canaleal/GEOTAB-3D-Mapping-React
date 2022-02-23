@@ -7,7 +7,7 @@ import { Skeleton } from "antd";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const Map = (props) => {
+const Map = ({time}) => {
   const mapContainer = useRef(null);
   const [mapBounderies, setMapBounderies] = useState([
     [-76.788, 44.107], // Southwest coordinates
@@ -233,7 +233,7 @@ const Map = (props) => {
   };
 
   const add_filter_for_pedestrians = () => {
-    let temp_year = props.time;
+    let temp_year = time;
 
     if (years.includes(temp_year)) {
       map.current.setFilter("Pedestrians", [
