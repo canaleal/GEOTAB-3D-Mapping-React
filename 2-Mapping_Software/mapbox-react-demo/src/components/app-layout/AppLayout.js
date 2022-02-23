@@ -4,11 +4,11 @@ import Map from "../map/Map";
 import { useState, useRef } from "react";
 import { MdDirectionsBike } from "react-icons/md";
 import { IoIosCar } from "react-icons/io";
-import Slider from "rc-slider";
 import BlackBar from "../black-bar/BlackBar";
 
 import "rc-slider/assets/index.css";
 import TimeSlider from "../time-slider/TimeSlider";
+import PedestrianChart from "../visualizations/PedestrianChart";
 
 const { Header, Content, Sider } = Layout;
 const AppLayout = () => {
@@ -27,10 +27,12 @@ const AppLayout = () => {
   return (
     <Layout className="h-screen">
       <BlackBar />
-      <Header>
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
+      <Header style={{backgroundColor: "#F8F8F8"}}>
+        <Menu style={{backgroundColor: "#F8F8F8"}} mode="horizontal" defaultSelectedKeys={["1"]}>
           <Menu.Item key="1">Civilians</Menu.Item>
-          <Menu.Item key="2">Road Conditions</Menu.Item>
+          <Menu.Item key="2" disabled>Road Conditions</Menu.Item>
+          <Menu.Item key="2" disabled>Tree Canopy</Menu.Item>
+          <Menu.Item key="2" disabled>Toppled Bins</Menu.Item>
         </Menu>
       </Header>
 
@@ -94,7 +96,7 @@ const AppLayout = () => {
           </div>
 
           <div className="p-2 my-4 border rounded-lg">
-            <h1>Pedestrians</h1>
+            <PedestrianChart/>
           </div>
         </Sider>
 
