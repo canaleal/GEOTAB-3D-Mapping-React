@@ -1,8 +1,11 @@
 import Slider from "rc-slider";
 import { useState } from "react";
 
-const TimeSlider = ({value, onSliderChange}) => {
+const TimeSlider = ({value, onSliderChange, sliderRef}) => {
 
+  const onSliderChange = (event) =>{
+    props.onChange(event.target.value);
+  } 
   
   return (
    
@@ -17,7 +20,8 @@ const TimeSlider = ({value, onSliderChange}) => {
             height: 12,
             background: "#d1d1d1",
           }}
-          onChange={(value)=>onSliderChange(value)}
+          onChange={onSliderChange}
+          ref={sliderRef}
           handleStyle={{
             height: 20,
             width: 20,

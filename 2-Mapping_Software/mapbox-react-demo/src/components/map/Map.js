@@ -3,11 +3,12 @@ import { useRef, useState, useEffect, Fragment } from "react";
 import boundary from "./data/city-neighbourhoods.geojson";
 import pedestrians from "./data/transit-gtfs-stops-count.geojson";
 import { Skeleton } from "antd";
+import React, { Component } from "react";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const Map = ({time}) => {
+const Map = (props) => {
   const mapContainer = useRef(null);
   const [mapBounderies, setMapBounderies] = useState([
     [-76.788, 44.107], // Southwest coordinates
@@ -17,6 +18,7 @@ const Map = ({time}) => {
   const [lng, setLng] = useState(-76.48098);
   const [lat, setLat] = useState(44.22976);
   const [zoom, setZoom] = useState(12);
+  const [year, setYear] = useState(null);
   const [years, setYears] = useState([2015, 2016, 2017, 2018, 2019, 2020]);
   const [mapReady, setMapReady] = useState(false)
 
@@ -233,7 +235,7 @@ const Map = ({time}) => {
   };
 
   const add_filter_for_pedestrians = () => {
-    let temp_year = time;
+    let temp_year = year;
 
     if (years.includes(temp_year)) {
       map.current.setFilter("Pedestrians", [
@@ -247,6 +249,8 @@ const Map = ({time}) => {
   };
 
   useEffect(() => {
+    console.log('refresh')
+
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v11",

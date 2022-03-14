@@ -6,6 +6,10 @@
   <title>Display buildings in 3D</title>
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&family=Roboto:wght@300&display=swap"
+    rel="stylesheet">
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -14,6 +18,9 @@
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
 
   <link type="text/css" rel="stylesheet" href="./css/style.css" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 
 <body>
@@ -24,122 +31,436 @@
   <link rel="stylesheet"
     href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
 
+  <div class="container-fluid bg-dark text-white px-4 sticky-top">
+    <div class="row">
+      <div class="col">
+        <span>Kingston - Last Updated: 2022-02-22 8:30am</span>
+      </div>
+
+      <div class="col">
+        <span class="float-end">Open Data Kingston</span>
+      </div>
 
 
-
-  <navbar class="nav">
-    <div class="nav-item">
-      <a href="#" class="nav-link logo">
-        <i class="fa fa-cube fa-2x" aria-hidden="true"></i>
-        <span class="link-text">A.I.M</span>
-      </a>
-    </div>
-
-    <div class="nav-item ">
-      <a id="filter-btn" class="nav-link">
-        <i class="fa fa-filter fa-2x" aria-hidden="true"></i>
-        <span class="link-text">Filter</span>
-      </a>
-    </div>
-
-    <div class="nav-item ">
-      <nav id="menu"></nav>
     </div>
 
 
-
-    <div class="nav-item ">
-      <a id="map-btn" class="nav-link">
-        <i class="fa fa-map fa-2x" aria-hidden="true"></i>
-        <span class="link-text">Map</span>
-      </a>
-    </div>
-
-    <div id="map_menu">
-      <input id="satellite-streets-v11" type="radio" name="rtoggle" value="satellite-streets-v11">
-      <label for="satellite-streets-v11">satellite</label>
-      <input id="light-v10" type="radio" name="rtoggle" value="light">
-      <label for="light-v10">light</label>
-      <input id="dark-v10" type="radio" name="rtoggle" value="dark">
-      <label for="dark-v10">dark</label>
-      <input id="streets-v11" type="radio" name="rtoggle" value="streets" checked='checked'>
-      <label for="streets-v11">streets</label>
-      <input id="outdoors-v11" type="radio" name="rtoggle" value="outdoors">
-      <label for="outdoors-v11">outdoors</label>
-    </div>
-
-
-
-
-
-    <div class="nav-item ">
-      <a id="calender-btn" class="nav-link">
-        <i class="fa fa-calendar fa-2x" aria-hidden="true"></i>
-        <span class="link-text" id="year">Year</span>
-      </a>
-    </div>
-    <div class="nav-item">
-      <div class='session'>
-
-        <div class='row' id='filters'>
-          <input id='all' type='radio' name='toggle' value='all' checked='checked'>
-          <label for='all'>All</label>
-          <input id='2015' type='radio' name='toggle' value='2015'>
-          <label for='2015'>2015</label>
-          <input id='2016' type='radio' name='toggle' value='2016'>
-          <label for='2016'>2016</label>
-          <input id='2017' type='radio' name='toggle' value='2017'>
-          <label for='2017'>2017</label>
-          <input id='2018' type='radio' name='toggle' value='2018'>
-          <label for='2018'>2018</label>
-          <input id='2019' type='radio' name='toggle' value='2019'>
-          <label for='2019'>2019</label>
-          <input id='2020' type='radio' name='toggle' value='2020'>
-          <label for='2020'>2020</label>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom sticky-top" >
+      <div class="container-fluid px-4">
+        <a class="navbar-brand fw-bold" href="#">
+  
+          A.I.M 3D Mapping
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+  
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Help</a>
+            </li>
+  
+  
+          </ul>
         </div>
+  
       </div>
-    </div>
+    </nav>
 
-
-    <div class="nav-item">
-      <div class="slidecontainer">
-        <input type="range" min="2015" max="2020" value="2015" step="1" class="slider" id="myRange">
-      </div>
-    </div>
-
-    <div class="nav-item ">
-      <a id="play-pause-btn" class="nav-link">
-        <i class="fa fa-play fa-2x" aria-hidden="true"></i>
-        <span class="link-text">Play</span>
-      </a>
-    </div>
-
-
-    <div class="nav-item">
-      <a id="open-modal-btn" class="nav-link">
-        <i class="fa fa-exclamation fa-2x" aria-hidden="true"></i>
-        <span class="link-text">Help</span>
-      </a>
-    </div>
-
-
-    
-  </navbar>
+  </div>
 
 
 
-  <main>
-
-    <div id="map"></div>
-   
-
-  </main>
 
 
   
 
-  <script defer src="./js/simple_builder.js"></script>
 
+
+  <div class="container-fluid pt-4 px-4">
+    <div class="row">
+      <div class="col-lg-3">
+
+        <div class="card slide-in-left">
+          <div class="card-body">
+            <p class="fw-bold">Filters</p>
+            <nav id="menu"></nav>
+          </div>
+        </div>
+
+
+        <div class="card my-3 slide-in-left">
+          <div class="card-body ">
+
+            <p class="fw-bold">Year</p>
+
+            <div class="slidecontainer">
+              <input id="myRange" type="range" min="2015" max="2020" value="2015" step="1" class="slider">
+            </div>
+
+
+
+
+
+            <div class='session'>
+
+              <div id='filters'>
+                <div>
+                  <input id='all' type='radio' name='toggle' value='all' checked='checked'>
+                  <label for='all'>All</label>
+                </div>
+                <div>
+                  <input id='2015' type='radio' name='toggle' value='2015'>
+                  <label for='2015'>2015</label>
+                </div>
+                <div>
+                  <input id='2016' type='radio' name='toggle' value='2016'>
+                  <label for='2016'>2016</label>
+                </div>
+                <div>
+                  <input id='2017' type='radio' name='toggle' value='2017'>
+                  <label for='2017'>2017</label>
+                </div>
+                <div>
+                  <input id='2018' type='radio' name='toggle' value='2018'>
+                  <label for='2018'>2018</label>
+                </div>
+
+                <div>
+                  <input id='2019' type='radio' name='toggle' value='2019'>
+                  <label for='2019'>2019</label>
+                </div>
+                <div>
+                  <input id='2020' type='radio' name='toggle' value='2020'>
+                  <label for='2020'>2020</label>
+                </div>
+
+
+
+              </div>
+            </div>
+
+            
+            <a id="play-pause-btn" class="btn btn-outline-primary my-2">
+              <i class="fa fa-play" aria-hidden="true"></i>
+              <span>Play</span>
+            </a>
+            <p>Autoplay every 2 Seconds</p>
+
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+      </div>
+
+      <div class="col-lg-9 h-100">
+
+
+
+        <div id="map" class="slide-in-right"></div>
+
+
+        
+
+
+
+      </div>
+    </div>
+
+
+  </div>
+
+
+  <div class="container-fluid pb-4 px-4">
+    <div class="row">
+
+      <div class="col-lg-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <p class="fw-bold">Map Information</p>
+
+            <p>Designed especially for state, provincial, and local government
+              agencies, the A.I.M solution helps maintain an open
+              line of communication with their citizens while improving
+              safety and transparency to reach desired operational targets.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-9">
+        <div class="card h-100">
+          <div class="card-body">
+
+            <p class="fw-bold">Map Type</p>
+            <div id="map_menu">
+
+              <div class="card-group">
+
+                <label class="card" for="satellite-streets-v11">
+                  <input id="satellite-streets-v11" type="radio" name="rtoggle" value="satellite-streets-v11">
+
+                  <div class="p-2">
+                    <img
+                      src="https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/-3.7041,40.4162,9.89,0/840x464?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA"
+                      class="card-img-top" alt="...">
+
+                    <span>Satellite</span>
+
+
+                  </div>
+
+                </label>
+
+                <label class="card" for="light-v10">
+                  <input id="light-v10" type="radio" name="rtoggle" value="light">
+                  <div class="p-2">
+
+                    <img
+                      src="https://api.mapbox.com/styles/v1/mapbox/light-v10/static/37.6146,55.7493,10.19,0/840x464?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA"
+                      class="card-img-top" alt="...">
+
+                    <span>Light</span>
+
+
+                  </div>
+                </label>
+
+
+
+                <label class="card" for="dark-v10">
+                  <input id="dark-v10" type="radio" name="rtoggle" value="dark">
+                  <div class="p-2">
+                    <img
+                      src="https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/37.6146,55.7493,10.19,0/840x464?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA"
+                      class="card-img-top" alt="...">
+
+                    <span>Dark</span>
+
+
+                  </div>
+
+                </label>
+
+                <label class="card px-2" for="streets-v11">
+                  <input id="streets-v11" type="radio" name="rtoggle" value="streets" checked='checked'>
+                  <div class="p-2">
+                    <img
+                      src="https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/4.8415,52.3752,9.45,0/840x464?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA"
+                      class="card-img-top" alt="...">
+
+                    <span>Streets</span>
+
+
+                  </div>
+
+                </label>
+
+                <label class="card" for="outdoors-v11">
+                  <input id="outdoors-v11" type="radio" name="rtoggle" value="outdoors">
+                  <div class="p-2">
+                    <img
+                      src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/static/37.6146,55.7493,10.19,0/840x464?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA"
+                      class="card-img-top" alt="...">
+
+                    <span>Outdoor</span>
+
+
+                  </div>
+                </label>
+
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+
+  <div class="container-fluid pb-4 px-4">
+    <div class="row">
+
+      <div class="col-lg-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <p class="fw-bold">Pedestrian Information</p>
+
+            <p>The City promotes and fosters open government principles of participation, innovation, transparency and accountability. The data catalogue supports these principles and is the first step in making it easier to view, obtain and use the information the City has gathered.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-9">
+        <div class="card h-100">
+          <div class="card-body">
+            <p class="fw-bold">Pedestrian Counting</p>
+            <div id="chartdiv"></div>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+
+
+  <div class="container-fluid bg-dark text-white px-4">
+    <div class="row">
+      <div class="col">
+        <span>Kingston - Last Updated: 2022-02-22 8:30am</span>
+      </div>
+
+      <div class="col">
+        <span class="float-end">Open Data Kingston</span>
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+  <!-- Resources -->
+  <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+
+
+  <!-- Chart code -->
+  <script>
+    am5.ready(function () {
+
+      // Create root element
+      // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+      var root = am5.Root.new("chartdiv");
+
+
+      // Set themes
+      // https://www.amcharts.com/docs/v5/concepts/themes/
+      root.setThemes([
+        am5themes_Animated.new(root)
+      ]);
+
+
+      // Create chart
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/
+      var chart = root.container.children.push(am5xy.XYChart.new(root, {
+        panX: true,
+        panY: true,
+        wheelX: "panX",
+        wheelY: "zoomX"
+      }));
+
+      // Add cursor
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+      var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+      cursor.lineY.set("visible", false);
+
+
+      // Create axes
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+      var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
+      xRenderer.labels.template.setAll({
+        rotation: -90,
+        centerY: am5.p50,
+        centerX: am5.p100,
+        paddingRight: 15
+      });
+
+      var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+        maxDeviation: 0.3,
+        categoryField: "country",
+        renderer: xRenderer,
+        tooltip: am5.Tooltip.new(root, {})
+      }));
+
+      var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+        maxDeviation: 0.3,
+        renderer: am5xy.AxisRendererY.new(root, {})
+      }));
+
+
+      // Create series
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+      var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+        name: "Series 1",
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: "value",
+        sequencedInterpolation: true,
+        categoryXField: "country",
+        tooltip: am5.Tooltip.new(root, {
+          labelText: "{valueY}"
+        })
+      }));
+
+      series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5 });
+      series.columns.template.adapters.add("fill", (fill, target) => {
+        return chart.get("colors").getIndex(series.columns.indexOf(target));
+      });
+
+      series.columns.template.adapters.add("stroke", (stroke, target) => {
+        return chart.get("colors").getIndex(series.columns.indexOf(target));
+      });
+
+
+      // Set data
+      var data = [{
+        country: "2015",
+        value: 2025
+      }, {
+        country: "2016",
+        value: 1882
+      }, {
+        country: "2017",
+        value: 1809
+      }, {
+        country: "2018",
+        value: 1322
+      }, {
+        country: "2019",
+        value: 1122
+      }, {
+        country: "2020",
+        value: 1114
+      }];
+
+      xAxis.data.setAll(data);
+      series.data.setAll(data);
+
+
+      // Make stuff animate on load
+      // https://www.amcharts.com/docs/v5/concepts/animations/
+      series.appear(1000);
+      chart.appear(1000, 100);
+
+    }); // end am5.ready()
+  </script>
+
+
+
+  <script defer src="./js/simple_builder.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>

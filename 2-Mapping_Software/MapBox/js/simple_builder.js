@@ -209,16 +209,16 @@ function add_bus_routes_line_layer() {
 
 function add_downtown_layer() {
 
-    map.addSource('Downtown', {
+    map.addSource('Pedestrians', {
         'type': 'geojson',
         'data': 'http://127.0.0.1:5500/data/transit-gtfs-stops-count.geojson'
     });
 
     map.addLayer(
         {
-            'id': 'Downtown',
+            'id': 'Pedestrians',
             'type': 'circle',
-            'source': 'Downtown',
+            'source': 'Pedestrians',
             'minzoom': 7,
             'paint': {
                 // Size circle radius by earthquake magnitude and zoom level
@@ -229,7 +229,7 @@ function add_downtown_layer() {
                     7,
                     ['interpolate', ['linear'], ['get', 'count'], 1, 2, 6, 8],
                     16,
-                    ['interpolate', ['linear'], ['get', 'count'], 2, 4, 12, 16]
+                    ['interpolate', ['linear'], ['get', 'count'], 2, 4, 8, 10]
                 ],
                 // Color circle by earthquake magnitude
                 'circle-color': [
@@ -275,9 +275,9 @@ function add_downtown_layer() {
     );
 
 
-    map.setLayoutProperty('Downtown', 'visibility', 'visible');
+    map.setLayoutProperty('Pedestrians', 'visibility', 'visible');
 
-    toggleableLayerIds.push('Downtown')
+    toggleableLayerIds.push('Pedestrians')
 }
 
 
@@ -326,10 +326,10 @@ function add_toggle_for_downtown() {
     });
     // When a click event occurs on a feature in the places layer, open a popup at the
     // location of the feature, with description HTML from its properties.
-    map.on('click', 'Downtown', (e) => {
+    map.on('click', 'Pedestrians', (e) => {
         // Copy coordinates array.
         const coordinates = e.features[0].geometry.coordinates.slice();
-        const description = `<h2>${e.features[0].properties.name} - ${e.features[0].properties.year}</h2><p>Number of People (AVG/HR) : ${e.features[0].properties.count}</p><img src="${e.features[0].properties.img_url}" alt="TEST" height=auto width="100%"/>`
+        const description = `<p class="fw-bold">${e.features[0].properties.name} - ${e.features[0].properties.year}</p><p>Number of People (AVG/HR) : ${e.features[0].properties.count}</p><img src="${e.features[0].properties.img_url}" alt="TEST" height=auto width="100%"/>`
 
         // Ensure that if the map is zoomed out such that multiple
         // copies of the feature are visible, the popup appears
@@ -349,10 +349,10 @@ function add_toggle_for_downtown() {
     });
 
     // Change the cursor to a pointer when the mouse is over the places layer.
-    map.on('mouseenter', 'Downtown', (e) => {
+    map.on('mouseenter', 'Pedestrians', (e) => {
         map.getCanvas().style.cursor = 'pointer';
         const coordinates = e.features[0].geometry.coordinates.slice();
-        const description = `<p>People (AVG/HR) : ${e.features[0].properties.count}</p>`
+        const description = `<span>People (AVG/HR) : ${e.features[0].properties.count}</span>`
 
         // Ensure that if the map is zoomed out such that multiple
         // copies of the feature are visible, the popup appears
@@ -369,7 +369,7 @@ function add_toggle_for_downtown() {
     });
 
     // Change it back to a pointer when it leaves.
-    map.on('mouseleave', 'Downtown', () => {
+    map.on('mouseleave', 'Pedestrians', () => {
         map.getCanvas().style.cursor = '';
         popup.remove();
     });
@@ -464,9 +464,9 @@ function add_filters() {
         if (year === 'all') {
             filterDay = ['match', ['get', 'year'], years, false, true];
 
-            map.setFilter('Downtown', ['all', filterDay]);
+            map.setFilter('Pedestrians', ['all', filterDay]);
         } else if (years.includes(year)) {
-            map.setFilter('Downtown', ['==', ['number', ['get', 'year']], parseInt(year)]);
+            map.setFilter('Pedestrians', ['==', ['number', ['get', 'year']], parseInt(year)]);
 
             document.getElementById("myRange").value = year;
         }
@@ -480,17 +480,14 @@ function add_filters() {
 
 
     const slider = document.getElementById("myRange");
-    const output = document.getElementById("year");
-    output.innerHTML = slider.value; // Display the default slider value
-
+ 
     // Update the current slider value (each time you drag the slider handle)
     slider.oninput = function () {
-        output.innerHTML = this.value;
-
+       
         const year = this.value;
 
         if (years.includes(year)) {
-            map.setFilter('Downtown', ['==', ['number', ['get', 'year']], parseInt(year)]);
+            map.setFilter('Pedestrians', ['==', ['number', ['get', 'year']], parseInt(year)]);
             document.getElementById(year).checked = true;
         }
         else {
@@ -522,11 +519,11 @@ function montaSlider() {
     }
 
 
-    const output = document.getElementById("year");
+   
     const year = rangeElement.value;
-    output.innerHTML = year
+
     if (years.includes(year)) {
-        map.setFilter('Downtown', ['==', ['number', ['get', 'year']], parseInt(year)]);
+        map.setFilter('Pedestrians', ['==', ['number', ['get', 'year']], parseInt(year)]);
         document.getElementById(year).checked = true;
     }
     else {
@@ -558,6 +555,7 @@ function map_styles() {
 let map;
 document.addEventListener("DOMContentLoaded", function () {
 
+ 
 
     //Access token to load Mapbox into project
     mapboxgl.accessToken = 'pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg';
@@ -610,14 +608,14 @@ document.addEventListener("DOMContentLoaded", function () {
             if (isPlaying == true) {
 
 
-                play_pause_btn.firstElementChild.className = 'fa fa-pause fa-2x';
+                play_pause_btn.firstElementChild.className = 'fa fa-pause';
                 play_pause_btn.lastElementChild.innerHTML = 'Pause';
 
                 //Create an interval that gets called every 2000milliseconds
                 interval = setInterval(function () { montaSlider() }, 2000);
             }
             else {
-                play_pause_btn.firstElementChild.className = 'fa fa-play fa-2x';
+                play_pause_btn.firstElementChild.className = 'fa fa-play';
                 play_pause_btn.lastElementChild.innerHTML = 'Play';
 
                 clearInterval(interval)

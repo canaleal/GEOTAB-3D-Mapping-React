@@ -1,6 +1,7 @@
 .slidecontainer {
-    padding: 1rem;
-  }
+  width: 100%;
+}
+  
   
   /* The slider itself */
   .slider {
@@ -26,13 +27,13 @@
     appearance: none;
     width: 25px; /* Set a specific slider handle width */
     height: 25px; /* Slider handle height */
-    background: #04AA6D; /* Green background */
+    background: $highlight; /* Green background */
     cursor: pointer; /* Cursor on hover */
   }
   
   .slider::-moz-range-thumb {
     width: 25px; /* Set a specific slider handle width */
     height: 25px; /* Slider handle height */
-    background: #04AA6D; /* Green background */
+    background: $highlight; /* Green background */
     cursor: pointer; /* Cursor on hover */
   }

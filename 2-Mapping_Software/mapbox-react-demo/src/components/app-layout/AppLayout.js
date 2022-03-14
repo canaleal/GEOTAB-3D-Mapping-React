@@ -12,9 +12,10 @@ import PedestrianChart from "../visualizations/PedestrianChart";
 
 const { Header, Content, Sider } = Layout;
 const AppLayout = () => {
-  const [yearFilter, setYearFilter] = useState(2016);
+  const [yearFilter, setYearFilter] = useState(2018);
   const [civFilter, setCivFilter] = useState("Pedestrian");
   const [pedestrianFilter, setPedestrianFilter] = useState();
+  const sliderRef = useRef();
 
   const handleCivFilterChange = (e) => {
     setCivFilter(e.target.value);
@@ -24,6 +25,12 @@ const AppLayout = () => {
     setPedestrianFilter(e.target.value);
   };
 
+  const handleYearFilterChange = () =>{
+    const year = sliderRef.current.value;
+    setYearFilter(year);
+ 
+  }
+
   return (
     <Layout className="h-screen">
       <BlackBar />
@@ -31,8 +38,8 @@ const AppLayout = () => {
         <Menu style={{backgroundColor: "#F8F8F8"}} mode="horizontal" defaultSelectedKeys={["1"]}>
           <Menu.Item key="1">Civilians</Menu.Item>
           <Menu.Item key="2" disabled>Road Conditions</Menu.Item>
-          <Menu.Item key="2" disabled>Tree Canopy</Menu.Item>
-          <Menu.Item key="2" disabled>Toppled Bins</Menu.Item>
+          <Menu.Item key="3" disabled>Tree Canopy</Menu.Item>
+          <Menu.Item key="4" disabled>Toppled Bins</Menu.Item>
         </Menu>
       </Header>
 
@@ -102,11 +109,11 @@ const AppLayout = () => {
 
         <Layout>
           <Content className="relative">
-            <Map time={yearFilter} />
+            <Map year={yearFilter} />
 
             <div className="px-20 pb-8 box-border absolute bottom-4 w-full">
               <div className="bg-black/70 px-7 pt-7 pb-3 rounded-md">
-                <TimeSlider value={yearFilter} onSliderChange={(year)=>{setYearFilter(year)}}/>
+                <TimeSlider value={yearFilter} onSliderChange={handleYearFilterChange} sliderRef={sliderRef}/>
               </div>
             </div>
           </Content>
