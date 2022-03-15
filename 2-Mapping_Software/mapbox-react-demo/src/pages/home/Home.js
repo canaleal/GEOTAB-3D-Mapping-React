@@ -16,7 +16,7 @@ import Header from '../../components/Header';
 import AboutModal from '../../components/AboutModal';
 import HelpModal from '../../components/HelpModal';
 import Footer from '../../components/Footer';
-import Streetview from './components/streetview/Streetview';
+import Streetview from './components/streetview/streetview';
 
 const Home = () => {
 
