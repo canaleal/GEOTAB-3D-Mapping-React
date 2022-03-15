@@ -52,6 +52,11 @@ const Home = () => {
 
   //Timer details
   const [isTimerActive, setIsTimerActive] = useState(false);
+
+  useEffect((
+    
+  )=> {console.log(cityId)}, cityId)
+
   useEffect(() => {
     console.log(city)
     setMapBounderies([

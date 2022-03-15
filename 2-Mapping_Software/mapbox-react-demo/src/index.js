@@ -39,16 +39,13 @@ library.add(
 );
 
 const rootElement = document.getElementById("root");
-const UniqComponent = () => {
-  const uniqId = Math.floor(Math.random(1000)); // may be carId
-  return <div key={uniqId} />
-}
+
 render(
   <BrowserRouter>
     <Routes>
       <Route exact path="/" element={<App />}>
-        <Route index element={<Home />} />
-        <Route path=":cityId" element={<Home />} />
+        <Route index element={<Home/>} />
+        <Route path=":cityId" element={<Home/>} />
         <Route path="*" element={<Error />} />
       </Route>
     </Routes>
