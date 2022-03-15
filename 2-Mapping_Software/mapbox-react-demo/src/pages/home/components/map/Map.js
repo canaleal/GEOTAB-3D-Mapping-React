@@ -307,7 +307,7 @@ const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, laye
         .addTo(map.current);
 
       //If the user clicks a point save it 
-      pointOfInterestHandler(e.features[0]);
+      pointOfInterestHandler(e.features[0].properties);
     });
 
     // Change the cursor to a pointer when the mouse is over the places layer.

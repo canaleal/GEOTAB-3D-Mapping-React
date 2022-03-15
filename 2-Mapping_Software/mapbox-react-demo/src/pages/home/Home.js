@@ -16,6 +16,7 @@ import Header from '../../components/Header';
 import AboutModal from '../../components/AboutModal';
 import HelpModal from '../../components/HelpModal';
 import Footer from '../../components/Footer';
+import Streetview from './components/streetview/Streetview';
 
 const Home = () => {
 
@@ -173,16 +174,16 @@ const Home = () => {
 
 
       <Header city={'Kingston'} />
-      
+
       <Cover coverRef={coverRef} />
       <AboutModal aboutModalRef={aboutModalRef} closeModalHandler={closeModalHandler} />
       <HelpModal helpModalRef={helpModalRef} closeModalHandler={closeModalHandler} />
       <LayerModal layerModalRef={layerModalRef} closeModalHandler={closeModalHandler} staticLayers={layers.filter((item) => item.isDynamic == false)} dynamicLayers={layers.filter((item) => item.isDynamic == true)} layerButtonHandler={layerButtonHandler} />
 
-     
+
       <div className="px-5 py-5" >
 
-        
+
 
         <div className="grid grid-cols-4 grid-row-3 gap-4 ">
 
@@ -206,7 +207,7 @@ const Home = () => {
           <div className='col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative' >
             <Map mapStyle={mapStyle} mapBounderies={mapBounderies} lng={lng} lat={lat} zoom={zoom} years={years} currentYear={currentYear} layers={layers} pointOfInterestHandler={pointOfInterestHandler} />
 
-          
+
 
             <div className="absolute bottom-10 px-20 box-border  w-full">
               <div className="bg-black px-10 py-5  rounded-lg">
@@ -225,15 +226,34 @@ const Home = () => {
 
 
           <div className='col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left'>
-                <p className="font-bold">Year - {currentYear}</p>
-                <AutoPlayButton isTimerActive={isTimerActive} timerToggleHandler={timerToggleHandler} timerResetHandler={timerResetHandler} />
-              
+            <p className="font-bold">Year - {currentYear}</p>
+            <AutoPlayButton isTimerActive={isTimerActive} timerToggleHandler={timerToggleHandler} timerResetHandler={timerResetHandler} />
+
           </div>
 
         </div>
+
+
+
+        <div className="grid grid-cols-4 grid-row-3 gap-4 ">
+
+          <div className='col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left'>
+            <p className="font-bold">Point Of Interest</p>
+            {
+              pointOfInterest != null?
+              <Streetview pointOfInterest={pointOfInterest}/>
+              :
+              <span></span>
+            }
+           
+          </div>
+
+        </div>
+
+
       </div>
 
-      <Footer showModalHandler={showModalHandler} aboutModalRef={aboutModalRef} helpModalRef={helpModalRef} />      
+      <Footer showModalHandler={showModalHandler} aboutModalRef={aboutModalRef} helpModalRef={helpModalRef} />
     </Fragment>
 
   );
