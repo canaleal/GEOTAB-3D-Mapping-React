@@ -22,6 +22,7 @@ import {
   faPlay,
   faPause,
 } from "@fortawesome/free-solid-svg-icons";
+import LayerButton from "./pages/home/components/layer/LayerButton";
 
 //Add the icons to the library so they can be used in ever single component
 library.add(
@@ -38,10 +39,14 @@ library.add(
 );
 
 const rootElement = document.getElementById("root");
+const UniqComponent = () => {
+  const uniqId = Math.floor(Math.random(1000)); // may be carId
+  return <div key={uniqId} />
+}
 render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<App />}>
+      <Route exact path="/" element={<App />}>
         <Route index element={<Home />} />
         <Route path=":cityId" element={<Home />} />
         <Route path="*" element={<Error />} />
