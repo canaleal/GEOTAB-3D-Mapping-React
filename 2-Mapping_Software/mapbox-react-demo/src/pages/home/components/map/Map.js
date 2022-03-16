@@ -5,7 +5,7 @@ import pedestrians from "./data/transit-gtfs-stops-count.geojson";
 import buses from "./data/transit-gtfs-routes.geojson";
 
 import RoadProjects from './data/road-ahead-projects-under-construction.geojson';
-
+import Impediments from './data/impediments.geojson';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
@@ -139,8 +139,10 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
 
       add_terrain_layer();
       add_building_layer();
+      add_impediments_layer();
    
     }
+  
 
    
     
@@ -662,6 +664,77 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
 
 
   
+  }
+
+
+  const add_impediments_layer = () => {
+
+
+        map.current.addSource("ImpedimentsData", {
+          type: "geojson",
+          data: Impediments
+        });
+
+
+
+
+       
+
+        map.current.addLayer(
+          {
+            id: "ImpedimentsLayer",
+            type: "circle",
+            source: "ImpedimentsData",
+            minzoom: 7,
+            paint: {
+              // Size circle radius by earthquake magnitude and zoom level
+              'circle-radius': {
+                'base': 3,
+                'stops': [
+                  [12, 3],
+                  [22, 90]
+                ]
+              },
+              // Color circle by earthquake magnitude
+              "circle-color": 
+                'blue'
+              ,
+            
+            },
+          },
+          "waterway-label"
+        );
+
+
+        map.current.on('click', 'ImpedimentsLayer', (e) => {
+          // Copy coordinates array.
+          const coordinates = e.features[0].geometry.coordinates.slice();
+          const description = `
+            
+            <span class="block">${e.features[0].properties.City}</span>
+            <span class="block">${e.features[0].properties.County}</span>
+            <sapn  class="block">${e.features[0].properties.State}</sapn>
+            <sapn  class="block">${e.features[0].properties.Country}</sapn>
+            <sapn  class="block">${e.features[0].properties.AvgAcceleration}</sapn>
+           
+            `
+
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+
+          new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(description)
+            .addTo(map.current);
+
+          
+
+        });
+       
+
+      
   }
 
 

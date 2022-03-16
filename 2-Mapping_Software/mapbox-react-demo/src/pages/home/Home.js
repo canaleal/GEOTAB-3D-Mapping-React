@@ -208,6 +208,16 @@ const Home = () => {
           imgPath: "Buildings.JPG",
           showButton: true,
           icon: "fa-building",
+        },
+        {
+          id: 1,
+          layer: "Road Impediments",
+          isOn: true,
+          isDynamic: false,
+          layerName: "ImpedimentsLayer",
+          imgPath: "Buildings.JPG",
+          showButton: true,
+          icon: "fa-building",
         }
 
       ]);
