@@ -3,6 +3,10 @@ import { useRef, useState, useEffect } from "react";
 import boundary from "./data/city-neighbourhoods.geojson";
 import pedestrians from "./data/transit-gtfs-stops-count.geojson";
 import buses from "./data/transit-gtfs-routes.geojson";
+
+import RoadProjects from './data/road-ahead-projects-under-construction.geojson';
+
+
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
@@ -11,12 +15,12 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, layers, pointOfInterestHandler }) => {
+const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, layers, pointOfInterestHandler }) => {
 
   const mapContainerRef = useRef(null);
   const map = useRef(null);
 
-  
+
   // Initialize map when component mounts
   useEffect(() => {
 
@@ -26,7 +30,7 @@ const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, laye
       style: `mapbox://styles/mapbox/${mapStyle}`,
       center: [lng, lat],
       zoom: zoom,
-     
+
     })
 
     map.current.on('load', () => {
@@ -61,7 +65,7 @@ const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, laye
   }
 
 
-  const add_map_sources = () =>{
+  const add_map_sources = () => {
     //Add 3D terrain and Skybox
     map.current.addSource('mapbox-dem', {
       'type': 'raster-dem',
@@ -83,22 +87,22 @@ const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, laye
     });
 
 
-    let mygeojson = {"type": "FeatureCollection", "features": []}
+    let mygeojson = { "type": "FeatureCollection", "features": [] }
     fetch('https://opendatakingston.cityofkingston.ca/api/records/1.0/search/?dataset=capital-planning-points&q=&rows=2000&sort=-capital_program_point&facet=capital_program_point&facet=program_subclass&facet=project_title&facet=project_description&facet=project_planning_from&facet=project_planning_to&facet=planned_construction_from&facet=planned_construction_to&facet=construction_completion_from&facet=construction_completion_to')
       .then(response => response.json())
       .then(data => {
 
 
 
-        for(let point of data.records){
+        for (let point of data.records) {
           let coordinate = [parseFloat(point.geometry.coordinates[0]), parseFloat(point.geometry.coordinates[1])];
           let properties = point.fields;
-          
-          let feature = {"type": "Feature", "geometry": {"type": "Point", "coordinates": coordinate}, "properties": properties}
+
+          let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
           mygeojson.features.push(feature);
         }
 
-     
+
         map.current.addSource("CityData", {
           type: "geojson",
           data: mygeojson
@@ -113,21 +117,40 @@ const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, laye
 
   const add_map_layers = () => {
 
-    //Add layers
-    add_terrain_layer();
-    add_building_layer();
-    add_boundry_layer();
-    add_pedestrian_layer();
-    add_bus_route_layer();
-    add_city_planning_layer();
-    //add_vancouver_trafficCamera_layer();
+    if(cityId == 0){
+        //Add layers
+        add_terrain_layer();
+        add_building_layer();
+        add_boundry_layer();
+        add_pedestrian_layer();
+        add_bus_route_layer();
+        add_city_planning_layer();
+    }
+
+    else if (cityId == 1){
+
+      add_terrain_layer();
+      add_building_layer();
+      add_vancouver_trafficCamera_layer();
+      add_vancouver_intersection_layer();
+      add_vancouver_development_layer();
+    }
+    else if (cityId == 2){
+
+      add_terrain_layer();
+      add_building_layer();
+   
+    }
+
+   
+    
 
     //Reset the map size so it goes into full width and height
     map.current.resize();
   }
 
   const add_terrain_layer = () => {
-    
+
     // add the DEM source as a terrain layer with exaggerated height
     map.current.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
 
@@ -141,7 +164,7 @@ const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, laye
         'sky-atmosphere-sun-intensity': 15
       }
     });
-    
+
   }
 
 
@@ -227,7 +250,7 @@ const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, laye
   }
 
   const add_pedestrian_layer = () => {
-   
+
     map.current.addLayer(
       {
         id: "PedestriansLayer",
@@ -336,7 +359,7 @@ const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, laye
 
   const add_bus_route_layer = () => {
     //Create the roads under development layer
-    
+
     map.current.addLayer({
       'id': 'BuseRoutesLayer',
       'type': 'line',
@@ -354,166 +377,171 @@ const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, laye
 
   const add_city_planning_layer = () => {
 
-    
 
-        map.current.addLayer(
-          {
-            id: "CityPlanningLayer",
-            type: "circle",
-            source: "CityData",
-            minzoom: 7,
-            paint: {
-              // Size circle radius by earthquake magnitude and zoom level
-              'circle-radius': {
-                'base': 6,
-                'stops': [
-                [12, 6],
-                [22, 180]
-                ]
-                },
-              // Color circle by earthquake magnitude
-              "circle-color": [
-                'match',
-                ['get', 'capital_program_point'],
-                'Parks and Development',
-                '#52fcc3',
-                'Utilties Rehabilitation',
-                '#223b53',
-                'Intersection And Crossing Improvements',
-                '#e55e5e',
-                'Storm System Improvements',
-                '#3bb2d0',
-                '#ccc'  /* other */ 
-              ],
-              "circle-stroke-color": "white",
-              "circle-stroke-width": 1,
-              // Transition from heatmap to circle layer by zoom level
-              "circle-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0, 8, 1],
-            },
+
+    map.current.addLayer(
+      {
+        id: "CityPlanningLayer",
+        type: "circle",
+        source: "CityData",
+        minzoom: 7,
+        paint: {
+          // Size circle radius by earthquake magnitude and zoom level
+          'circle-radius': {
+            'base': 6,
+            'stops': [
+              [12, 6],
+              [22, 180]
+            ]
           },
-          "waterway-label"
-        );
+          // Color circle by earthquake magnitude
+          "circle-color": [
+            'match',
+            ['get', 'capital_program_point'],
+            'Parks and Development',
+            '#52fcc3',
+            'Utilties Rehabilitation',
+            '#223b53',
+            'Intersection And Crossing Improvements',
+            '#e55e5e',
+            'Storm System Improvements',
+            '#3bb2d0',
+            '#ccc'  /* other */
+          ],
+          "circle-stroke-color": "white",
+          "circle-stroke-width": 1,
+          // Transition from heatmap to circle layer by zoom level
+          "circle-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0, 8, 1],
+        },
+      },
+      "waterway-label"
+    );
 
-        map.current.setLayoutProperty("CityPlanningLayer", 'visibility', 'none');
+    map.current.setLayoutProperty("CityPlanningLayer", 'visibility', 'none');
 
 
 
 
-        const small_popup = new mapboxgl.Popup({
-          closeButton: false,
-          closeOnClick: false
-        });
+    const small_popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false
+    });
 
-        // When a click event occurs on a feature in the places layer, open a popup at the
-        // location of the feature, with description HTML from its properties.
-        map.current.on('click', 'CityPlanningLayer', (e) => {
-          // Copy coordinates array.
-          const coordinates = e.features[0].geometry.coordinates.slice();
-          const description = `<span>${e.features[0].properties.project_description}</span>`
-    
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-    
-          small_popup.remove();
-          new mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setHTML(description)
-            .addTo(map.current);
-    
-          //If the user clicks a point save it 
-          pointOfInterestHandler(e.features[0]);
-        });
-    
-        // Change the cursor to a pointer when the mouse is over the places layer.
-        map.current.on('mouseenter', 'CityPlanningLayer', (e) => {
-          map.current.getCanvas().style.cursor = 'pointer';
-          const coordinates = e.features[0].geometry.coordinates.slice();
-          const description = `<span>${e.features[0].properties.project_description}</span>`
+    // When a click event occurs on a feature in the places layer, open a popup at the
+    // location of the feature, with description HTML from its properties.
+    map.current.on('click', 'CityPlanningLayer', (e) => {
+      // Copy coordinates array.
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      const description = `<span>${e.features[0].properties.project_description}</span>`
 
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-    
-          small_popup
-            .setLngLat(coordinates)
-            .setHTML(description)
-            .addTo(map.current);
-    
-        });
-    
-        // Change it back to a pointer when it leaves.
-        map.current.on('mouseleave', 'CityPlanningLayer', () => {
-          map.current.getCanvas().style.cursor = '';
-          small_popup.remove();
-        });
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+
+      small_popup.remove();
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(map.current);
+
+
+       
+     
+    });
+
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    map.current.on('mouseenter', 'CityPlanningLayer', (e) => {
+      map.current.getCanvas().style.cursor = 'pointer';
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      const description = `<span>${e.features[0].properties.project_description}</span>`
+
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+
+      small_popup
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(map.current);
+
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.current.on('mouseleave', 'CityPlanningLayer', () => {
+      map.current.getCanvas().style.cursor = '';
+      small_popup.remove();
+    });
 
   }
 
 
 
-  const add_vancouver_trafficCamera_layer = () =>{
+  const add_vancouver_trafficCamera_layer = () => {
 
 
 
-      map.current.loadImage(
+    map.current.loadImage(
       'http://cdn.onlinewebfonts.com/svg/img_113951.png',
       (error, image) => {
-      if (error) throw error;
-       
-          // Add the image to the map style.
-          map.current.addImage('camera', image);
+        if (error) throw error;
+
+        // Add the image to the map style.
+        map.current.addImage('camera', image);
 
 
 
-          let mygeojson = {"type": "FeatureCollection", "features": []}
-          fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174')
-            .then(response => response.json())
-            .then(data => {
-              
-                console.log(data)
-      
-      
-              for(let point of data.records){
-                let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
-                let properties = point.fields;
-                
-                let feature = {"type": "Feature", "geometry": {"type": "Point", "coordinates": coordinate}, "properties": properties}
-                mygeojson.features.push(feature);
+        let mygeojson = { "type": "FeatureCollection", "features": [] }
+        fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174')
+          .then(response => response.json())
+          .then(data => {
+
+            console.log(data)
+
+
+            for (let point of data.records) {
+              let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
+              let properties = point.fields;
+
+              let temp = [];
+              temp.push(coordinate[1])
+              temp.push(coordinate[0])
+              properties['stop_coordinates'] = temp.toString();
+              let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
+              mygeojson.features.push(feature);
+            }
+            console.log(mygeojson)
+
+
+            map.current.addSource("TrafficLightCameraData", {
+              type: "geojson",
+              data: mygeojson
+            });
+
+
+
+
+            map.current.addLayer({
+              'id': 'TrafficLightCameraLayer',
+              'type': 'symbol',
+              'source': 'TrafficLightCameraData',
+              'layout': {
+                'icon-image': 'camera',
+                'icon-size': 0.015,
+
+              },
+              'paint': {
+                "text-color": "#0000ff"
+
               }
-              console.log(mygeojson)
-      
-           
-              map.current.addSource("TrafficLightCameraData", {
-                type: "geojson",
-                data: mygeojson
-              });
-      
-              
-      
-      
-                map.current.addLayer({
-                  'id': 'TrafficLightCameraLayer',
-                  'type': 'symbol',
-                  'source': 'TrafficLightCameraData',
-                  'layout': {
-                      'icon-image': 'camera',
-                      'icon-size': 0.01,
-                      
-                  },
-                  'paint': {
-                      "text-color": "#0000ff"
-          
-                  }
-              });
+            });
 
 
 
 
-              map.current.on('click', 'TrafficLightCameraLayer', (e) => {
-                // Copy coordinates array.
-                const coordinates = e.features[0].geometry.coordinates.slice();
-                const description = `
+            map.current.on('click', 'TrafficLightCameraLayer', (e) => {
+              // Copy coordinates array.
+              const coordinates = e.features[0].geometry.coordinates.slice();
+              const description = `
                 
                 <span class="block">${e.features[0].properties.geo_local_area}</span>
                 <span class="block">${e.features[0].properties.mapid}</span>
@@ -522,38 +550,123 @@ const Map = ({ mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, laye
                 
                 
                 `
-          
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                  coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
-          
-               
-                new mapboxgl.Popup()
-                  .setLngLat(coordinates)
-                  .setHTML(description)
-                  .addTo(map.current);
-          
-  
-              });
-      
-              //map.current.setLayoutProperty("TrafficLightCameraLayer", 'visibility', 'none');
+
+              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+              }
+
+
+              new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+                 //If the user clicks a point save it 
+                   pointOfInterestHandler(e.features[0].properties);
+
+            });
+
+          })
+      });
+  }
+
+
+  const add_vancouver_intersection_layer = () => {
+
+    let mygeojson = { "type": "FeatureCollection", "features": [] }
+    fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-intersections&q=&rows=6105&facet=geo_local_area')
+      .then(response => response.json())
+      .then(data => {
+
+        console.log(data)
+
+
+        for (let point of data.records) {
+          let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
+          let properties = point.fields;
+
+          let temp = [];
+          temp.push(coordinate[1])
+          temp.push(coordinate[0])
+          properties['stop_coordinates'] = temp.toString();
+          let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
+          mygeojson.features.push(feature);
+        }
+        console.log(mygeojson)
+
+
+        map.current.addSource("IntersectionData", {
+          type: "geojson",
+          data: mygeojson
+        });
+
+
+
+
+       
+
+        map.current.addLayer(
+          {
+            id: "IntersectionLayer",
+            type: "circle",
+            source: "IntersectionData",
+            minzoom: 7,
+            paint: {
+              // Size circle radius by earthquake magnitude and zoom level
+              'circle-radius': {
+                'base': 3,
+                'stops': [
+                  [12, 3],
+                  [22, 90]
+                ]
+              },
+              // Color circle by earthquake magnitude
+              "circle-color": 
+                'red'
+              ,
+            
+            },
+          },
+          "waterway-label"
+        );
+
+        map.current.setLayoutProperty("IntersectionLayer", 'visibility', 'none');
 
 
       })
-
-
-
-   
-
-
-
-
-
-
-      });
-
-
   }
+
+
+
+
+
+  const add_vancouver_development_layer = () => {
+
+    map.current.addSource('RoadProjectsData', {
+      'type': 'geojson',
+      'data': RoadProjects
+  });
+  map.current.addLayer({
+      'id': 'RoadProjectsUnderConstructionLayer',
+      'type': 'line',
+      'source': 'RoadProjectsData',
+      'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+      },
+      'paint': {
+          'line-color': '#000', //Specify road colour
+          'line-width': 3 //Specify width of the road
+      }
+  });
+
+
+  
+  }
+
+
+
+  
 
 
 

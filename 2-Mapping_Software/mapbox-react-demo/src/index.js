@@ -22,7 +22,8 @@ import {
   faPlay,
   faPause,
 } from "@fortawesome/free-solid-svg-icons";
-import LayerButton from "./pages/home/components/layer/LayerButton";
+import SelectCity from "./pages/selectCity/SelectCity";
+
 
 //Add the icons to the library so they can be used in ever single component
 library.add(
@@ -44,7 +45,7 @@ render(
   <BrowserRouter>
     <Routes>
       <Route exact path="/" element={<App />}>
-        <Route index element={<Home/>} />
+        <Route index element={<SelectCity/>} />
         <Route path=":cityId" element={<Home/>} />
         <Route path="*" element={<Error />} />
       </Route>

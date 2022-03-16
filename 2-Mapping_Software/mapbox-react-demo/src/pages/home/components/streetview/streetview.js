@@ -29,4 +29,4 @@ const Streetview = (pointOfInterest) => {
   )
 }
 
-export default Streetview
+export default Streetview;
