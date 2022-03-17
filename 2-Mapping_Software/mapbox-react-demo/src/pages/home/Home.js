@@ -27,7 +27,7 @@ const Home = () => {
 
   const [isLoaded, setIsLoaded] = useState(false);
 
-  //Popuv and black cover
+  //Popup and black cover
   const layerModalRef = useRef();
 
   //References for each modal
@@ -38,7 +38,7 @@ const Home = () => {
 
   // Initial Map Details
   const [city, setCity] = useState();
-  const [mapBounderies, setMapBounderies] = useState([]);
+  const [mapBoundaries, setMapBoundaries] = useState([]);
   const [lng, setLng] = useState();
   const [lat, setLat] = useState();
 
@@ -64,7 +64,7 @@ const Home = () => {
     if (cityId == 0) {
       setCity('Kingston');
 
-      setMapBounderies([
+      setMapBoundaries([
         [-76.788, 44.107], // Southwest coordinates
         [-76.17, 44.52], // Northeast coordinates
       ]);
@@ -105,7 +105,7 @@ const Home = () => {
           layer: "Bus Routes",
           isOn: false,
           isDynamic: false,
-          layerName: "BuseRoutesLayer",
+          layerName: "BusRoutesLayer",
           imgPath: "BusRoutes.JPG",
           showButton: false,
           icon: "fa-bus",
@@ -132,7 +132,7 @@ const Home = () => {
     else if (cityId == 1) {
       setCity('Vancouver');
 
-      setMapBounderies([
+      setMapBoundaries([
         [-76.788, 44.107], // Southwest coordinates
         [-76.17, 44.52], // Northeast coordinates
       ]);
@@ -193,7 +193,7 @@ const Home = () => {
     else if (cityId == 2) {
       setCity('Chicago');
 
-      setMapBounderies([
+      setMapBoundaries([
         [-76.788, 44.107], // Southwest coordinates
         [-76.17, 44.52], // Northeast coordinates
       ]);
@@ -260,7 +260,7 @@ const Home = () => {
     }
 
     //Remove point of interest if the pedestrian layer is turned off
-    if (item.id === 3) {
+    if (item.layerName === 'PedestriansLayer') {
       setPointOfInterest(null);
     }
 
@@ -318,7 +318,7 @@ const Home = () => {
 
   return (
     <Fragment>
-      <Header city={"Kingston"} />
+      <Header city={city} />
 
       <Cover coverRef={coverRef} />
       <AboutModal
@@ -360,7 +360,7 @@ const Home = () => {
                 size="lg"
                 width={"2rem"}
               />
-              Add Layers
+              Add/Remove Layers
             </button>
           </div>
 
@@ -373,7 +373,7 @@ const Home = () => {
               <Map
                 cityId={cityId}
                 mapStyle={mapStyle}
-                mapBounderies={mapBounderies}
+                mapBoundaries={mapBoundaries}
                 lng={lng}
                 lat={lat}
                 zoom={zoom}
@@ -420,7 +420,7 @@ const Home = () => {
 
         {pointOfInterest != null ? (
 
-          <div className="grid grid-cols-4 grid-row-3 gap-4 ">
+          <div className="grid grid-cols-4 grid-row-3 gap-4 my-4">
             <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
               <p className="font-bold">Point Of Interest</p>
 
