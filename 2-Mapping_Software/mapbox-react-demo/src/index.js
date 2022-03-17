@@ -8,6 +8,9 @@ import Home from "./pages/home/Home.js";
 import Error from "./pages/error/Error.js";
 import reportWebVitals from "./reportWebVitals";
 
+import SelectCity from "./pages/selectCity/SelectCity";
+
+
 //Import font awesome and some icons
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -22,7 +25,7 @@ import {
   faPlay,
   faPause,
 } from "@fortawesome/free-solid-svg-icons";
-import SelectCity from "./pages/selectCity/SelectCity";
+
 
 
 //Add the icons to the library so they can be used in ever single component

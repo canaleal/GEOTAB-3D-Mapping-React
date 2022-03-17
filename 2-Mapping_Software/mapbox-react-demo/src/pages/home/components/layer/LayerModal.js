@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import ModalListItem from './ModalListItem'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -21,28 +21,37 @@ const LayerModal = ({ layerModalRef, closeModalHandler, staticLayers, dynamicLay
             </div>
 
 
+            {staticLayers.length > 0 ?
+                <>
+                    <hr className='my-5'></hr>
+                    <p className="text-xl font-bold">Static</p>
+                    <div className='grid grid-cols-4  gap-4'>
+                        {staticLayers.map((item) => {
+                            return (
+                                <ModalListItem key={item.id} item={item} layerButtonHandler={layerButtonHandler} />
+                            )
+                        })}
+                    </div>
+                </>
+                :
+                <></>
+            }
 
-            <hr className='my-5'></hr>
-            <p className="text-xl font-bold">Static</p>
-            <div className='grid grid-cols-4  gap-4'>
-                {staticLayers.map((item) => {
-                    return (
-                        <ModalListItem key={item.id} item={item} layerButtonHandler={layerButtonHandler} />
-                    )
-                })}
-            </div>
-
-
-
-            <hr className='my-5'></hr>
-            <p className="text-xl font-bold">Dynamic</p>
-            <div className='grid grid-cols-4  gap-4'>
-                {dynamicLayers.map((item) => {
-                    return (
-                        <ModalListItem key={item.id} item={item} layerButtonHandler={layerButtonHandler} />
-                    )
-                })}
-            </div>
+            {dynamicLayers.length > 0 ?
+                <>
+                    <hr className='my-5'></hr>
+                    <p className="text-xl font-bold">Dynamic</p>
+                    <div className='grid grid-cols-4  gap-4'>
+                        {dynamicLayers.map((item) => {
+                            return (
+                                <ModalListItem key={item.id} item={item} layerButtonHandler={layerButtonHandler} />
+                            )
+                        })}
+                    </div>
+                </>
+                :
+                <></>
+            }
 
 
         </div>

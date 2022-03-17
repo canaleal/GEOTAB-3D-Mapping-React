@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const ModalListItem = ({ item, layerButtonHandler }) => {
     return (
-        <div key={item.id} className="col-span-4 md:col-span-1  rounded overflow-hidden shadow-lg">
+        <div  className="col-span-4 md:col-span-1  rounded overflow-hidden shadow-lg">
            
             <img className="w-full h-32 object-none" src={`http://localhost:3000/assets/images/${item.imgPath}`} alt="Layer Image" />
         

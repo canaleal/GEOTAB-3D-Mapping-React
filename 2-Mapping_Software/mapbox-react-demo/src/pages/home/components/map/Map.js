@@ -15,7 +15,7 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYear, layers, pointOfInterestHandler }) => {
+const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, layers, pointOfInterestHandler }) => {
 
   const mapContainerRef = useRef(null);
   const map = useRef(null);
@@ -38,8 +38,17 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
       //Add controls like zoom in and out
       add_map_controls();
 
-      //Add the sources and then the layers
-      add_map_sources();
+
+      if (cityId == 0) {
+        add_kingston_map_sources();
+      }
+      else if (cityId == 1) {
+        add_vancouver_map_sources();
+      }
+      else if (cityId == 2) {
+        add_chicago_data();
+      }
+
 
 
 
@@ -65,8 +74,9 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
   }
 
 
-  const add_map_sources = () => {
-    //Add 3D terrain and Skybox
+  const add_kingston_map_sources = () => {
+
+
     map.current.addSource('mapbox-dem', {
       'type': 'raster-dem',
       'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
@@ -87,76 +97,168 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
     });
 
 
-    let mygeojson = { "type": "FeatureCollection", "features": [] }
+    let geojson = { "type": "FeatureCollection", "features": [] }
     fetch('https://opendatakingston.cityofkingston.ca/api/records/1.0/search/?dataset=capital-planning-points&q=&rows=2000&sort=-capital_program_point&facet=capital_program_point&facet=program_subclass&facet=project_title&facet=project_description&facet=project_planning_from&facet=project_planning_to&facet=planned_construction_from&facet=planned_construction_to&facet=construction_completion_from&facet=construction_completion_to')
       .then(response => response.json())
       .then(data => {
 
-
-
         for (let point of data.records) {
           let coordinate = [parseFloat(point.geometry.coordinates[0]), parseFloat(point.geometry.coordinates[1])];
           let properties = point.fields;
-
           let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
-          mygeojson.features.push(feature);
+          geojson.features.push(feature);
         }
 
 
         map.current.addSource("CityData", {
           type: "geojson",
-          data: mygeojson
+          data: geojson
         });
 
-        add_map_layers();
 
+        add_kingston_layers();
       });
+
+
+     
+
+  }
+
+  const add_vancouver_map_sources = () => {
+    map.current.addSource('mapbox-dem', {
+      'type': 'raster-dem',
+      'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+      'tileSize': 512,
+      'maxzoom': 14
+    });
+
+    map.current.addSource('RoadProjectsData', {
+      'type': 'geojson',
+      'data': RoadProjects
+    });
+
+
+
+    map.current.loadImage(
+      'http://cdn.onlinewebfonts.com/svg/img_113951.png',
+      (error, image) => {
+        if (error) throw error;
+
+        map.current.addImage('camera', image);
+
+        let geojson = { "type": "FeatureCollection", "features": [] }
+        fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174')
+          .then(response => response.json())
+          .then(data => {
+
+
+            for (let point of data.records) {
+              let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
+              let properties = point.fields;
+              let temp = [coordinate[1], coordinate[0]];
+              properties['stop_coordinates'] = temp.toString();
+              let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
+              geojson.features.push(feature);
+            }
+
+
+            map.current.addSource("TrafficLightCameraData", {
+              type: "geojson",
+              data: geojson
+            });
+
+          })
+      });
+
+
+
+    let geojson = { "type": "FeatureCollection", "features": [] }
+    fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-intersections&q=&rows=6105&facet=geo_local_area')
+      .then(response => response.json())
+      .then(data => {
+
+
+        for (let point of data.records) {
+          let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
+          let properties = point.fields;
+          let temp = [coordinate[1], coordinate[0]];
+          properties['stop_coordinates'] = temp.toString();
+          let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
+          geojson.features.push(feature);
+        }
+        console.log(geojson)
+
+
+        map.current.addSource("IntersectionData", {
+          type: "geojson",
+          data: geojson
+        });
+
+
+        add_vancouver_layers()
+
+      })
 
 
   }
 
-  const add_map_layers = () => {
+  const add_chicago_data = () =>{
+    map.current.addSource('mapbox-dem', {
+      'type': 'raster-dem',
+      'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+      'tileSize': 512,
+      'maxzoom': 14
+    });
 
-    if(cityId == 0){
-        //Add layers
-        add_terrain_layer();
-        add_building_layer();
-        add_boundry_layer();
-        add_pedestrian_layer();
-        add_bus_route_layer();
-        add_city_planning_layer();
-    }
+    map.current.addSource("ImpedimentsData", {
+      type: "geojson",
+      data: Impediments
+    });
 
-    else if (cityId == 1){
+    add_chicago_layers();
+  }
 
-      add_terrain_layer();
-      add_building_layer();
-      add_vancouver_trafficCamera_layer();
-      add_vancouver_intersection_layer();
-      add_vancouver_development_layer();
-    }
-    else if (cityId == 2){
-
-      add_terrain_layer();
-      add_building_layer();
-      add_impediments_layer();
-   
-    }
-  
-
-   
-    
+  const add_kingston_layers = () =>{
+    //Add layers
+    add_terrain_layer();
+    add_building_layer();
+    add_boundary_layer();
+    add_pedestrian_layer();
+    add_bus_route_layer();
+    add_city_planning_layer();
 
     //Reset the map size so it goes into full width and height
     map.current.resize();
   }
 
+  const add_vancouver_layers = () =>{
+    //Add layers
+    add_terrain_layer();
+      add_building_layer();
+      add_vancouver_trafficCamera_layer();
+      add_vancouver_intersection_layer();
+      add_vancouver_development_layer();
+
+      //Reset the map size so it goes into full width and height
+    map.current.resize();
+  }
+
+  const add_chicago_layers = () =>{
+    //Add layers
+    add_terrain_layer();
+      add_building_layer();
+      add_chicago_impediments_layer();
+
+      //Reset the map size so it goes into full width and height
+    map.current.resize();
+  }
+
+  
+
   const add_terrain_layer = () => {
 
-    // add the DEM source as a terrain layer with exaggerated height
-    map.current.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
 
-    // add a sky layer that will show when the map is highly pitched
+    map.current.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
     map.current.addLayer({
       'id': 'sky',
       'type': 'sky',
@@ -218,26 +320,23 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
   }
 
 
-  const add_boundry_layer = () => {
+  const add_boundary_layer = () => {
     map.current.addSource("BoundaryData", {
       type: "geojson",
       data: boundary,
     })
 
-
-
-    // Add a new layer to visualize the bounderies.
     map.current.addLayer({
       id: "CityBoundaryLayer",
       type: "fill",
-      source: "BoundaryData", // reference the data source
+      source: "BoundaryData",
       layout: {},
       paint: {
-        "fill-color": ["get", "fill"], // blue color fill
-        "fill-opacity": 0.3, //Set opacity of the polygon
+        "fill-color": ["get", "fill"],
+        "fill-opacity": 0.3,
       },
     });
-    // Add a black outline around the polygon.
+
     map.current.addLayer({
       id: "outline",
       type: "line",
@@ -363,7 +462,7 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
     //Create the roads under development layer
 
     map.current.addLayer({
-      'id': 'BuseRoutesLayer',
+      'id': 'BusRoutesLayer',
       'type': 'line',
       'source': 'Buses',
       'layout': {
@@ -402,7 +501,7 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
             ['get', 'capital_program_point'],
             'Parks and Development',
             '#52fcc3',
-            'Utilties Rehabilitation',
+            'Utilities Rehabilitation',
             '#223b53',
             'Intersection And Crossing Improvements',
             '#e55e5e',
@@ -447,8 +546,8 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
         .addTo(map.current);
 
 
-       
-     
+
+
     });
 
     // Change the cursor to a pointer when the mouse is over the places layer.
@@ -482,160 +581,90 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
 
 
 
-    map.current.loadImage(
-      'http://cdn.onlinewebfonts.com/svg/img_113951.png',
-      (error, image) => {
-        if (error) throw error;
 
-        // Add the image to the map style.
-        map.current.addImage('camera', image);
+    map.current.addLayer({
+      'id': 'TrafficLightCameraLayer',
+      'type': 'symbol',
+      'source': 'TrafficLightCameraData',
+      'layout': {
+        'icon-image': 'camera',
+        'icon-size': 0.015,
 
+      },
+      'paint': {
+        "text-color": "#0000ff"
 
-
-        let mygeojson = { "type": "FeatureCollection", "features": [] }
-        fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174')
-          .then(response => response.json())
-          .then(data => {
-
-            console.log(data)
-
-
-            for (let point of data.records) {
-              let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
-              let properties = point.fields;
-
-              let temp = [];
-              temp.push(coordinate[1])
-              temp.push(coordinate[0])
-              properties['stop_coordinates'] = temp.toString();
-              let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
-              mygeojson.features.push(feature);
-            }
-            console.log(mygeojson)
-
-
-            map.current.addSource("TrafficLightCameraData", {
-              type: "geojson",
-              data: mygeojson
-            });
+      }
+    });
 
 
 
 
-            map.current.addLayer({
-              'id': 'TrafficLightCameraLayer',
-              'type': 'symbol',
-              'source': 'TrafficLightCameraData',
-              'layout': {
-                'icon-image': 'camera',
-                'icon-size': 0.015,
-
-              },
-              'paint': {
-                "text-color": "#0000ff"
-
-              }
-            });
-
-
-
-
-            map.current.on('click', 'TrafficLightCameraLayer', (e) => {
-              // Copy coordinates array.
-              const coordinates = e.features[0].geometry.coordinates.slice();
-              const description = `
+    map.current.on('click', 'TrafficLightCameraLayer', (e) => {
+      // Copy coordinates array.
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      const description = `
                 
                 <span class="block">${e.features[0].properties.geo_local_area}</span>
                 <span class="block">${e.features[0].properties.mapid}</span>
-                <sapn  class="block">${e.features[0].properties.name}</sapn>
+                <span  class="block">${e.features[0].properties.name}</span>
                 <a class="border  block w-full text-center p-3 my-1 rounded-md bg-blue-500 hover:bg-blue-700 color-white" href="${e.features[0].properties.url}" target="_blank" >Traffic Link</a>
                 
                 
                 `
 
-              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-              }
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
 
 
-              new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(description)
-                .addTo(map.current);
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(map.current);
 
-                 //If the user clicks a point save it 
-                   pointOfInterestHandler(e.features[0].properties);
+      //If the user clicks a point save it 
+      pointOfInterestHandler(e.features[0].properties);
 
-            });
+    });
 
-          })
-      });
+
   }
 
 
   const add_vancouver_intersection_layer = () => {
 
-    let mygeojson = { "type": "FeatureCollection", "features": [] }
-    fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-intersections&q=&rows=6105&facet=geo_local_area')
-      .then(response => response.json())
-      .then(data => {
-
-        console.log(data)
 
 
-        for (let point of data.records) {
-          let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
-          let properties = point.fields;
-
-          let temp = [];
-          temp.push(coordinate[1])
-          temp.push(coordinate[0])
-          properties['stop_coordinates'] = temp.toString();
-          let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
-          mygeojson.features.push(feature);
-        }
-        console.log(mygeojson)
-
-
-        map.current.addSource("IntersectionData", {
-          type: "geojson",
-          data: mygeojson
-        });
-
-
-
-
-       
-
-        map.current.addLayer(
-          {
-            id: "IntersectionLayer",
-            type: "circle",
-            source: "IntersectionData",
-            minzoom: 7,
-            paint: {
-              // Size circle radius by earthquake magnitude and zoom level
-              'circle-radius': {
-                'base': 3,
-                'stops': [
-                  [12, 3],
-                  [22, 90]
-                ]
-              },
-              // Color circle by earthquake magnitude
-              "circle-color": 
-                'red'
-              ,
-            
-            },
+    map.current.addLayer(
+      {
+        id: "IntersectionLayer",
+        type: "circle",
+        source: "IntersectionData",
+        minzoom: 7,
+        paint: {
+          // Size circle radius by earthquake magnitude and zoom level
+          'circle-radius': {
+            'base': 3,
+            'stops': [
+              [12, 3],
+              [22, 90]
+            ]
           },
-          "waterway-label"
-        );
+          // Color circle by earthquake magnitude
+          "circle-color":
+            'red'
+          ,
 
-        map.current.setLayoutProperty("IntersectionLayer", 'visibility', 'none');
+        },
+      },
+      "waterway-label"
+    );
+
+    map.current.setLayoutProperty("IntersectionLayer", 'visibility', 'none');
 
 
-      })
+    
   }
 
 
@@ -644,102 +673,98 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
 
   const add_vancouver_development_layer = () => {
 
-    map.current.addSource('RoadProjectsData', {
-      'type': 'geojson',
-      'data': RoadProjects
-  });
-  map.current.addLayer({
+
+    map.current.addLayer({
       'id': 'RoadProjectsUnderConstructionLayer',
       'type': 'line',
       'source': 'RoadProjectsData',
       'layout': {
-          'line-join': 'round',
-          'line-cap': 'round'
+        'line-join': 'round',
+        'line-cap': 'round'
       },
       'paint': {
-          'line-color': '#000', //Specify road colour
-          'line-width': 3 //Specify width of the road
+        'line-color': '#000', 
+        'line-width': 3 
       }
-  });
+    });
 
 
-  
+
   }
 
 
-  const add_impediments_layer = () => {
+  const add_chicago_impediments_layer = () => {
 
 
-        map.current.addSource("ImpedimentsData", {
-          type: "geojson",
-          data: Impediments
-        });
+    const layerName = 'ImpedimentsLayer'
+   
+    map.current.addLayer(
+      {
+        id: layerName,
+        type: "circle",
+        source: "ImpedimentsData",
+        minzoom: 7,
+        paint: {
 
-
-
-
-       
-
-        map.current.addLayer(
-          {
-            id: "ImpedimentsLayer",
-            type: "circle",
-            source: "ImpedimentsData",
-            minzoom: 7,
-            paint: {
-              // Size circle radius by earthquake magnitude and zoom level
-              'circle-radius': {
-                'base': 3,
-                'stops': [
-                  [12, 3],
-                  [22, 90]
-                ]
-              },
-              // Color circle by earthquake magnitude
-              "circle-color": 
-                'blue'
-              ,
-            
-            },
+          'circle-radius': {
+            'base': 5,
+      
+            'stops': [
+              [12, 5],
+              [22, 180]
+              ]
           },
-          "waterway-label"
-        );
+ 
+          "circle-color":
+            'blue'
+          ,
+        },
+      },
+      "waterway-label"
+    );
 
 
-        map.current.on('click', 'ImpedimentsLayer', (e) => {
-          // Copy coordinates array.
-          const coordinates = e.features[0].geometry.coordinates.slice();
-          const description = `
+    map.current.on('click', layerName, (e) => {
+      // Copy coordinates array.
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      const description = `
             
             <span class="block">${e.features[0].properties.City}</span>
             <span class="block">${e.features[0].properties.County}</span>
-            <sapn  class="block">${e.features[0].properties.State}</sapn>
-            <sapn  class="block">${e.features[0].properties.Country}</sapn>
-            <sapn  class="block">${e.features[0].properties.AvgAcceleration}</sapn>
+            <span class="block">${e.features[0].properties.State}</span>
+            <span class="block">${e.features[0].properties.Country}</span>
+            <span class="block">${e.features[0].properties.AvgAcceleration}</span>
            
             `
 
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(map.current);
+    });
 
 
-          new mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setHTML(description)
-            .addTo(map.current);
+    // Change the cursor to a pointer when the mouse is over the layer.
+    map.current.on('mouseenter', layerName, () => {
+      map.current.getCanvas().style.cursor = 'pointer';
+    });
 
-          
+    // Change it back to a pointer when it leaves.
+    map.current.on('mouseleave', 'ImpedimentsLayer', () => {
+      map.current.getCanvas().style.cursor = '';
+    });
 
-        });
-       
 
-      
+
   }
 
 
 
-  
+
 
 
 
@@ -758,7 +783,7 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
   }, [layers]);
 
 
-  //Fucntion is used to show or hide layers on map
+  //Function is used to show or hide layers on map
   const layerFilter = () => {
     //Show or hide layer if it's set to on/off
     layers.forEach(function (item) {
@@ -825,7 +850,7 @@ const Map = ({ cityId, mapStyle, mapBounderies, lng, lat, zoom, years, currentYe
 
 
   const switchLayer = () => {
-    map.current.once("styledata", add_map_sources);
+    map.current.once("styledata", add_kingston_map_sources);
     map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
   }
 

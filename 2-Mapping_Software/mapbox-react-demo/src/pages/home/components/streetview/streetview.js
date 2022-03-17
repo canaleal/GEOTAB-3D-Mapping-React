@@ -3,29 +3,27 @@ import React from 'react';
 import { useRef, useState, useEffect } from "react";
 
 const Streetview = (pointOfInterest) => {
-    const streetviewRef = useRef();
-    useEffect(() => {
-         
-          console.log(pointOfInterest.pointOfInterest);
-          const coords_raw = pointOfInterest.pointOfInterest['stop_coordinates'].split(",");
-          console.log(coords_raw)
-          const coordinates = coords_raw.map(Number);
-          console.log(coordinates)
 
-          var fenway = {lat: coordinates[0], lng: coordinates[1]};
-          var panorama = new google.maps.StreetViewPanorama(
-             document.getElementById("streeview"), {
-                position: fenway,
-                pov: {
-                  heading: 34,
-                  pitch: 10
-                }
-              });
-        
-    }, [pointOfInterest])
-    
+
+  useEffect(() => {
+
+    const coords_raw = pointOfInterest.pointOfInterest['stop_coordinates'].split(",");
+    const coordinates = coords_raw.map(Number);
+    const location_coordinates = { lat: coordinates[0], lng: coordinates[1] };
+
+    new google.maps.StreetViewPanorama(
+      document.getElementById("streetview"), {
+      position: location_coordinates,
+      pov: {
+        heading: 34,
+        pitch: 10
+      }
+    });
+
+  }, [pointOfInterest])
+
   return (
-    <div ref={streetviewRef} id="streeview" className='h-128 rounded-lg'></div>
+    <div id="streetview" className='h-128 rounded-lg'></div>
   )
 }
 
