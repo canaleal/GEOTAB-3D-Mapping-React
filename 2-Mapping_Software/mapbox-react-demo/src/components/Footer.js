@@ -18,9 +18,9 @@ const Footer = ({ city, showModalHandler, aboutModalRef, helpModalRef }) => {
 
 
         <div className='col-span-2 text-right'>
-          <button onClick={() => showModalHandler(aboutModalRef)} className="border border-white mr-5 w-16 rounded-md">
+          {/* <button onClick={() => showModalHandler(aboutModalRef)} className="border border-white mr-5 w-16 rounded-md">
             <span className='text-md weight-bold '>About</span>
-          </button>
+          </button> */}
           <button onClick={() => showModalHandler(helpModalRef)} className="border border-white w-16 rounded-md">
             <span className='text-md weight-bold   '>Help</span>
           </button>

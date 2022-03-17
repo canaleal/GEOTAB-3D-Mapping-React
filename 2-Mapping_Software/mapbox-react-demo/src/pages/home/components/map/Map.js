@@ -3,9 +3,14 @@ import { useRef, useState, useEffect } from "react";
 import boundary from "./data/city-neighbourhoods.geojson";
 import pedestrians from "./data/transit-gtfs-stops-count.geojson";
 import buses from "./data/transit-gtfs-routes.geojson";
-
+import vancouverBoundary from "./data/vancouverBoundary.geojson";
 import RoadProjects from './data/road-ahead-projects-under-construction.geojson';
+
+import chicagoBoundary from "./data/chicagoBoundary.geojson";
 import Impediments from './data/impediments.geojson';
+
+import franceBoundary from "./data/franceBoundary.geojson";
+import FranceImpediments from './data/franceImpediments.geojson';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
@@ -15,7 +20,7 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, layers, pointOfInterestHandler }) => {
+const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, layers, pointOfInterestHandler, chartDataHandler }) => {
 
   const mapContainerRef = useRef(null);
   const map = useRef(null);
@@ -39,16 +44,8 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
       add_map_controls();
 
 
-      if (cityId == 0) {
-        add_kingston_map_sources();
-      }
-      else if (cityId == 1) {
-        add_vancouver_map_sources();
-      }
-      else if (cityId == 2) {
-        add_chicago_data();
-      }
 
+      add_map_layers();
 
 
 
@@ -74,6 +71,22 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
   }
 
 
+
+  const add_map_layers = () => {
+    if (cityId == 0) {
+      add_kingston_map_sources();
+    }
+    else if (cityId == 1) {
+      add_vancouver_map_sources();
+    }
+    else if (cityId == 2) {
+      add_chicago_data();
+    }
+    else if (cityId == 3) {
+      add_france_data();
+    }
+  }
+
   const add_kingston_map_sources = () => {
 
 
@@ -84,12 +97,19 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
       'maxzoom': 14
     });
 
+    map.current.addSource("BoundaryData", {
+      type: "geojson",
+      data: boundary,
+    })
+
 
     map.current.addSource("PedestrianData", {
       type: "geojson",
       data: pedestrians,
     });
 
+
+    chartDataHandler('Data');
 
     map.current.addSource('Buses', {
       'type': 'geojson',
@@ -120,8 +140,6 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
       });
 
 
-     
-
   }
 
   const add_vancouver_map_sources = () => {
@@ -132,11 +150,18 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
       'maxzoom': 14
     });
 
+   
+
+
+    map.current.addSource("BoundaryData", {
+      type: "geojson",
+      data: vancouverBoundary,
+    })
+
     map.current.addSource('RoadProjectsData', {
       'type': 'geojson',
       'data': RoadProjects
     });
-
 
 
     map.current.loadImage(
@@ -172,12 +197,13 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
 
 
-    let geojson = { "type": "FeatureCollection", "features": [] }
+
+
     fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-intersections&q=&rows=6105&facet=geo_local_area')
       .then(response => response.json())
       .then(data => {
 
-
+        let geojson = { "type": "FeatureCollection", "features": [] }
         for (let point of data.records) {
           let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
           let properties = point.fields;
@@ -202,13 +228,22 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
   }
 
-  const add_chicago_data = () =>{
+
+
+
+  const add_chicago_data = () => {
     map.current.addSource('mapbox-dem', {
       'type': 'raster-dem',
       'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
       'tileSize': 512,
       'maxzoom': 14
     });
+
+    map.current.addSource("BoundaryData", {
+      type: "geojson",
+      data: chicagoBoundary,
+    })
+
 
     map.current.addSource("ImpedimentsData", {
       type: "geojson",
@@ -218,7 +253,33 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
     add_chicago_layers();
   }
 
-  const add_kingston_layers = () =>{
+
+  const add_france_data = () =>{
+    map.current.addSource('mapbox-dem', {
+      'type': 'raster-dem',
+      'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+      'tileSize': 512,
+      'maxzoom': 14
+    });
+
+
+    map.current.addSource("BoundaryData", {
+      type: "geojson",
+      data: franceBoundary,
+    })
+
+    
+
+    map.current.addSource("ImpedimentsData", {
+      type: "geojson",
+      data: FranceImpediments,
+    })
+    
+
+    add_france_layers();
+  }
+
+  const add_kingston_layers = () => {
     //Add layers
     add_terrain_layer();
     add_building_layer();
@@ -231,29 +292,44 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
     map.current.resize();
   }
 
-  const add_vancouver_layers = () =>{
+  const add_vancouver_layers = () => {
     //Add layers
     add_terrain_layer();
-      add_building_layer();
-      add_vancouver_trafficCamera_layer();
-      add_vancouver_intersection_layer();
-      add_vancouver_development_layer();
+    add_building_layer();
+    add_boundary_layer();
+    add_vancouver_trafficCamera_layer();
+    add_vancouver_intersection_layer();
+    add_vancouver_development_layer();
 
-      //Reset the map size so it goes into full width and height
+    //Reset the map size so it goes into full width and height
     map.current.resize();
   }
 
-  const add_chicago_layers = () =>{
+  const add_chicago_layers = () => {
     //Add layers
     add_terrain_layer();
-      add_building_layer();
-      add_chicago_impediments_layer();
+    add_building_layer();
+    add_boundary_layer();
+    add_impediments_layer();
 
-      //Reset the map size so it goes into full width and height
+    //Reset the map size so it goes into full width and height
+    map.current.resize();
+  }
+
+  const add_france_layers = () => {
+    //Add layers
+    add_terrain_layer();
+    add_building_layer();
+    add_boundary_layer();
+    add_impediments_layer();
+
+    //Reset the map size so it goes into full width and height
     map.current.resize();
   }
 
   
+
+
 
   const add_terrain_layer = () => {
 
@@ -321,19 +397,27 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
 
   const add_boundary_layer = () => {
-    map.current.addSource("BoundaryData", {
-      type: "geojson",
-      data: boundary,
-    })
+
+
+
+
+
+    const layerName = 'CityBoundaryLayer'
 
     map.current.addLayer({
-      id: "CityBoundaryLayer",
+      id: layerName,
       type: "fill",
       source: "BoundaryData",
       layout: {},
       paint: {
         "fill-color": ["get", "fill"],
-        "fill-opacity": 0.3,
+        'fill-opacity': [
+          'case',
+          ['boolean', ['feature-state', 'hover'], false],
+          0.8,
+          0.5
+        ]
+
       },
     });
 
@@ -348,13 +432,46 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
       },
     });
 
+
+    let hoveredStateId = null;
+    // When the user moves their mouse over the state-fill layer, we'll update the
+    // feature state for the feature under the mouse.
+    map.current.on('mousemove', layerName, (e) => {
+      if (e.features.length > 0) {
+        if (hoveredStateId !== null) {
+          map.current.setFeatureState(
+            { source: 'BoundaryData', id: hoveredStateId },
+            { hover: false }
+          );
+        }
+        console.log(e.features[0])
+        hoveredStateId = e.features[0].id;
+        map.current.setFeatureState(
+          { source: 'BoundaryData', id: hoveredStateId },
+          { hover: true }
+        );
+      }
+    });
+
+    // When the mouse leaves the state-fill layer, update the feature state of the
+    // previously hovered feature.
+    map.current.on('mouseleave', layerName, () => {
+      if (hoveredStateId !== null) {
+        map.current.setFeatureState(
+          { source: 'BoundaryData', id: hoveredStateId },
+          { hover: false }
+        );
+      }
+      hoveredStateId = null;
+    });
+
   }
 
   const add_pedestrian_layer = () => {
-
+    const layerName = 'PedestriansLayer'
     map.current.addLayer(
       {
-        id: "PedestriansLayer",
+        id: layerName,
         type: "circle",
         source: "PedestrianData",
         minzoom: 7,
@@ -410,7 +527,7 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
     });
     // When a click event occurs on a feature in the places layer, open a popup at the
     // location of the feature, with description HTML from its properties.
-    map.current.on('click', 'PedestriansLayer', (e) => {
+    map.current.on('click', layerName, (e) => {
       // Copy coordinates array.
       const coordinates = e.features[0].geometry.coordinates.slice();
       const description = `
@@ -435,7 +552,7 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
     });
 
     // Change the cursor to a pointer when the mouse is over the places layer.
-    map.current.on('mouseenter', 'PedestriansLayer', (e) => {
+    map.current.on('mouseenter', layerName, (e) => {
       map.current.getCanvas().style.cursor = 'pointer';
       const coordinates = e.features[0].geometry.coordinates.slice();
       const description = `<span>People (AVG/HR) : ${e.features[0].properties.count}</span>`
@@ -452,7 +569,7 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
     });
 
     // Change it back to a pointer when it leaves.
-    map.current.on('mouseleave', 'PedestriansLayer', () => {
+    map.current.on('mouseleave', layerName, () => {
       map.current.getCanvas().style.cursor = '';
       small_popup.remove();
     });
@@ -460,9 +577,9 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
   const add_bus_route_layer = () => {
     //Create the roads under development layer
-
+    const layerName = 'BusRoutesLayer'
     map.current.addLayer({
-      'id': 'BusRoutesLayer',
+      'id': layerName,
       'type': 'line',
       'source': 'Buses',
       'layout': {
@@ -478,11 +595,11 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
   const add_city_planning_layer = () => {
 
-
+    const layerName = 'CityPlanningLayer'
 
     map.current.addLayer(
       {
-        id: "CityPlanningLayer",
+        id: layerName,
         type: "circle",
         source: "CityData",
         minzoom: 7,
@@ -518,7 +635,7 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
       "waterway-label"
     );
 
-    map.current.setLayoutProperty("CityPlanningLayer", 'visibility', 'none');
+    map.current.setLayoutProperty(layerName, 'visibility', 'none');
 
 
 
@@ -530,10 +647,10 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
     // When a click event occurs on a feature in the places layer, open a popup at the
     // location of the feature, with description HTML from its properties.
-    map.current.on('click', 'CityPlanningLayer', (e) => {
+    map.current.on('click', layerName, (e) => {
       // Copy coordinates array.
       const coordinates = e.features[0].geometry.coordinates.slice();
-      const description = `<span>${e.features[0].properties.project_description}</span>`
+      const description = `<span  class="block">${e.features[0].properties.project_description}</span>`
 
       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -551,7 +668,7 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
     });
 
     // Change the cursor to a pointer when the mouse is over the places layer.
-    map.current.on('mouseenter', 'CityPlanningLayer', (e) => {
+    map.current.on('mouseenter', layerName, (e) => {
       map.current.getCanvas().style.cursor = 'pointer';
       const coordinates = e.features[0].geometry.coordinates.slice();
       const description = `<span>${e.features[0].properties.project_description}</span>`
@@ -567,8 +684,8 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
     });
 
-    // Change it back to a pointer when it leaves.
-    map.current.on('mouseleave', 'CityPlanningLayer', () => {
+
+    map.current.on('mouseleave', layerName, () => {
       map.current.getCanvas().style.cursor = '';
       small_popup.remove();
     });
@@ -578,12 +695,12 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
 
   const add_vancouver_trafficCamera_layer = () => {
-
+    const layerName = 'TrafficLightCameraLayer'
 
 
 
     map.current.addLayer({
-      'id': 'TrafficLightCameraLayer',
+      'id': layerName,
       'type': 'symbol',
       'source': 'TrafficLightCameraData',
       'layout': {
@@ -591,16 +708,13 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
         'icon-size': 0.015,
 
       },
-      'paint': {
-        "text-color": "#0000ff"
 
-      }
     });
 
 
 
 
-    map.current.on('click', 'TrafficLightCameraLayer', (e) => {
+    map.current.on('click', layerName, (e) => {
       // Copy coordinates array.
       const coordinates = e.features[0].geometry.coordinates.slice();
       const description = `
@@ -628,17 +742,25 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
     });
 
+    map.current.on('mouseenter', layerName, () => {
+      map.current.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.current.on('mouseleave', layerName, () => {
+      map.current.getCanvas().style.cursor = '';
+    });
+
 
   }
 
 
   const add_vancouver_intersection_layer = () => {
-
+    const layerName = 'IntersectionLayer'
 
 
     map.current.addLayer(
       {
-        id: "IntersectionLayer",
+        id: layerName,
         type: "circle",
         source: "IntersectionData",
         minzoom: 7,
@@ -661,10 +783,10 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
       "waterway-label"
     );
 
-    map.current.setLayoutProperty("IntersectionLayer", 'visibility', 'none');
+    map.current.setLayoutProperty(layerName, 'visibility', 'none');
 
 
-    
+
   }
 
 
@@ -672,10 +794,10 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
 
   const add_vancouver_development_layer = () => {
-
+    const layerName = 'RoadProjectsUnderConstructionLayer'
 
     map.current.addLayer({
-      'id': 'RoadProjectsUnderConstructionLayer',
+      'id': layerName,
       'type': 'line',
       'source': 'RoadProjectsData',
       'layout': {
@@ -683,21 +805,21 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
         'line-cap': 'round'
       },
       'paint': {
-        'line-color': '#000', 
-        'line-width': 3 
+        'line-color': '#870113',
+        'line-width': 3
       }
     });
 
 
-
+    map.current.setLayoutProperty(layerName, 'visibility', 'none');
   }
 
 
-  const add_chicago_impediments_layer = () => {
+  const add_impediments_layer = () => {
 
 
     const layerName = 'ImpedimentsLayer'
-   
+
     map.current.addLayer(
       {
         id: layerName,
@@ -708,13 +830,13 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
           'circle-radius': {
             'base': 5,
-      
+
             'stops': [
-              [12, 5],
+              [12, 4],
               [22, 180]
-              ]
+            ]
           },
- 
+
           "circle-color":
             'blue'
           ,
@@ -723,6 +845,11 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
       "waterway-label"
     );
 
+
+    const small_popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false
+    });
 
     map.current.on('click', layerName, (e) => {
       // Copy coordinates array.
@@ -741,32 +868,42 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
       }
 
+      small_popup.remove()
       new mapboxgl.Popup()
         .setLngLat(coordinates)
         .setHTML(description)
         .addTo(map.current);
+
+
     });
 
 
-    // Change the cursor to a pointer when the mouse is over the layer.
-    map.current.on('mouseenter', layerName, () => {
+
+
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    map.current.on('mouseenter', layerName, (e) => {
       map.current.getCanvas().style.cursor = 'pointer';
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      const description = `<span  class="block">${e.features[0].properties.AvgAcceleration}</span>`
+
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+
+      small_popup
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(map.current);
+
     });
 
     // Change it back to a pointer when it leaves.
-    map.current.on('mouseleave', 'ImpedimentsLayer', () => {
+    map.current.on('mouseleave', layerName, () => {
       map.current.getCanvas().style.cursor = '';
+      small_popup.remove();
     });
 
-
-
   }
-
-
-
-
-
-
 
 
   // If the layer changes (isOn), update the map
@@ -778,7 +915,7 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
       }
     }
     catch (e) {
-      console.log(`Unable to add/remove layers: ${e}`)
+      return
     }
   }, [layers]);
 
@@ -850,7 +987,7 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
 
   const switchLayer = () => {
-    map.current.once("styledata", add_kingston_map_sources);
+    map.current.once("styledata", add_map_layers);
     map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
   }
 

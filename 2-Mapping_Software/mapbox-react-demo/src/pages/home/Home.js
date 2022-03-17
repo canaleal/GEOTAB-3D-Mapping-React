@@ -42,7 +42,7 @@ const Home = () => {
   const [lng, setLng] = useState();
   const [lat, setLat] = useState();
 
-  const [zoom, setZoom] = useState(12);
+  const [zoom, setZoom] = useState();
   const [mapStyle, setMapStyle] = useState("streets-v11");
   const [layers, setLayers] = useState([]);
 
@@ -57,12 +57,16 @@ const Home = () => {
   const [isTimerActive, setIsTimerActive] = useState(false);
 
 
+  const [chartData, setChartData] = useState(null)
+  
 
   useEffect(() => {
-    console.log(cityId)
+
+    console.log("🚀 ~ file: Home.js ~ line 65 ~ useEffect ~ cityId", cityId)
 
     if (cityId == 0) {
       setCity('Kingston');
+      setZoom(10)
 
       setMapBoundaries([
         [-76.788, 44.107], // Southwest coordinates
@@ -131,7 +135,79 @@ const Home = () => {
     }
     else if (cityId == 1) {
       setCity('Vancouver');
+      setZoom(10)
+      setMapBoundaries([
+        [-76.788, 44.107], // Southwest coordinates
+        [-76.17, 44.52], // Northeast coordinates
+      ]);
 
+      setLayers([
+        {
+          id: 1,
+          layer: "Buildings",
+          isOn: true,
+          isDynamic: false,
+          layerName: "BuildingsLayer",
+          imgPath: "Buildings.JPG",
+          showButton: true,
+          icon: "fa-building",
+        },
+
+        {
+          id: 2,
+          layer: "City Boundary",
+          isOn: true,
+          isDynamic: false,
+          layerName: "CityBoundaryLayer",
+          imgPath: "Boundary.JPG",
+          showButton: true,
+          icon: "fa-border-all",
+        },
+        {
+          id: 3,
+          layer: "Traffic Cameras",
+          isOn: true,
+          isDynamic: true,
+          layerName: "TrafficLightCameraLayer",
+          imgPath: "TrafficCameras.JPG",
+          showButton: true,
+          icon: "fa-camera",
+        },
+        {
+          id: 4,
+          layer: "Intersections",
+          isOn: false,
+          isDynamic: false,
+          layerName: "IntersectionLayer",
+          imgPath: "Intersections.JPG",
+          showButton: false,
+          icon: "fa-road",
+        },
+
+        {
+          id: 5,
+          layer: "Road Projects Under Construction",
+          isOn: false,
+          isDynamic: false,
+          layerName: "RoadProjectsUnderConstructionLayer",
+          imgPath: "BusRoutes.JPG",
+          showButton: false,
+          icon: "fa-helmet-safety",
+        },
+
+      ]);
+
+
+      setLng(-123.116226);
+      setLat(49.246292);
+
+      setYears([2019, 2020, 2021, 2022]);
+      setCurrentYear(2020);
+
+    }
+    else if (cityId == 2) {
+      setCity('Chicago');
+      setZoom(10)
       setMapBoundaries([
         [-76.788, 44.107], // Southwest coordinates
         [-76.17, 44.52], // Northeast coordinates
@@ -150,49 +226,38 @@ const Home = () => {
         },
         {
           id: 2,
-          layer: "Traffic Cameras",
+          layer: "City Boundary",
           isOn: true,
-          isDynamic: true,
-          layerName: "TrafficLightCameraLayer",
-          imgPath: "TrafficCameras.JPG",
+          isDynamic: false,
+          layerName: "CityBoundaryLayer",
+          imgPath: "Boundary.JPG",
           showButton: true,
           icon: "fa-border-all",
         },
         {
           id: 3,
-          layer: "Intersections",
-          isOn: false,
-          isDynamic: false,
-          layerName: "IntersectionLayer",
-          imgPath: "Intersections.JPG",
-          showButton: false,
-          icon: "fa-border-all",
-        },
-
-        {
-          id: 4,
-          layer: "Road Projects Under Construction",
+          layer: "Road Impediments",
           isOn: true,
           isDynamic: false,
-          layerName: "RoadProjectsUnderConstructionLayer",
+          layerName: "ImpedimentsLayer",
           imgPath: "Intersections.JPG",
           showButton: true,
-          icon: "fa-border-all",
-        },
+          icon: "fa-road",
+        }
 
       ]);
 
 
-      setLng(-123.116226);
-      setLat(49.246292);
+      setLng(-87.6298);
+      setLat(41.8781);
 
       setYears([2019, 2020, 2021, 2022]);
       setCurrentYear(2020);
 
     }
-    else if (cityId == 2) {
-      setCity('Chicago');
-
+    else if (cityId == 3) {
+      setCity('France');
+      setZoom(5)
       setMapBoundaries([
         [-76.788, 44.107], // Southwest coordinates
         [-76.17, 44.52], // Northeast coordinates
@@ -210,21 +275,31 @@ const Home = () => {
           icon: "fa-building",
         },
         {
-          id: 1,
+          id: 2,
+          layer: "Regions Boundary",
+          isOn: true,
+          isDynamic: false,
+          layerName: "CityBoundaryLayer",
+          imgPath: "Boundary.JPG",
+          showButton: true,
+          icon: "fa-border-all",
+        },
+        {
+          id: 3,
           layer: "Road Impediments",
           isOn: true,
           isDynamic: false,
           layerName: "ImpedimentsLayer",
-          imgPath: "Buildings.JPG",
+          imgPath: "Intersections.JPG",
           showButton: true,
-          icon: "fa-building",
+          icon: "fa-road",
         }
 
       ]);
 
 
-      setLng(-87.6298);
-      setLat(41.8781);
+      setLng(2.349014);
+      setLat(48.864716);
 
       setYears([2019, 2020, 2021, 2022]);
       setCurrentYear(2020);
@@ -279,6 +354,12 @@ const Home = () => {
   function timerResetHandler() {
     setCurrentYear(years[0]);
     setIsTimerActive(false);
+  }
+
+  const chartDataHandler = (value) =>{
+  console.log("🚀 ~ file: Home.js ~ line 298 ~ chartDataHandler ~ value", value)
+    
+      setChartData(value);
   }
 
   useEffect(() => {
@@ -381,18 +462,26 @@ const Home = () => {
                 currentYear={currentYear}
                 layers={layers}
                 pointOfInterestHandler={pointOfInterestHandler}
+                chartDataHandler={chartDataHandler}
               />
 
-              <div className="absolute bottom-10 px-20 box-border  w-full">
-                <div className="bg-black px-10 py-5  rounded-lg">
-                  <TimeSlider
-                    minYear={years[0]}
-                    maxYear={years[years.length - 1]}
-                    currentYear={currentYear}
-                    yearSliderHandler={yearSliderHandler}
-                  />
+              {chartData != null ?
+                <div className="absolute bottom-10 px-20 box-border  w-full">
+                  <div className="bg-black px-10 py-5  rounded-lg">
+                    <TimeSlider
+                      minYear={years[0]}
+                      maxYear={years[years.length - 1]}
+                      currentYear={currentYear}
+                      yearSliderHandler={yearSliderHandler}
+                    />
+                  </div>
                 </div>
-              </div>
+
+                :
+                <></>
+
+              }
+
             </div>
             :
             <span></span>
@@ -402,20 +491,28 @@ const Home = () => {
 
 
 
+          {chartData != null ?
+            <>
+              <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+                <p className="font-bold">Counting</p>
+                <PedestrianChart years={years} currentYear={currentYear} />
+              </div>
 
-          <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-            <p className="font-bold">Counting</p>
-            <PedestrianChart years={years} currentYear={currentYear} />
-          </div>
-
-          <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-            <p className="font-bold">Year - {currentYear}</p>
-            <AutoPlayButton
-              isTimerActive={isTimerActive}
-              timerToggleHandler={timerToggleHandler}
-              timerResetHandler={timerResetHandler}
-            />
-          </div>
+              <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+                <p className="font-bold">Year - {currentYear}</p>
+                <AutoPlayButton
+                  isTimerActive={isTimerActive}
+                  timerToggleHandler={timerToggleHandler}
+                  timerResetHandler={timerResetHandler}
+                />
+              </div>
+            </>
+            :
+            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+                <p className="font-bold">Sample Card</p>
+                <p>Exercitation minim ex nulla aliquip ullamco aliquip tempor exercitation reprehenderit nostrud sunt. Dolore quis magna id nisi ipsum magna esse eiusmod reprehenderit magna. Eu consectetur pariatur laborum deserunt. Magna irure dolore commodo nisi sint esse irure et voluptate nulla consequat. Pariatur excepteur minim adipisicing ea consectetur occaecat et enim fugiat laboris nulla. Aute laboris id irure aliquip velit elit Lorem.</p>
+              </div>
+          }
         </div>
 
         {pointOfInterest != null ? (

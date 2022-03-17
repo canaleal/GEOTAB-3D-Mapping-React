@@ -22,8 +22,11 @@ import {
   faPerson,
   faBus,
   faBuildingColumns,
+  faHelmetSafety,
   faPlay,
   faPause,
+  faCamera,
+  faRoad
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -38,6 +41,9 @@ library.add(
   faPerson,
   faBus,
   faBuildingColumns,
+  faCamera,
+  faRoad,
+  faHelmetSafety,
   faPlay,
   faPause
 );

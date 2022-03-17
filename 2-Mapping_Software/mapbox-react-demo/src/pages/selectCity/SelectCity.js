@@ -6,20 +6,26 @@ const SelectCity = () => {
   const [cities, setCities] = useState([
     {
       'link': 0,
-      'name': 'Kingston',
+      'name': 'Kingston - City',
       'img_path': 'http://localhost:3000/assets/images/City/Kingston.jpg'
 
     },
     {
       'link': 1,
-      'name': 'Vancouver',
+      'name': 'Vancouver - City',
       'img_path': 'http://localhost:3000/assets/images/City/Vancouver.jpg'
 
     },
     {
       'link': 2,
-      'name': 'Chicago',
+      'name': 'Chicago - City',
       'img_path': 'http://localhost:3000/assets/images/City/Chicago.jpg'
+
+    },
+    {
+      'link': 3,
+      'name': 'France - Country',
+      'img_path': 'http://localhost:3000/assets/images/Country/France.jpg'
 
     },
 
@@ -37,7 +43,7 @@ const SelectCity = () => {
           cities.map((city => {
             return (
               <div key={city.link} className="col-span-4 md:col-span-1  rounded overflow-hidden shadow-lg">
-                <img className="w-full h-64 object-none" src={city.img_path} alt="Layer Image" />
+                <img className="w-full h-64 " src={city.img_path} alt="Layer Image" />
 
                 <div className="p-4">
                   <p className="font-bold mb-2">{city.name}</p>
