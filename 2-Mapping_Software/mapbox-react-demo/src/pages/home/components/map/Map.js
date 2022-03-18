@@ -103,25 +103,32 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
     })
 
 
-    map.current.addSource("PedestrianData", {
-      type: "geojson",
-      data: pedestrians,
-    });
 
-
-    chartDataHandler('Data');
+   
 
     map.current.addSource('Buses', {
       'type': 'geojson',
       'data': buses
     });
 
+    fetch('http://localhost:3000/data/pedestrian.geojson')
+    .then(response => response.json())
+    .then(data => {
+     
+      map.current.addSource("PedestrianData", {
+        type: "geojson",
+        data: data
+      });
+      console.log(data['features'])
+      chartDataHandler(data['features']);
+    });
 
-    let geojson = { "type": "FeatureCollection", "features": [] }
+
+   
     fetch('https://opendatakingston.cityofkingston.ca/api/records/1.0/search/?dataset=capital-planning-points&q=&rows=2000&sort=-capital_program_point&facet=capital_program_point&facet=program_subclass&facet=project_title&facet=project_description&facet=project_planning_from&facet=project_planning_to&facet=planned_construction_from&facet=planned_construction_to&facet=construction_completion_from&facet=construction_completion_to')
       .then(response => response.json())
       .then(data => {
-
+        let geojson = { "type": "FeatureCollection", "features": [] }
         for (let point of data.records) {
           let coordinate = [parseFloat(point.geometry.coordinates[0]), parseFloat(point.geometry.coordinates[1])];
           let properties = point.fields;
@@ -444,7 +451,7 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
             { hover: false }
           );
         }
-        console.log(e.features[0])
+        
         hoveredStateId = e.features[0].id;
         map.current.setFeatureState(
           { source: 'BoundaryData', id: hoveredStateId },
@@ -976,8 +983,8 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
   useEffect(() => {
     if (!map.current) return;
     try {
-      if (map.current !== undefined && map.current.get) {
-        switchLayer();
+      if (map.current !== undefined) {
+        //switchLayer();
       }
     }
     catch (e) {
@@ -987,8 +994,13 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
 
 
   const switchLayer = () => {
-    map.current.once("styledata", add_map_layers);
+
+
+    map.current.once("styledata", add_map_layers());
     map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
+    
+   
+
   }
 
 

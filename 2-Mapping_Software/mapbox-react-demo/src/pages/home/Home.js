@@ -4,14 +4,14 @@ import { useState, useEffect, useRef } from "react";
 
 import Map from "./components/map/Map";
 import PedestrianChart from "./components/chart/PedestrianChart";
-import TimeSlider from "./components/time/YearSlider";
+import TimeSlider from "./components/slider/YearSlider";
 import LayerButton from "./components/layer/LayerButton";
 import Cover from "../../components/Cover";
 import LayerModal from "./components/layer/LayerModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "rc-slider/assets/index.css";
-import AutoPlayButton from "./components/time/AutoPlayButton";
+import AutoPlayButton from "./components/slider/AutoPlayButton";
 import Header from "../../components/Header";
 import AboutModal from "../../components/AboutModal";
 import HelpModal from "../../components/HelpModal";
@@ -129,7 +129,7 @@ const Home = () => {
       setLng(-76.48098);
       setLat(44.22976);
 
-      setYears([2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]);
+      setYears([2015, 2016, 2017, 2018, 2019, 2020]);
       setCurrentYear(2015);
 
     }
@@ -449,6 +449,7 @@ const Home = () => {
           {isLoaded ?
             <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
 
+            
 
 
               <Map
@@ -464,6 +465,37 @@ const Home = () => {
                 pointOfInterestHandler={pointOfInterestHandler}
                 chartDataHandler={chartDataHandler}
               />
+
+              <div className="absolute top-0 bg-white p-4 rounded-lg">
+                        <form className="flex flex-row">
+               
+                <div >
+                  <input
+                    type="radio"
+                    value="streets-v11"
+                    checked={mapStyle === 'streets-v11'}
+                    onChange={mapStyleChangeHandler}
+                  /> Streets
+                </div>
+                <div className="px-2">
+                  <input
+                    type="radio"
+                    value="satellite-streets-v11"
+                    checked={mapStyle === 'satellite-streets-v11'}
+                    onChange={mapStyleChangeHandler}
+                  /> Satellite
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    value="dark-v10"
+                    checked={mapStyle === 'dark-v10'}
+                    onChange={mapStyleChangeHandler}
+                  /> Dark
+                </div>
+               
+              </form>
+              </div>
 
               {chartData != null ?
                 <div className="absolute bottom-10 px-20 box-border  w-full">
@@ -484,7 +516,7 @@ const Home = () => {
 
             </div>
             :
-            <span></span>
+            <></>
           }
 
 
@@ -526,7 +558,7 @@ const Home = () => {
             </div>
           </div>
         ) : (
-          <span></span>
+          <></>
         )}
       </div>
 

@@ -18,7 +18,21 @@ ChartJS.register(
   Legend
 );
 
-const PedestrianChart = ({ years, currentYear }) => {
+const PedestrianChart = ({ chartData }) => {
+  //console.log("🚀 ~ file: PedestrianChart.js ~ line 22 ~ PedestrianChart ~ chartData", chartData)
+
+
+
+    let ped_labels = chartData.map(function(e) {
+      return e.properties.year;
+    });
+    let ped_data = chartData.map(function(e) {
+        return e.properties.count;
+    });;
+
+  
+  
+
   const options = {
     elements: {
       bar: {
@@ -36,17 +50,14 @@ const PedestrianChart = ({ years, currentYear }) => {
     },
   };
 
-  const labels = years;
+  const labels = ped_labels;
 
   const data = {
     labels,
     datasets: [
       {
         label: "count",
-        data: Array.from(
-          { length: labels.length },
-          () => Math.floor(Math.random() * 400) + 100
-        ),
+        data:ped_data,
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgb(59,130,246,0.5)",
       },

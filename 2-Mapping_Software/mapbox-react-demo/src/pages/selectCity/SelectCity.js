@@ -5,7 +5,7 @@ const SelectCity = () => {
 
   const [cities, setCities] = useState([
     {
-      'link': 0,
+      'link': 'Kingston',
       'name': 'Kingston - City',
       'img_path': 'http://localhost:3000/assets/images/City/Kingston.jpg'
 
@@ -54,15 +54,10 @@ const SelectCity = () => {
                   </Link>
                 </div>
               </div>
-
-
             )
           }))
 
         }
-
-
-
       </div>
 
     </div>
