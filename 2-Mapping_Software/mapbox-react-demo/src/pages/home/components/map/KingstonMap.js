@@ -360,9 +360,6 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             }
         });
 
-        map.current.setLayoutProperty(layerName, 'visibility', 'none');
-
-
     }
 
 
@@ -447,6 +444,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
     const switchLayer = () => {
         map.current.once("styledata", add_kingston_map_sources);
         map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
+       
     }
 
 
