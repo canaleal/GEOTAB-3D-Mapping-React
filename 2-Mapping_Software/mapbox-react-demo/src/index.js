@@ -30,6 +30,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import KingstonHome from "./pages/home/KingstonHome";
 import ChicagoHome from "./pages/home/ChicagoHome";
+import VancouverHome from "./pages/home/VancouverHome";
 
 
 
@@ -59,6 +60,7 @@ render(
         <Route index element={<SelectCity/>} />
         <Route path="/Kingston" element={<KingstonHome/>} />
         <Route path="/Chicago" element={<ChicagoHome/>} />
+        <Route path="/Vancouver" element={<VancouverHome/>} />
         <Route path=":cityId" element={<Home/>} />
         <Route path="*" element={<Error />} />
       </Route>

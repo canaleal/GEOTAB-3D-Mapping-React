@@ -11,7 +11,7 @@ const SelectCity = () => {
 
     },
     {
-      'link': 1,
+      'link': 'Vancouver',
       'name': 'Vancouver - City',
       'img_path': 'http://localhost:3000/assets/images/City/Vancouver.jpg'
 

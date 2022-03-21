@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, Fragment } from 'react'
 
-import KingstonMap from "./components/map/KingstonMap";
+import VancouverMap from "./components/map/VancouverMap";
 import PedestrianChart from "./components/chart/PedestrianChart";
 import TimeSlider from "./components/slider/TimeSlider";
 import LayerButton from "./components/layer/LayerButton";
@@ -19,9 +19,10 @@ import Footer from "../../components/Footer";
 import Streetview from "./components/streetview/Streetview";
 import ChartDateToggle from './components/chart/ChartDateToggle';
 import MapStyleSelector from './components/map/MapStyleSelector';
+import ImpedimentsChart from './components/chart/ImpedimentsChart';
 
 
-const KingstonHome = () => {
+const VancouverHome = () => {
 
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -51,6 +52,8 @@ const KingstonHome = () => {
   //Year details
   const [years, setYears] = useState([]);
   const [currentYear, setCurrentYear] = useState();
+  const [months, setMonths] = useState([]);
+  const [currentMonth, setCurrentMonth] = useState();
 
   //Timer details
   const [isTimerActive, setIsTimerActive] = useState(false);
@@ -58,17 +61,12 @@ const KingstonHome = () => {
   useEffect(() => {
 
 
-    setCity('Kingston');
-
-    //Map Details
-    setZoom(10);
+    setCity('Vancouver');
+    setZoom(10)
     setMapBoundaries([
       [-76.788, 44.107], // Southwest coordinates
       [-76.17, 44.52], // Northeast coordinates
     ]);
-    setLng(-76.48098);
-    setLat(44.22976);
-
 
     setLayers([
       {
@@ -81,6 +79,7 @@ const KingstonHome = () => {
         showButton: true,
         icon: "fa-building",
       },
+
       {
         id: 2,
         layer: "City Boundary",
@@ -93,29 +92,36 @@ const KingstonHome = () => {
       },
       {
         id: 3,
-        layer: "Pedestrians",
+        layer: "Traffic Cameras",
         isOn: true,
-        isDynamic: false,
-        layerName: "PedestriansLayer",
-        imgPath: "Pedestrians.JPG",
+        isDynamic: true,
+        layerName: "TrafficLightCameraLayer",
+        imgPath: "TrafficCameras.JPG",
         showButton: true,
-        icon: "fa-person",
+        icon: "fa-camera",
       },
       {
         id: 4,
-        layer: "Bus Routes",
-        isOn: true,
+        layer: "Intersections",
+        isOn: false,
         isDynamic: false,
-        layerName: "BusRoutesLayer",
-        imgPath: "BusRoutes.JPG",
-        showButton: true,
-        icon: "fa-bus",
-      }
+        layerName: "IntersectionLayer",
+        imgPath: "Intersections.JPG",
+        showButton: false,
+        icon: "fa-road",
+      },
+
+    
+      
+
     ]);
 
-    //Chart details
-    setYears([2015, 2016, 2017, 2018, 2019, 2020]);
-    setCurrentYear(2015);
+
+    setLng(-123.116226);
+    setLat(49.246292);
+
+    setYears([2022]);
+    setCurrentYear(2022);
 
 
     setIsLoaded(true);
@@ -147,7 +153,7 @@ const KingstonHome = () => {
     }
 
     //Remove point of interest if the pedestrian layer is turned off
-    if (item.layerName === 'PedestriansLayer') {
+    if (item.layerName === 'TrafficLightCameraLayer') {
       setPointOfInterest(null);
     }
 
@@ -156,7 +162,10 @@ const KingstonHome = () => {
 
   const yearSliderHandler = (value) => {
     setCurrentYear(value);
-    setPointOfInterest(null);
+  };
+
+  const monthSliderHandler = (value) => {
+    setCurrentMonth(value);
   };
 
   //Turn the timer on or off
@@ -265,7 +274,7 @@ const KingstonHome = () => {
           {isLoaded == true ?
             <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
 
-              <KingstonMap
+              <VancouverMap
                 cityId={0}
                 mapStyle={mapStyle}
                 mapBoundaries={mapBoundaries}
@@ -274,6 +283,8 @@ const KingstonHome = () => {
                 zoom={zoom}
                 years={years}
                 currentYear={currentYear}
+                months={months}
+                currentMonth={currentMonth}
                 layers={layers}
                 pointOfInterestHandler={pointOfInterestHandler}
                 chartDataHandler={chartDataHandler}
@@ -283,45 +294,14 @@ const KingstonHome = () => {
                 <MapStyleSelector mapStyle={mapStyle} mapStyleChangeHandler={mapStyleChangeHandler} />
               </div>
 
-              <div className="absolute bottom-10 px-20 box-border w-full">
-                <div className="bg-black px-10 py-4 rounded-lg">
-
-                  <div className='w-64'>
-                    <span className='color-white'>Year - {currentYear}</span>
-                  </div>
-
-                  <div className="py-4">
-                  <TimeSlider
-                      timeArray={years}
-                      currentDate={currentYear}
-                      dateSliderHandler={yearSliderHandler}
-                    />
-                  </div>
-
-                </div>
-              </div>
+             
             </div>
             :
             <></>
           }
 
 
-
-
-
-          {chartData != null ?
-
-            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-              <p className="font-bold"># of Pedestrians - Average per Hour </p>
-              <PedestrianChart currentYear={currentYear} chartTime={chartTime} chartData={chartData} />
-              <ChartDateToggle years={years} chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
-            </div>
-            :
-            <></>
-          }
-
-
-
+         
 
           {pointOfInterest != null ?
             <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
@@ -345,4 +325,4 @@ const KingstonHome = () => {
   );
 };
 
-export default KingstonHome;
+export default VancouverHome;

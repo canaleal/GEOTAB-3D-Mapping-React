@@ -141,7 +141,7 @@ const ChicagoHome = () => {
     }
 
     //Remove point of interest if the pedestrian layer is turned off
-    if (item.layerName === 'PedestriansLayer') {
+    if (item.layerName === 'ImpedimentsLayer') {
       setPointOfInterest(null);
     }
 
@@ -150,10 +150,12 @@ const ChicagoHome = () => {
 
   const yearSliderHandler = (value) => {
     setCurrentYear(value);
+    setPointOfInterest(null);
   };
 
   const monthSliderHandler = (value) => {
     setCurrentMonth(value);
+    setPointOfInterest(null);
   };
 
   //Turn the timer on or off
