@@ -11,7 +11,7 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 mapboxgl.accessToken =
     "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, layers, pointOfInterestHandler, chartDataHandler }) => {
+const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, currentFilterValues, layers, pointOfInterestHandler, chartDataHandler }) => {
 
     const mapContainerRef = useRef(null);
     const map = useRef(null);
@@ -299,11 +299,11 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates.slice();
             const description = `
-      <p class="font-bold">${e.features[0].properties.name} </p>
-      <span>${e.features[0].properties.year}</span>
-      <span>Number of People (AVG/HR) : ${e.features[0].properties.count}</span>
-      <img src="${e.features[0].properties.img_url}" alt="TEST" height=auto width="100%"/>
-         
+                    <span class="block">${e.features[0].properties.name} </span>
+                    <span class="block">${e.features[0].properties.Year}</span>
+                    <span class="block">Number of People (AVG/HR) : ${e.features[0].properties.count}</span>
+                    <img src="${e.features[0].properties.img_url}" alt="TEST" height=auto width="100%"/>
+                        
       `
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
@@ -401,7 +401,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
         if (!map.current) return;
         try {
             if (map.current !== undefined) {
-                yearFilter();
+                countFilter();
             }
         }
         catch (e) {
@@ -409,24 +409,37 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
         }
     }, [currentYear]);
 
+  
+
+    // If the current filter range changes, update the map
+    useEffect(() => {
+        if (!map.current) return;
+        try {
+            if (map.current !== undefined) {
+                countFilter();
+            }
+        }
+        catch (e) {
+            return
+        }
+    }, [currentFilterValues]);
+
+
     //Function is used to grab data from a certain year
-    const yearFilter = () => {
+    const countFilter = () => {
 
-        let filterYear = 0;
-        let years_temp = years.map(String);
+      //Grab data specific to a filter range
+      map.current.setFilter('PedestriansLayer',  ["all",     
+      [">=", ['get', 'count'], currentFilterValues[0]],
+      ["<=", ['get', 'count'], currentFilterValues[1]],
+      ['==', ['string', ['get', 'Year']], currentYear.toString()],
 
-        if (currentYear.toString() === '0000') {
-            //Grab all data
-            filterYear = ['match', ['get', 'year'], years_temp, false, true];
-            map.current.setFilter('PedestriansLayer', ['all', filterYear]);
-        } else if (years_temp.includes(currentYear.toString())) {
-            //Grab data specific to a year
-            map.current.setFilter('PedestriansLayer', ['==', ['number', ['get', 'year']], parseInt(currentYear)]);
-        }
-        else {
-            console.log('error');
-        }
+    ])
+
+   
+       
     }
+
 
     useEffect(() => {
         if (!map.current) return;

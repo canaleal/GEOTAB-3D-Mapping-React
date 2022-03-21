@@ -58,12 +58,12 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
 
       //Group data by year 
       const groups = chartData.reduce((groups, item) => {
-        const group = (groups[item.properties.year] || []);
+        const group = (groups[item.properties.Year] || []);
         group.push(item);
-        groups[item.properties.year] = group;
+        groups[item.properties.Year] = group;
         return groups;
       }, {});
-
+     
       let ped_data = []
       for (const [key, value] of Object.entries(groups)) {
         let year_array = value
@@ -124,47 +124,54 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
 
     };
 
+
+    //Get current year data
+    let currentYear_objects = chartData.filter(function (item) {
+      return item.properties.Year === currentYear.toString();
+    });
+
+    //Group data by month
+    const groups_raw = currentYear_objects.reduce((groups, item) => {
+      const group = (groups[item.properties.Month] || []);
+      group.push(item);
+      groups[item.properties.Month] = group;
+      return groups;
+    }, {});
+
+    //Sort data from Jan to Dec
+    let groups = {};
+    for (let i = 1; i < 13; i++) {
+      let temp_month = i < 10 ? "0" + i.toString() : i.toString();
+      groups[i.toString()] = groups_raw[temp_month]
+    }
+
+    //Get average acceleration
+    let impediments_data = []
+    for (const [key, value] of Object.entries(groups)) {
+      let month_array = value
+      let avg = month_array.reduce((total, next) => total + next.properties.count, 0) / month_array.length
+      impediments_data.push(avg)
+    }
+
     const labels = ["January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"];
-
-    const colors = [];
-    for (let i = 0; i < 12; i++) {
-      colors.push(random_rgba())
-    }
 
     const data = {
       labels,
       datasets: [
         {
           label: `count - ${chartTime} (${currentYear})`,
-          data: Array.from(
-            { length: labels.length },
-            () => Math.floor(Math.random() * 400) + 100
-          ),
+          data: impediments_data,
 
-          backgroundColor: ['#F44336',
-            '#039BE5',
-            '#0288D1',
-            '#0277BD',
-            '#1A237E',
-            '#8C9EFF',
-            '#536DFE',
-            '#3D5AFE',
-            '#E53935',
-            '#D32F2F',
-            '#C62828',
-
-            '#D50000',
-            '#E91E63',
-            '#FCE4EC',
-            '#F8BBD0',
-
-            '#E91E63',
-            '#D81B60',
-            '#C2185B',
-            '#AD1457',
-            '#880E4F',
-            '#FF80AB',],
+          backgroundColor: [
+            "rgb(255, 99, 132)",
+            "rgb(255, 159, 64)",
+            "rgb(255, 205, 86)",
+            "rgb(75, 192, 192)",
+            "rgb(54, 162, 235)",
+            "rgb(153, 102, 255)",
+            "rgb(201, 203, 207)"
+          ],
         },
       ],
     };
@@ -209,29 +216,15 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
             () => Math.floor(Math.random() * 10) + 5
           ),
 
-          backgroundColor: ['#F44336',
-            '#039BE5',
-            '#0288D1',
-            '#0277BD',
-            '#1A237E',
-            '#8C9EFF',
-            '#536DFE',
-            '#3D5AFE',
-            '#E53935',
-            '#D32F2F',
-            '#C62828',
-
-            '#D50000',
-            '#E91E63',
-            '#FCE4EC',
-            '#F8BBD0',
-
-            '#E91E63',
-            '#D81B60',
-            '#C2185B',
-            '#AD1457',
-            '#880E4F',
-            '#FF80AB',],
+          backgroundColor: [
+            "rgb(255, 99, 132)",
+            "rgb(255, 159, 64)",
+            "rgb(255, 205, 86)",
+            "rgb(75, 192, 192)",
+            "rgb(54, 162, 235)",
+            "rgb(153, 102, 255)",
+            "rgb(201, 203, 207)"
+          ],
         },
       ],
     };

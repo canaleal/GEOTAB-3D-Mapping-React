@@ -19,6 +19,7 @@ import Footer from "../../components/Footer";
 import Streetview from "./components/streetview/Streetview";
 import ChartDateToggle from './components/chart/ChartDateToggle';
 import MapStyleSelector from './components/map/MapStyleSelector';
+import RangeSlider from './components/slider/RangeSlider';
 
 
 const KingstonHome = () => {
@@ -54,6 +55,9 @@ const KingstonHome = () => {
 
   //Timer details
   const [isTimerActive, setIsTimerActive] = useState(false);
+
+  //Filter values
+  const [currentFilterValues, setCurrentFilterValues] = useState();
 
   useEffect(() => {
 
@@ -114,9 +118,10 @@ const KingstonHome = () => {
     ]);
 
     //Chart details
-    setYears([2015, 2016, 2017, 2018, 2019, 2020]);
+    setYears([2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]);
     setCurrentYear(2015);
 
+    setCurrentFilterValues([0,1000])
 
     setIsLoaded(true);
   }, []);
@@ -212,6 +217,12 @@ const KingstonHome = () => {
     setChartTime(item)
   }
 
+  const filterValueSliderHandler=(item)=>{
+
+    setCurrentFilterValues(item);
+  }
+  
+
   return (
     <Fragment>
       <Header city={city} />
@@ -234,6 +245,8 @@ const KingstonHome = () => {
       />
 
       <div className="px-5 py-5">
+
+
 
         <div className="grid grid-cols-4 grid-row-3 gap-4 ">
           <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 slide-in-left">
@@ -263,7 +276,7 @@ const KingstonHome = () => {
 
 
           {isLoaded == true ?
-            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
+            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
 
               <KingstonMap
                 cityId={0}
@@ -275,6 +288,7 @@ const KingstonHome = () => {
                 years={years}
                 currentYear={currentYear}
                 layers={layers}
+                currentFilterValues={currentFilterValues}
                 pointOfInterestHandler={pointOfInterestHandler}
                 chartDataHandler={chartDataHandler}
               />
@@ -291,7 +305,7 @@ const KingstonHome = () => {
                   </div>
 
                   <div className="py-4">
-                  <TimeSlider
+                    <TimeSlider
                       timeArray={years}
                       currentDate={currentYear}
                       dateSliderHandler={yearSliderHandler}
@@ -306,7 +320,19 @@ const KingstonHome = () => {
           }
 
 
+<div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+            <p className="font-bold">Filter Map - Average per Hour </p>
 
+
+            <div className="pb-4 px-4">
+              <RangeSlider 
+              currentFilterValues={currentFilterValues}
+              filterValueSliderHandler={filterValueSliderHandler}
+              />
+            </div>
+
+
+          </div>
 
 
           {chartData != null ?
@@ -321,12 +347,15 @@ const KingstonHome = () => {
           }
 
 
+          
+
+
 
 
           {pointOfInterest != null ?
             <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
               <p className="font-bold">Point Of Interest</p>
-              <Streetview pointOfInterest={pointOfInterest} />
+              {/* <Streetview pointOfInterest={pointOfInterest} /> */}
             </div>
             :
             <></>
