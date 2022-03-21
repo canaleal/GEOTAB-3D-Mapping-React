@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 
 import Map from "./components/map/Map";
 import PedestrianChart from "./components/chart/PedestrianChart";
-import TimeSlider from "./components/slider/YearSlider";
+import TimeSlider from "./components/slider/TimeSlider";
 import LayerButton from "./components/layer/LayerButton";
 import Cover from "../../components/Cover";
 import LayerModal from "./components/layer/LayerModal";

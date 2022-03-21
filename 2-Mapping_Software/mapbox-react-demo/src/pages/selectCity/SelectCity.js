@@ -17,7 +17,7 @@ const SelectCity = () => {
 
     },
     {
-      'link': 2,
+      'link': 'Chicago',
       'name': 'Chicago - City',
       'img_path': 'http://localhost:3000/assets/images/City/Chicago.jpg'
 

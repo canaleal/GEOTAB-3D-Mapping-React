@@ -29,6 +29,7 @@ import {
   faRoad
 } from "@fortawesome/free-solid-svg-icons";
 import KingstonHome from "./pages/home/KingstonHome";
+import ChicagoHome from "./pages/home/ChicagoHome";
 
 
 
@@ -57,6 +58,7 @@ render(
       <Route exact path="/" element={<App />}>
         <Route index element={<SelectCity/>} />
         <Route path="/Kingston" element={<KingstonHome/>} />
+        <Route path="/Chicago" element={<ChicagoHome/>} />
         <Route path=":cityId" element={<Home/>} />
         <Route path="*" element={<Error />} />
       </Route>

@@ -15,11 +15,11 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
 
     const mapContainerRef = useRef(null);
     const map = useRef(null);
-    const [isDataLoaded, setIsDataLoaded] = useState(false)
 
+    const [error, setError] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-
         map.current = new mapboxgl.Map({
             container: mapContainerRef.current,
             style: `mapbox://styles/mapbox/${mapStyle}`,
@@ -71,7 +71,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             'data': buses
         });
 
-    
+
 
         fetch('http://localhost:3000/data/pedestrian.geojson')
             .then(response => response.json())
@@ -84,7 +84,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
 
                 chartDataHandler(data['features']);
 
-                setIsDataLoaded(true);
+                setIsLoaded(true);
                 add_kingston_map_layers();
             });
 
@@ -199,7 +199,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             },
         });
 
-       
+
 
         let hoveredStateId = null;
         // When the user moves their mouse over the state-fill layer, we'll update the
@@ -316,7 +316,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
                 .addTo(map.current);
 
             //If the user clicks a point save it 
-            pointOfInterestHandler(e.features[0].properties);
+            pointOfInterestHandler(e.features[0]);
         });
 
         // Change the cursor to a pointer when the mouse is over the places layer.
@@ -431,7 +431,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
     useEffect(() => {
         if (!map.current) return;
         try {
-            if (map.current !== undefined && isDataLoaded === true) {
+            if (map.current !== undefined && isLoaded === true) {
                 switchLayer();
             }
         }
@@ -444,13 +444,14 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
     const switchLayer = () => {
         map.current.once("styledata", add_kingston_map_sources);
         map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
-       
+
     }
 
 
     return (
         <div className="h-full w-full " >
             <div ref={mapContainerRef} className='h-full rounded-lg' />
+
         </div>
 
     );

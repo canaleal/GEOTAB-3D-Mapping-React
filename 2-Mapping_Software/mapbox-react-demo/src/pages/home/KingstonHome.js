@@ -4,8 +4,7 @@ import React, { useState, useRef, useEffect, Fragment } from 'react'
 
 import KingstonMap from "./components/map/KingstonMap";
 import PedestrianChart from "./components/chart/PedestrianChart";
-import TimeSlider from "./components/slider/YearSlider";
-import CountRangeSlider from "./components/slider/CountRangeSlider";
+import TimeSlider from "./components/slider/TimeSlider";
 import LayerButton from "./components/layer/LayerButton";
 import Cover from "../../components/Cover";
 import LayerModal from "./components/layer/LayerModal";
@@ -18,6 +17,8 @@ import AboutModal from "../../components/AboutModal";
 import HelpModal from "../../components/HelpModal";
 import Footer from "../../components/Footer";
 import Streetview from "./components/streetview/Streetview";
+import ChartDateToggle from './components/chart/ChartDateToggle';
+import MapStyleSelector from './components/map/MapStyleSelector';
 
 
 const KingstonHome = () => {
@@ -206,8 +207,8 @@ const KingstonHome = () => {
     setMapStyle(item.target.value);
   };
 
-  const chartTimeTogglerHandler = (item) =>{
-      setChartTime(item)
+  const chartTimeTogglerHandler = (item) => {
+    setChartTime(item)
   }
 
   return (
@@ -232,7 +233,7 @@ const KingstonHome = () => {
       />
 
       <div className="px-5 py-5">
-        
+
         <div className="grid grid-cols-4 grid-row-3 gap-4 ">
           <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 slide-in-left">
             <p className="font-bold">Layers</p>
@@ -241,14 +242,14 @@ const KingstonHome = () => {
                 {item.showButton ? (
                   <LayerButton item={item} layerHandler={layerHandler} />
                 ) : (
-                  <span></span>
+                  <></>
                 )}
               </span>
             ))}
 
             <button
               onClick={() => showModalHandler(layerModalRef)}
-              className={`border block w-full text-sm text-left p-3 my-1 mt-10 rounded-md border-black-500 bg-slate-0 hover:bg-slate-200`}
+              className={`border block w-full text-sm text-left p-3 my-1 mt-10 rounded-md border-black-500 bg-slate-200 hover:bg-slate-300`}
             >
               <FontAwesomeIcon
                 icon="fa-solid fa-layer-group"
@@ -278,63 +279,26 @@ const KingstonHome = () => {
               />
 
               <div className="absolute top-3 left-3 bg-white rounded-lg p-4">
-                <form >      
-                  <div>
-                    <input
-                      type="radio"
-                      value="streets-v11"
-                      checked={mapStyle === 'streets-v11'}
-                      onChange={mapStyleChangeHandler}
-                    /> Streets
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      value="dark-v10"
-                      checked={mapStyle === 'dark-v10'}
-                      onChange={mapStyleChangeHandler}
-                    /> Dark
-                  </div>
-                  <div>
-                    <input  
-                    type="radio" 
-                    value="outdoors-v11"
-                    checked={mapStyle === 'outdoors-v11'}
-                    onChange={mapStyleChangeHandler}/> Outdoors
-                  </div>
-                
-               </form>
+                <MapStyleSelector mapStyle={mapStyle} mapStyleChangeHandler={mapStyleChangeHandler} />
               </div>
-
-
 
               <div className="absolute bottom-10 px-20 box-border w-full">
                 <div className="bg-black px-10 py-4 rounded-lg">
-                  
+
                   <div className='w-64'>
                     <span className='color-white'>Year - {currentYear}</span>
-                   
                   </div>
 
                   <div className="py-4">
-                      <TimeSlider
-                      
-                      minYear={years[0]}
-                      maxYear={years[years.length - 1]}
+                  <TimeSlider
+                    timeArray={years}
                       currentYear={currentYear}
                       yearSliderHandler={yearSliderHandler}
                     />
                   </div>
-                 
+
                 </div>
               </div>
-
-
-
-
-              
-
-
             </div>
             :
             <></>
@@ -347,42 +311,16 @@ const KingstonHome = () => {
           {chartData != null ?
 
             <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-           
-               <p className="font-bold"># of Pedestrians - Average per Hour </p>
-              
+              <p className="font-bold"># of Pedestrians - Average per Hour </p>
               <PedestrianChart currentYear={currentYear} chartTime={chartTime} chartData={chartData} />
-
-              <div className="flex mt-2">
-                  <button className={`border text-center p-1 my-1  w-1/3  rounded-md ${chartTime === 'year' ? 'bg-blue-500 hover:bg-blue-700 color-white' : 'border-black-500 bg-slate-0 hover:bg-slate-200'}`} onClick={()=>chartTimeTogglerHandler('year')}>
-                  <span>Year</span>
-                  </button>
-                  <button 
-                  className={`border text-center p-1 my-1  w-1/3  rounded-md ${chartTime === 'month' ? 'bg-blue-500 hover:bg-blue-700 color-white' : 'border-black-500 bg-slate-0 hover:bg-slate-200'}`}
-                  onClick={()=>chartTimeTogglerHandler('month')}>
-                    <span>Month</span>
-                  </button>
-                  <button 
-                   className={`border text-center p-1 my-1  w-1/3  rounded-md ${chartTime === 'day' ? 'bg-blue-500 hover:bg-blue-700 color-white' : 'border-black-500 bg-slate-0 hover:bg-slate-200'}`}
-                   onClick={()=>chartTimeTogglerHandler('day')}>
-                  
-                  <span>Day</span>
-                  </button>
-                </div>
+              <ChartDateToggle years={years} chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
             </div>
             :
             <></>
           }
 
-           
-{/* 
-          <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-            <p className="font-bold">Year - {currentYear}</p>
-            <AutoPlayButton
-              isTimerActive={isTimerActive}
-              timerToggleHandler={timerToggleHandler}
-              timerResetHandler={timerResetHandler}
-            />
-          </div> */}
+
+
 
           {pointOfInterest != null ?
             <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">

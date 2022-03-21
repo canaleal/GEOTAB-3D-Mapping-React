@@ -7,7 +7,7 @@ import vancouverBoundary from "./data/vancouverBoundary.geojson";
 import RoadProjects from './data/road-ahead-projects-under-construction.geojson';
 
 import chicagoBoundary from "./data/chicagoBoundary.geojson";
-import Impediments from './data/impediments.geojson';
+
 
 import franceBoundary from "./data/franceBoundary.geojson";
 import FranceImpediments from './data/franceImpediments.geojson';
@@ -252,10 +252,7 @@ const Map = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYe
     })
 
 
-    map.current.addSource("ImpedimentsData", {
-      type: "geojson",
-      data: Impediments
-    });
+
 
     add_chicago_layers();
   }

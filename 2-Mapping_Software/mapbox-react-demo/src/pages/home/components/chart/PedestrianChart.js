@@ -30,8 +30,30 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
 
   useEffect(() => {
 
-    if (chartTime == 'year') {
+    try{
+      if (chartTime == 'year') {
+        add_year_chart_data();
+      }
+      else if (chartTime == 'month') {
+  
+        add_month_chart_data();
+      }
+      else if (chartTime == 'day') {
+        add_day_chart_data();
+      }
+    }
+    catch (Exception){
+      setIsLoaded(true);
+      setError(true);
+    }
+   
 
+
+  }, [currentYear, chartTime])
+
+
+
+  const add_year_chart_data = () =>{
 
 
       //Group data by year 
@@ -88,156 +110,141 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
       setMapOptions(options);
       setMapData(data);
       setIsLoaded(true);
-    }
-    else if (chartTime == 'month') {
-
-
-      const options = {
-        elements: {
-          bar: {
-            borderWidth: 2,
-          },
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-
-      };
-
-      const labels = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"];
-
-      const colors = [];
-      for (let i = 0; i < 12; i++) {
-        colors.push(random_rgba())
-      }
-
-      const data = {
-        labels,
-        datasets: [
-          {
-            label: `count - ${chartTime} (${currentYear})`,
-            data: Array.from(
-              { length: labels.length },
-              () => Math.floor(Math.random() * 400) + 100
-            ),
-
-            backgroundColor: ['#F44336',
-              '#039BE5',
-              '#0288D1',
-              '#0277BD',
-              '#1A237E',
-              '#8C9EFF',
-              '#536DFE',
-              '#3D5AFE',
-              '#E53935',
-              '#D32F2F',
-              '#C62828',
-
-              '#D50000',
-              '#E91E63',
-              '#FCE4EC',
-              '#F8BBD0',
-
-              '#E91E63',
-              '#D81B60',
-              '#C2185B',
-              '#AD1457',
-              '#880E4F',
-              '#FF80AB',],
-          },
-        ],
-      };
-
-
-      setMapOptions(options);
-      setMapData(data);
-      setIsLoaded(true);
-    }
-
-    else if (chartTime == 'day') {
-
-
-      const options = {
-        elements: {
-          bar: {
-            borderWidth: 2,
-          },
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-
-        // indexAxis: 'y',
-      };
-
-      const labels = [];
-      for (let i = 1; i < 28; i += 5) {
-        labels.push(`${i}-${i + 4}`)
-      }
-
-      const colors = [];
-      for (let i = 0; i < 12; i++) {
-        colors.push(random_rgba())
-      }
-
-      const data = {
-        labels,
-        datasets: [
-          {
-            label: `count - ${chartTime} (${currentYear} - January)`,
-            data: Array.from(
-              { length: labels.length },
-              () => Math.floor(Math.random() * 10) + 5
-            ),
-
-            backgroundColor: ['#F44336',
-              '#039BE5',
-              '#0288D1',
-              '#0277BD',
-              '#1A237E',
-              '#8C9EFF',
-              '#536DFE',
-              '#3D5AFE',
-              '#E53935',
-              '#D32F2F',
-              '#C62828',
-
-              '#D50000',
-              '#E91E63',
-              '#FCE4EC',
-              '#F8BBD0',
-
-              '#E91E63',
-              '#D81B60',
-              '#C2185B',
-              '#AD1457',
-              '#880E4F',
-              '#FF80AB',],
-          },
-        ],
-      };
-
-
-      setMapOptions(options);
-      setMapData(data);
-      setIsLoaded(true);
-    }
-
-
-  }, [currentYear, chartTime])
-
-
-  function random_rgba() {
-
-    return "#" + (Math.floor(Math.random() * 16777215).toString(16).toString());
   }
 
+  const add_month_chart_data = () =>{
+    const options = {
+      elements: {
+        bar: {
+          borderWidth: 2,
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+
+    };
+
+    const labels = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"];
+
+    const colors = [];
+    for (let i = 0; i < 12; i++) {
+      colors.push(random_rgba())
+    }
+
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: `count - ${chartTime} (${currentYear})`,
+          data: Array.from(
+            { length: labels.length },
+            () => Math.floor(Math.random() * 400) + 100
+          ),
+
+          backgroundColor: ['#F44336',
+            '#039BE5',
+            '#0288D1',
+            '#0277BD',
+            '#1A237E',
+            '#8C9EFF',
+            '#536DFE',
+            '#3D5AFE',
+            '#E53935',
+            '#D32F2F',
+            '#C62828',
+
+            '#D50000',
+            '#E91E63',
+            '#FCE4EC',
+            '#F8BBD0',
+
+            '#E91E63',
+            '#D81B60',
+            '#C2185B',
+            '#AD1457',
+            '#880E4F',
+            '#FF80AB',],
+        },
+      ],
+    };
 
 
+    setMapOptions(options);
+    setMapData(data);
+    setIsLoaded(true);
+  }
+
+  const add_day_chart_data = () =>{
+    
+    const options = {
+      elements: {
+        bar: {
+          borderWidth: 2,
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+
+      // indexAxis: 'y',
+    };
+
+    const labels = [];
+    for (let i = 1; i < 28; i += 5) {
+      labels.push(`${i}-${i + 4}`)
+    }
+
+    const colors = [];
+    for (let i = 0; i < 12; i++) {
+      colors.push(random_rgba())
+    }
+
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: `count - ${chartTime} (${currentYear} - January)`,
+          data: Array.from(
+            { length: labels.length },
+            () => Math.floor(Math.random() * 10) + 5
+          ),
+
+          backgroundColor: ['#F44336',
+            '#039BE5',
+            '#0288D1',
+            '#0277BD',
+            '#1A237E',
+            '#8C9EFF',
+            '#536DFE',
+            '#3D5AFE',
+            '#E53935',
+            '#D32F2F',
+            '#C62828',
+
+            '#D50000',
+            '#E91E63',
+            '#FCE4EC',
+            '#F8BBD0',
+
+            '#E91E63',
+            '#D81B60',
+            '#C2185B',
+            '#AD1457',
+            '#880E4F',
+            '#FF80AB',],
+        },
+      ],
+    };
 
 
+    setMapOptions(options);
+    setMapData(data);
+    setIsLoaded(true);
+  }
 
-
-
+  function random_rgba() {
+    return "#" + (Math.floor(Math.random() * 16777215).toString(16).toString());
+  }
 
   return (
     <div className={chartTime != 'hours' ? 'h-64' : 'h-128'}>

@@ -4,26 +4,42 @@ import { useRef, useState, useEffect } from "react";
 
 const Streetview = (pointOfInterest) => {
 
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const streetviewRef = useRef();
+
 
   useEffect(() => {
 
-    const coords_raw = pointOfInterest.pointOfInterest['stop_coordinates'].split(",");
-    const coordinates = coords_raw.map(Number);
-    const location_coordinates = { lat: coordinates[0], lng: coordinates[1] };
+    try{
+      const coordinates = pointOfInterest.pointOfInterest._geometry.coordinates;
+      const location_coordinates = { lat: coordinates[1], lng: coordinates[0] };
 
-    new google.maps.StreetViewPanorama(
-      document.getElementById("streetview"), {
-      position: location_coordinates,
-      pov: {
-        heading: 34,
-        pitch: 10
-      }
-    });
+      new google.maps.StreetViewPanorama(
+        streetviewRef.current, {
+        position: location_coordinates,
+        pov: {
+          heading: 34,
+          pitch: 10
+        }
+      });
+
+      setIsLoaded(true);
+      setError(false);
+    }
+    catch (Exception){
+      console.log(Exception)
+      setIsLoaded(true);
+      setError(true);
+    }
 
   }, [pointOfInterest])
 
   return (
-    <div id="streetview" className='h-128 rounded-lg'></div>
+    
+
+    <div ref={streetviewRef} className='h-128 rounded-lg'></div>
   )
 }
 
