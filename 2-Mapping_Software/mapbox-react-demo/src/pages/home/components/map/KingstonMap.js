@@ -1,8 +1,9 @@
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { useRef, useState, useEffect } from "react";
-import boundary from "./data/city-neighbourhoods.geojson";
-import buses from "./data/transit-gtfs-routes.geojson";
+import boundary from "./data/kingston/city-neighbourhoods.geojson";
+import buses from "./data/kingston/transit-gtfs-routes.geojson";
+import princess from './data/kingston/CrossWalks.geojson'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
@@ -360,6 +361,10 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             }
         });
 
+    }
+
+    const add_princess_cross_walk_layer = () =>{
+        
     }
 
 
