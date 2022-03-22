@@ -20,6 +20,7 @@ import Streetview from "./components/streetview/Streetview";
 import ChartDateToggle from './components/chart/ChartDateToggle';
 import MapStyleSelector from './components/map/MapStyleSelector';
 import ImpedimentsChart from './components/chart/ImpedimentsChart';
+import RangeSlider from './components/slider/RangeSlider';
 
 
 const ChicagoHome = () => {
@@ -58,59 +59,68 @@ const ChicagoHome = () => {
   //Timer details
   const [isTimerActive, setIsTimerActive] = useState(false);
 
+
+  //Filter values
+  const [currentFilterValues, setCurrentFilterValues] = useState();
+  const [filterDetails, setFilterDetails] = useState({ 'min': 0, 'max': 2, 'step':  0.25});
+
   useEffect(() => {
 
 
     setCity('Chicago');
-      setZoom(10)
-      setMapBoundaries([
-        [-76.788, 44.107], // Southwest coordinates
-        [-76.17, 44.52], // Northeast coordinates
-      ]);
+    setZoom(10)
+    setMapBoundaries([
+      [-76.788, 44.107], // Southwest coordinates
+      [-76.17, 44.52], // Northeast coordinates
+    ]);
 
-      setLayers([
-        {
-          id: 1,
-          layer: "Buildings",
-          isOn: true,
-          isDynamic: false,
-          layerName: "BuildingsLayer",
-          imgPath: "Buildings.JPG",
-          showButton: true,
-          icon: "fa-building",
-        },
-        {
-          id: 2,
-          layer: "City Boundary",
-          isOn: true,
-          isDynamic: false,
-          layerName: "CityBoundaryLayer",
-          imgPath: "Boundary.JPG",
-          showButton: true,
-          icon: "fa-border-all",
-        },
-        {
-          id: 3,
-          layer: "Road Impediments",
-          isOn: true,
-          isDynamic: false,
-          layerName: "ImpedimentsLayer",
-          imgPath: "Intersections.JPG",
-          showButton: true,
-          icon: "fa-road",
-        }
+    setLayers([
+      {
+        id: 1,
+        layer: "Buildings",
+        isOn: true,
+        isDynamic: false,
+        layerName: "BuildingsLayer",
+        imgPath: "Buildings.JPG",
+        showButton: true,
+        icon: "fa-building",
+      },
+      {
+        id: 2,
+        layer: "City Boundary",
+        isOn: true,
+        isDynamic: false,
+        layerName: "CityBoundaryLayer",
+        imgPath: "Boundary.JPG",
+        showButton: true,
+        icon: "fa-border-all",
+      },
+      {
+        id: 3,
+        layer: "Road Impediments",
+        isOn: true,
+        isDynamic: false,
+        layerName: "ImpedimentsLayer",
+        imgPath: "Intersections.JPG",
+        showButton: true,
+        icon: "fa-road",
+      }
 
-      ]);
+    ]);
 
 
-      setLng(-87.6298);
-      setLat(41.8781);
+    setLng(-87.6298);
+    setLat(41.8781);
 
-      setYears([2014,2015,2016,2017,2018, 2019, 2020, 2021, 2022]);
-      setCurrentYear(2020);
+    setYears([2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]);
+    setCurrentYear(2020);
 
-      setMonths([1,2,3,4,5,6,7,8,9,10,11,12])
-      setCurrentMonth(1);
+    setMonths([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+    setCurrentMonth(1);
+
+
+    //filter details
+    setCurrentFilterValues([0, 2])
 
     setIsLoaded(true);
   }, []);
@@ -211,6 +221,13 @@ const ChicagoHome = () => {
     setChartTime(item)
   }
 
+  
+  const filterValueSliderHandler = (item) => {
+  
+    setCurrentFilterValues(item);
+  }
+
+
   return (
     <Fragment>
       <Header city={city} />
@@ -262,7 +279,7 @@ const ChicagoHome = () => {
 
 
           {isLoaded == true ?
-            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
+            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
 
               <ChicagoMap
                 cityId={0}
@@ -275,6 +292,7 @@ const ChicagoHome = () => {
                 currentYear={currentYear}
                 months={months}
                 currentMonth={currentMonth}
+                currentFilterValues={currentFilterValues}
                 layers={layers}
                 pointOfInterestHandler={pointOfInterestHandler}
                 chartDataHandler={chartDataHandler}
@@ -294,7 +312,7 @@ const ChicagoHome = () => {
                   <div className="py-4">
                     <TimeSlider
                       timeArray={years}
-                     
+
                       currentDate={currentYear}
                       dateSliderHandler={yearSliderHandler}
                     />
@@ -308,7 +326,7 @@ const ChicagoHome = () => {
                   <div className="py-4">
                     <TimeSlider
                       timeArray={months}
-                      
+
                       currentDate={currentMonth}
                       dateSliderHandler={monthSliderHandler}
                     />
@@ -322,16 +340,32 @@ const ChicagoHome = () => {
           }
 
 
-            {chartData != null ?
+          <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+            <p className="font-bold">Filter Map - Average Acceleration </p>
+
+
+            <div className="pb-4 px-4">
+              <RangeSlider
+                filterDetails={filterDetails}
+                currentFilterValues={currentFilterValues}
+                filterValueSliderHandler={filterValueSliderHandler}
+              />
+            </div>
+
+
+          </div>
+
+
+          {chartData != null ?
 
             <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-            <p className="font-bold">Average Acceleration</p>
-                <ImpedimentsChart years={years} currentYear={currentYear}  currentMonth={currentMonth} chartTime={chartTime} chartData={chartData} />
-                <ChartDateToggle  chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
+              <p className="font-bold">Average Acceleration</p>
+              <ImpedimentsChart years={years} currentYear={currentYear} currentMonth={currentMonth} chartTime={chartTime} chartData={chartData} />
+              <ChartDateToggle chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
             </div>
             :
             <></>
-            }
+          }
 
 
           {pointOfInterest != null ?

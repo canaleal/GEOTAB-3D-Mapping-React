@@ -1,16 +1,14 @@
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { useRef, useState, useEffect } from "react";
-import boundary from "./data/city-neighbourhoods.geojson";
-import pedestrians from "./data/transit-gtfs-stops-count.geojson";
-import buses from "./data/transit-gtfs-routes.geojson";
-import vancouverBoundary from "./data/vancouverBoundary.geojson";
-import RoadProjects from './data/road-ahead-projects-under-construction.geojson';
+import boundary from "./data/kingston/city-neighbourhoods.geojson";
+import pedestrians from "./data/kingston/transit-gtfs-stops-count.geojson";
+import buses from "./data/kingston/transit-gtfs-routes.geojson";
+import vancouverBoundary from "./data/vancouver/vancouverBoundary.geojson";
+import RoadProjects from './data/vancouver/road-ahead-projects-under-construction.geojson';
 
-import chicagoBoundary from "./data/chicagoBoundary.geojson";
-
-
-import franceBoundary from "./data/franceBoundary.geojson";
-import FranceImpediments from './data/franceImpediments.geojson';
+import chicagoBoundary from "./data/chicago/chicagoBoundary.geojson";
+import franceBoundary from "./data/france/franceBoundary.geojson";
+import FranceImpediments from './data/france/franceImpediments.geojson';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";

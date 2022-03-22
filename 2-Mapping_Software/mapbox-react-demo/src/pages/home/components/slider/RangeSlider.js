@@ -3,7 +3,7 @@
 import Slider, { Range } from "rc-slider";
 import { useState, useEffect } from "react";
 
-const RangeSlider = ({ currentFilterValues, filterValueSliderHandler }) => {
+const RangeSlider = ({filterDetails, currentFilterValues, filterValueSliderHandler }) => {
 
 
   const [error, setError] = useState(null);
@@ -15,10 +15,10 @@ const RangeSlider = ({ currentFilterValues, filterValueSliderHandler }) => {
 
     let marks_obj = {}
     
-    for(let i=0; i<=1000; i+=100){
+    for(let i=0; i<=filterDetails.max; i+=filterDetails.step){
       marks_obj[i] = i.toString();
     };
-
+   
    
     setMarksObject(marks_obj);
     setIsLoaded(true);
@@ -34,13 +34,13 @@ const RangeSlider = ({ currentFilterValues, filterValueSliderHandler }) => {
           <p>Error! Unable to load projects.</p>
           :
           <Range
-          min={0}
-          max={1000}
-          defaultValue={[0,1000]}
+          min={filterDetails.min}
+          max={filterDetails.max}
+          defaultValue={[filterDetails.min,filterDetails.max]}
           value={currentFilterValues}
           onChange={filterValueSliderHandler}
           dots={true}
-          step={100}
+          step={filterDetails.step}
           marks={marksObject}
           allowCross={false}
         />

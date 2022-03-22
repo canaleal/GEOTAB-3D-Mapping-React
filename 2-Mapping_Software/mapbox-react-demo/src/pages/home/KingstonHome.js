@@ -58,6 +58,7 @@ const KingstonHome = () => {
 
   //Filter values
   const [currentFilterValues, setCurrentFilterValues] = useState();
+  const [filterDetails, setFilterDetails] = useState({ 'min': 0, 'max': 1000, 'step': 100 });
 
   useEffect(() => {
 
@@ -119,9 +120,12 @@ const KingstonHome = () => {
 
     //Chart details
     setYears([2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]);
-    setCurrentYear(2015);
+    setCurrentYear(2014);
 
-    setCurrentFilterValues([0,1000])
+    //filter details
+    setCurrentFilterValues([0, 1000])
+
+
 
     setIsLoaded(true);
   }, []);
@@ -217,11 +221,11 @@ const KingstonHome = () => {
     setChartTime(item)
   }
 
-  const filterValueSliderHandler=(item)=>{
+  const filterValueSliderHandler = (item) => {
 
     setCurrentFilterValues(item);
   }
-  
+
 
   return (
     <Fragment>
@@ -320,14 +324,15 @@ const KingstonHome = () => {
           }
 
 
-<div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+          <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
             <p className="font-bold">Filter Map - Average per Hour </p>
 
 
             <div className="pb-4 px-4">
-              <RangeSlider 
-              currentFilterValues={currentFilterValues}
-              filterValueSliderHandler={filterValueSliderHandler}
+              <RangeSlider
+                filterDetails={filterDetails}
+                currentFilterValues={currentFilterValues}
+                filterValueSliderHandler={filterValueSliderHandler}
               />
             </div>
 
@@ -347,7 +352,7 @@ const KingstonHome = () => {
           }
 
 
-          
+
 
 
 

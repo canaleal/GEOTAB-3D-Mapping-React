@@ -6,13 +6,13 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
-import chicagoBoundary from "./data/chicagoBoundary.geojson";
+import chicagoBoundary from "./data/chicago/chicagoBoundary.geojson";
 
 
 mapboxgl.accessToken =
     "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, months, currentMonth, layers, pointOfInterestHandler, chartDataHandler }) => {
+const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, months, currentMonth, currentFilterValues, layers, pointOfInterestHandler, chartDataHandler }) => {
 
     const mapContainerRef = useRef(null);
     const map = useRef(null);
@@ -259,7 +259,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
             "waterway-label"
         );
 
-        yearFilter();
+        countFilter();
 
 
         const small_popup = new mapboxgl.Popup({
@@ -361,7 +361,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
         if (!map.current) return;
         try {
             if (map.current !== undefined) {
-                yearFilter();
+                countFilter();
             }
         }
         catch (e) {
@@ -375,7 +375,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
         if (!map.current) return;
         try {
             if (map.current !== undefined) {
-                monthFilter();
+                countFilter();
             }
         }
         catch (e) {
@@ -383,37 +383,40 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
         }
     }, [currentMonth]);
 
+
+
+
+    // If the current filter range changes, update the map
+    useEffect(() => {
+        if (!map.current) return;
+        try {
+            if (map.current !== undefined) {
+                countFilter();
+            }
+        }
+        catch (e) {
+            return
+        }
+    }, [currentFilterValues]);
+
+
     //Function is used to grab data from a certain year
-    const yearFilter = () => {
-
-        let filterYear = 0;
-        let years_temp = years.map(String);
+    const countFilter = () => {
 
 
-        if (currentYear.toString() === '0000') {
-            //Grab all data
-            filterYear = ['match', ['get', 'UpdateDate'], years_temp, false, true];
-            map.current.setFilter('ImpedimentsLayer', ['all', filterYear]);
-        } else if (years_temp.includes(currentYear.toString())) {
-            //Grab data specific to a year
-            map.current.setFilter('ImpedimentsLayer', ['==', ['string', ['get', 'Year']], currentYear.toString()]);
-        }
-        else {
-            console.log('error');
-        }
-    }
 
-
-    //Function is used to grab data from a certain month
-    const monthFilter = () => {
         let temp_month = currentMonth < 10 ? "0" + currentMonth.toString() : currentMonth.toString();
-        let months_temp = months.map(String);
-        if (months_temp.includes(currentMonth.toString())) {
-            map.current.setFilter('ImpedimentsLayer', ['==', ['string', ['get', 'Month']], temp_month]);
-        }
-        else {
-            console.log('error');
-        }
+        //Grab data specific to a filter range
+        map.current.setFilter('ImpedimentsLayer', ["all",
+            [">=", ['get', 'AvgAcceleration'], currentFilterValues[0]],
+            ["<=", ['get', 'AvgAcceleration'], currentFilterValues[1]],
+            ['==', ['string', ['get', 'Year']], currentYear.toString()],
+            ['==', ['string', ['get', 'Month']], temp_month],
+
+        ])
+
+
+
     }
 
     useEffect(() => {
@@ -432,7 +435,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
     const switchLayer = () => {
         map.current.once("styledata", add_chicago_map_sources);
         map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
-
+        
     }
 
 

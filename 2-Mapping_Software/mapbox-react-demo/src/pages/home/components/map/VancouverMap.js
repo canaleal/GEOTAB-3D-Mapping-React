@@ -6,7 +6,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
-import vancouverBoundary from "./data/vancouverBoundary.geojson";
+import vancouverBoundary from "./data/vancouver/vancouverBoundary.geojson";
 
 
 mapboxgl.accessToken =
@@ -126,7 +126,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
                 data: geojson
               });
       
-      
+              setIsLoaded(true)
               add_vancouver_map_layers()
       
             })
@@ -504,6 +504,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
     useEffect(() => {
         if (!map.current) return;
         try {
+            console.log(isLoaded)
             if (map.current !== undefined && isLoaded === true) {
                 switchLayer();
             }
@@ -517,6 +518,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
     const switchLayer = () => {
         map.current.once("styledata", add_vancouver_map_sources);
         map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
+        console.log("🚀 ~ file: VancouverMap.js ~ line 520 ~ switchLayer ~ mapStyle", mapStyle)
 
     }
 
