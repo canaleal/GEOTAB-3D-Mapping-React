@@ -93,15 +93,7 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
           {
             label: `count - ${chartTime}`,
             data: ped_data,
-            backgroundColor: [
-              "rgb(255, 99, 132)",
-              "rgb(255, 159, 64)",
-              "rgb(255, 205, 86)",
-              "rgb(75, 192, 192)",
-              "rgb(54, 162, 235)",
-              "rgb(153, 102, 255)",
-              "rgb(201, 203, 207)"
-            ],
+            backgroundColor: returnListOfColors(),
           },
         ],
       };
@@ -153,8 +145,7 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
       impediments_data.push(avg)
     }
 
-    const labels = ["January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"];
+    const labels = getListNameOfMonths();
 
     const data = {
       labels,
@@ -163,15 +154,7 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
           label: `count - ${chartTime} (${currentYear})`,
           data: impediments_data,
 
-          backgroundColor: [
-            "rgb(255, 99, 132)",
-            "rgb(255, 159, 64)",
-            "rgb(255, 205, 86)",
-            "rgb(75, 192, 192)",
-            "rgb(54, 162, 235)",
-            "rgb(153, 102, 255)",
-            "rgb(201, 203, 207)"
-          ],
+          backgroundColor: returnListOfColors(),
         },
       ],
     };
@@ -216,15 +199,7 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
             () => Math.floor(Math.random() * 10) + 5
           ),
 
-          backgroundColor: [
-            "rgb(255, 99, 132)",
-            "rgb(255, 159, 64)",
-            "rgb(255, 205, 86)",
-            "rgb(75, 192, 192)",
-            "rgb(54, 162, 235)",
-            "rgb(153, 102, 255)",
-            "rgb(201, 203, 207)"
-          ],
+          backgroundColor: returnListOfColors(),
         },
       ],
     };
@@ -235,8 +210,26 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
     setIsLoaded(true);
   }
 
+  function returnListOfColors(){
+    return ["rgb(255, 99, 132)",
+    "rgb(255, 159, 64)",
+    "rgb(255, 205, 86)",
+    "rgb(75, 192, 192)",
+    "rgb(54, 162, 235)",
+    "rgb(153, 102, 255)",
+    "rgb(201, 203, 207)"]
+  }
+
   function random_rgba() {
     return "#" + (Math.floor(Math.random() * 16777215).toString(16).toString());
+  }
+
+  function getListNameOfMonths() {
+    let months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ]
+    return months
   }
 
   return (

@@ -70,36 +70,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
           })
 
       
-          map.current.loadImage(
-            'http://cdn.onlinewebfonts.com/svg/img_113951.png',
-            (error, image) => {
-              if (error) throw error;
-      
-              map.current.addImage('camera', image);
-      
-              
-              fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174')
-                .then(response => response.json())
-                .then(data => {
-      
-                    let geojson = { "type": "FeatureCollection", "features": [] }
-                  for (let point of data.records) {
-                    let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
-                    let properties = point.fields;
-                    let temp = [coordinate[1], coordinate[0]];
-                    properties['stop_coordinates'] = temp.toString();
-                    let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
-                    geojson.features.push(feature);
-                  }
-      
-      
-                  map.current.addSource("TrafficLightCameraData", {
-                    type: "geojson",
-                    data: geojson
-                  });
-      
-                })
-            });
+         
       
       
       
@@ -125,12 +96,52 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
                 type: "geojson",
                 data: geojson
               });
+
+
+              map.current.loadImage(
+                'http://cdn.onlinewebfonts.com/svg/img_113951.png',
+                (error, image) => {
+                  if (error) throw error;
+          
+                  map.current.addImage('camera', image);
+          
+                  
+                  fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174')
+                    .then(response => response.json())
+                    .then(data => {
+          
+                        let geojson = { "type": "FeatureCollection", "features": [] }
+                      for (let point of data.records) {
+                        let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
+                        let properties = point.fields;
+                        let temp = [coordinate[1], coordinate[0]];
+                        properties['stop_coordinates'] = temp.toString();
+                        let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
+                        geojson.features.push(feature);
+                      }
+          
+          
+                      map.current.addSource("TrafficLightCameraData", {
+                        type: "geojson",
+                        data: geojson
+                      });
+
+
+                      setIsLoaded(true)
+                        add_vancouver_map_layers()
+          
+                    })
+                });
       
-              setIsLoaded(true)
-              add_vancouver_map_layers()
+      
+              
       
             })
-      
+
+
+
+
+           
 
     }
 
@@ -304,9 +315,11 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
           // Copy coordinates array.
           const coordinates = e.features[0].geometry.coordinates.slice();
           const description = `
-                    
+                    <span class="block font-bold">Local Area</span>
                     <span class="block">${e.features[0].properties.geo_local_area}</span>
+                    <span class="block font-bold">Map ID</span>
                     <span class="block">${e.features[0].properties.mapid}</span>
+                    <span class="block font-bold">Street Name</span>
                     <span  class="block">${e.features[0].properties.name}</span>
                     <a class="border  block w-full text-center p-3 my-1 rounded-md bg-blue-500 hover:bg-blue-700 color-white" href="${e.features[0].properties.url}" target="_blank" >Traffic Link</a>
                     
@@ -376,8 +389,9 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates.slice();
             const description = `
-                      
+                        <span class="block font-bold">Local Area</span>
                       <span class="block">${e.features[0].properties.geo_local_area}</span>
+                      <span class="block font-bold">Intersection Name</span>
                       <span class="block">${e.features[0].properties.xstreet}</span>
                      
                       `

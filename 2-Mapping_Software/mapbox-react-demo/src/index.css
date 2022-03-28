@@ -64,7 +64,9 @@ code {
   transition: all 1s;
 }
 
-
+.mapboxgl-ctrl-logo {
+  display: none !important;
+}
 
 
 

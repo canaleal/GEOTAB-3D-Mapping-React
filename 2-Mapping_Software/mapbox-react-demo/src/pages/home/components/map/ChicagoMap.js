@@ -52,6 +52,9 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
         map.current.addControl(geocoder, 'top-right');
     }
 
+    
+   
+    
     const add_chicago_map_sources = () => {
 
         map.current.addSource('mapbox-dem', {
@@ -85,6 +88,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
 
     }
 
+    
 
     const add_chicago_map_layers = () => {
 
@@ -271,11 +275,15 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates.slice();
             const description = `
-                
-                <span class="block">${e.features[0].properties.City}</span>
-                <span class="block">${e.features[0].properties.County}</span>
-                <span class="block">${e.features[0].properties.State}</span>
+
+                <span class="block font-bold">Country</span>
                 <span class="block">${e.features[0].properties.Country}</span>
+                <span class="block font-bold">State</span>
+                <span class="block">${e.features[0].properties.State}</span>
+                <span class="block font-bold">City</span>
+                <span class="block">${e.features[0].properties.City}</span>
+                
+                <span class="block font-bold">Average Acceleration</span>
                 <span class="block">${e.features[0].properties.AvgAcceleration}</span>
                
                 `

@@ -272,7 +272,7 @@ const VancouverHome = () => {
 
 
           {isLoaded == true ?
-            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
+            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg h-[32rem] md:h-screen slide-in-right relative">
 
               <VancouverMap
                 cityId={0}
@@ -301,7 +301,10 @@ const VancouverHome = () => {
           }
 
 
-         
+<div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+                <p className="font-bold">Sample Card</p>
+                <p>Exercitation minim ex nulla aliquip ullamco aliquip tempor exercitation reprehenderit nostrud sunt. Dolore quis magna id nisi ipsum magna esse eiusmod reprehenderit magna. Eu consectetur pariatur laborum deserunt. Magna irure dolore commodo nisi sint esse irure et voluptate nulla consequat. Pariatur excepteur minim adipisicing ea consectetur occaecat et enim fugiat laboris nulla. Aute laboris id irure aliquip velit elit Lorem.</p>
+              </div>
 
           {pointOfInterest != null ?
             <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">

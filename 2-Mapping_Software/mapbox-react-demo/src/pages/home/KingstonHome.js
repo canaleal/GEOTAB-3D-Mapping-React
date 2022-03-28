@@ -115,6 +115,16 @@ const KingstonHome = () => {
         imgPath: "BusRoutes.JPG",
         showButton: true,
         icon: "fa-bus",
+      },
+      {
+        id: 5,
+        layer: "Princess CrossWalk Routes",
+        isOn: true,
+        isDynamic: false,
+        layerName: "PrincessCrossWalkLayer",
+        imgPath: "BusRoutes.JPG",
+        showButton: true,
+        icon: "fa-person",
       }
     ]);
 
@@ -325,7 +335,7 @@ const KingstonHome = () => {
 
 
           <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-            <p className="font-bold">Filter Map - Average per Hour </p>
+            <p className="font-bold">Filter Map - Average # of Pedestrians</p>
 
 
             <div className="pb-4 px-4">
@@ -360,7 +370,7 @@ const KingstonHome = () => {
           {pointOfInterest != null ?
             <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
               <p className="font-bold">Point Of Interest</p>
-              {/* <Streetview pointOfInterest={pointOfInterest} /> */}
+              <Streetview pointOfInterest={pointOfInterest} />
             </div>
             :
             <></>

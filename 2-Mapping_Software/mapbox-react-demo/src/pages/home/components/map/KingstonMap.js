@@ -72,7 +72,10 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             'data': buses
         });
 
-
+        map.current.addSource('PrincessCrossWalkData', {
+            'type': 'geojson',
+            'data': princess
+        });
 
         fetch('http://localhost:3000/data/pedestrian.geojson')
             .then(response => response.json())
@@ -99,6 +102,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
         add_boundary_layer();
         add_pedestrian_layer();
         add_bus_route_layer();
+        add_princess_cross_walk_layer();
 
         map.current.resize();
     }
@@ -290,6 +294,8 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             "waterway-label"
         );
 
+        countFilter();
+
         const small_popup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false
@@ -300,9 +306,12 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates.slice();
             const description = `
+                    <span class="block font-bold">Street Name</span>
                     <span class="block">${e.features[0].properties.name} </span>
+                    <span class="block font-bold">Year</span>
                     <span class="block">${e.features[0].properties.Year}</span>
-                    <span class="block">Number of People (AVG/HR) : ${e.features[0].properties.count}</span>
+                    <span class="block font-bold">Average Pedestrian Count</span>
+                    <span class="block">${e.features[0].properties.count}</span>
                     <img src="${e.features[0].properties.img_url}" alt="TEST" height=auto width="100%"/>
                         
       `
@@ -364,7 +373,79 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
     }
 
     const add_princess_cross_walk_layer = () =>{
-        
+        //Create the roads under development layer
+        const layerName = 'PrincessCrossWalkLayer'
+        map.current.addLayer({
+            'id': layerName,
+            'type': 'line',
+            'source': 'PrincessCrossWalkData',
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            'paint': {
+                'line-color': '#ffffff', //Specify road colour
+                'line-width': 4 //Specify width of the road
+            }
+        });
+
+
+        const small_popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+        // When a click event occurs on a feature in the places layer, open a popup at the
+        // location of the feature, with description HTML from its properties.
+        map.current.on('click', layerName, (e) => {
+            // Copy coordinates array.
+           
+            const coordinates = e.features[0].geometry.coordinates[0].slice();
+            const description = `
+                  
+                    <span class="block font-bold">Year</span>
+                    <span class="block">${e.features[0].properties.Year}</span>
+                    <span class="block font-bold">Average Pedestrian Count</span>
+                    <span class="block">${e.features[0].properties.count}</span>
+                  
+                        
+      `
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+            //If the user clicks a point save it 
+            pointOfInterestHandler(e.features[0]);
+        });
+
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.current.on('mouseenter', layerName, (e) => {
+            map.current.getCanvas().style.cursor = 'pointer';
+            const coordinates = e.features[0].geometry.coordinates[0].slice();
+            const description = `<span>People (AVG/HR) : ${e.features[0].properties.count}</span>`
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            small_popup
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+        });
+
+        // Change it back to a pointer when it leaves.
+        map.current.on('mouseleave', layerName, () => {
+            map.current.getCanvas().style.cursor = '';
+            small_popup.remove();
+        });
+
     }
 
 

@@ -6,7 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const LayerModal = ({ layerModalRef, closeModalHandler, staticLayers, dynamicLayers, layerButtonHandler }) => {
 
-
+    useEffect(() => {
+      
+    
+     
+    }, [])
+    
 
 
     return (
