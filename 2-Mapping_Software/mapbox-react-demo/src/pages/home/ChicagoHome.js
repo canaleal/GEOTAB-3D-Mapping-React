@@ -12,7 +12,7 @@ import Header from "../../components/Header";
 import AboutModal from "../../components/AboutModal";
 import HelpModal from "../../components/HelpModal";
 import Footer from "../../components/Footer";
-import Streetview from "./components/streetview/Streetview";
+import GoogleStreetview from "./components/googleStreetview/GoogleStreetview";
 import ChartDateToggle from './components/chart/ChartDateToggle';
 import MapStyleSelector from './components/map/MapStyleSelector';
 import ImpedimentsChart from './components/chart/ImpedimentsChart';
@@ -346,7 +346,7 @@ const ChicagoHome = () => {
             {pointOfInterest != null ?
               <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
                 <p className="font-bold">Point Of Interest</p>
-                <Streetview pointOfInterest={pointOfInterest} />
+                <GoogleStreetview pointOfInterest={pointOfInterest} />
               </div>
               :
               <span></span>

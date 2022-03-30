@@ -2,7 +2,7 @@
 import React from 'react';
 import { useRef, useState, useEffect } from "react";
 
-const Streetview = (pointOfInterest) => {
+const GoogleStreetview = (pointOfInterest) => {
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -56,4 +56,4 @@ const Streetview = (pointOfInterest) => {
   )
 }
 
-export default Streetview;
+export default GoogleStreetview;
