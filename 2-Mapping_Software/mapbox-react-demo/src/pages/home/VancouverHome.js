@@ -69,12 +69,11 @@ const VancouverHome = () => {
         isOn: true,
         isDynamic: false,
         layerName: "BuildingsLayer",
-        imgPath: "Boundary.JPG",
+        imgPath: "Buildings.JPG",
         showButton: true,
         icon: "fa-building",
-      },
-
-      {
+    },
+    {
         id: 2,
         layer: "City Boundary",
         isOn: true,
@@ -83,14 +82,14 @@ const VancouverHome = () => {
         imgPath: "Boundary.JPG",
         showButton: true,
         icon: "fa-border-all",
-      },
+    },
       {
         id: 3,
         layer: "Traffic Cameras",
         isOn: true,
         isDynamic: true,
         layerName: "TrafficLightCameraLayer",
-        imgPath: "Boundary.JPG",
+        imgPath: "TrafficCameras.JPG",
         showButton: true,
         icon: "fa-camera",
       },
@@ -100,7 +99,7 @@ const VancouverHome = () => {
         isOn: false,
         isDynamic: false,
         layerName: "IntersectionLayer",
-        imgPath: "Boundary.JPG",
+        imgPath: "Intersections.JPG",
         showButton: false,
         icon: "fa-road",
       },
@@ -239,7 +238,7 @@ const VancouverHome = () => {
       {isLoaded ?
         <div className="p-5">
 
-          <div className="grid grid-cols-4 grid-row-3 gap-4 ">
+          <div className="grid grid-cols-4 grid-row-2 gap-4 ">
             <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
               <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
             </div>
@@ -247,7 +246,7 @@ const VancouverHome = () => {
 
 
 
-            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg h-[32rem] md:h-screen slide-in-right relative">
+            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg  slide-in-right relative">
 
               <VancouverMap
                 cityId={0}
@@ -274,13 +273,9 @@ const VancouverHome = () => {
 
 
 
-            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-              <p className="font-bold">Sample Card</p>
-              <p>Exercitation minim ex nulla aliquip ullamco aliquip tempor exercitation reprehenderit nostrud sunt. Dolore quis magna id nisi ipsum magna esse eiusmod reprehenderit magna. Eu consectetur pariatur laborum deserunt. Magna irure dolore commodo nisi sint esse irure et voluptate nulla consequat. Pariatur excepteur minim adipisicing ea consectetur occaecat et enim fugiat laboris nulla. Aute laboris id irure aliquip velit elit Lorem.</p>
-            </div>
-
+        
             {pointOfInterest != null ?
-              <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
+              <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 slide-in-left">
                 <p className="font-bold">Point Of Interest</p>
                 <Streetview pointOfInterest={pointOfInterest} />
               </div>

@@ -257,6 +257,9 @@ const FranceHome = () => {
                                 zoom={zoom}
                                 years={years}
                                 currentYear={currentYear}
+                                months={months}
+                                currentMonth={currentMonth}
+                                currentFilterValues={currentFilterValues}
                                 layers={layers}
                                 pointOfInterestHandler={pointOfInterestHandler}
                                 chartDataHandler={chartDataHandler}
@@ -286,19 +289,15 @@ const FranceHome = () => {
 
                     </div>
 
-                    {pointOfInterest != null ? (
 
-                        <div className="grid grid-cols-4 grid-row-3 gap-4 my-4">
-                            <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
-                                <p className="font-bold">Point Of Interest</p>
-
-                                <Streetview pointOfInterest={pointOfInterest} />
-
-                            </div>
+                    {pointOfInterest != null ?
+                        <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 slide-in-left">
+                            <p className="font-bold">Point Of Interest</p>
+                            <Streetview pointOfInterest={pointOfInterest} />
                         </div>
-                    ) : (
-                        <></>
-                    )}
+                        :
+                        <span></span>
+                    }
                 </div>
 
                 :

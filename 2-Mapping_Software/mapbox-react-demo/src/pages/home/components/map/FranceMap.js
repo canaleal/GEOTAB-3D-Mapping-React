@@ -382,13 +382,13 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
 
     //Function is used to grab data from a certain year
     const addMapFilters = () => {
-
+     
         //Grab data specific to a filter range and year
-        // map.current.setFilter('ImpedimentsLayer', ["all",
-        //     [">=", ['get', 'count'], currentFilterValues[0]],
-        //     ["<=", ['get', 'count'], currentFilterValues[1]]
+        map.current.setFilter('ImpedimentsLayer', ["all",
+            [">=", ['get', 'AvgAcceleration'], currentFilterValues[0]],
+            ["<=", ['get', 'AvgAcceleration'], currentFilterValues[1]]
 
-        // ])
+        ])
 
         //Reset the map size so it goes into full width and height
         map.current.resize();
