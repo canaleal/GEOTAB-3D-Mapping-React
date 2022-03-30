@@ -43,7 +43,7 @@ const SelectCity = () => {
           cities.map((city => {
             return (
               <div key={city.link} className="col-span-4 md:col-span-1  rounded-lg overflow-hidden shadow-lg bg-white">
-                <img className="w-full h-64 " src={city.img_path} alt="Layer Image" />
+                <img className="w-full h-64" src={city.img_path} alt="Layer Image" />
 
                 <div className="p-4">
                   <p className="font-bold mb-2">{city.name}</p>

@@ -68,7 +68,7 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
       const labels = Object.keys(groups)
 
 
-      const chart_name = 'count -  (' + currentYear  + ')';
+      const chart_name = 'count';
       createChart(ped_data, labels, chart_name);
   }
 

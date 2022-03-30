@@ -1,4 +1,4 @@
-import React, { Component, useRef, useState, useEffect } from 'react'
+import React from 'react'
 
 const Header = ({city}) => {
 

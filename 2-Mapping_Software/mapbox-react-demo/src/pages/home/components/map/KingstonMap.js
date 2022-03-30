@@ -3,7 +3,7 @@ import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-load
 import { useRef, useState, useEffect } from "react";
 import boundary from "./data/kingston/city-neighbourhoods.geojson";
 import buses from "./data/kingston/transit-gtfs-routes.geojson";
-import princess from './data/kingston/CrossWalks.geojson'
+import crosswalk from './data/kingston/CrossWalks.geojson'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
@@ -21,23 +21,23 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
+        // Create a new map
         map.current = new mapboxgl.Map({
             container: mapContainerRef.current,
             style: `mapbox://styles/mapbox/${mapStyle}`,
             center: [lng, lat],
             zoom: zoom,
         })
-
+   
         map.current.on('load', () => {
-            //Add controls like zoom in and out
             add_map_controls();
-
             add_kingston_map_sources();
         });
 
         return () => map.current.remove();
     }, []);
 
+    // Add map controls and interactions
     const add_map_controls = () => {
         // Include Static Components that wont be re-rendered   
         map.current.addControl(new mapboxgl.FullscreenControl(), 'bottom-right');
@@ -72,9 +72,9 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             'data': buses
         });
 
-        map.current.addSource('PrincessCrossWalkData', {
+        map.current.addSource('CrossWalkData', {
             'type': 'geojson',
-            'data': princess
+            'data': crosswalk
         });
 
         fetch('http://localhost:3000/data/pedestrian.geojson')
@@ -88,28 +88,42 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
 
                 chartDataHandler(data['features']);
 
-                setIsLoaded(true);
+                
                 add_kingston_map_layers();
             });
 
     }
 
 
+
+
+
     const add_kingston_map_layers = () => {
 
+        // Add layers to the map
         add_terrain_layer();
         add_building_layer();
         add_boundary_layer();
         add_pedestrian_layer();
         add_bus_route_layer();
-        add_princess_cross_walk_layer();
+        add_cross_walk_layer();
 
+        // Add all the filters to the map
+        addLayerFilters();
+        addMapFilters();
+
+        // Set the map to be loaded
+        setIsLoaded(true);
         map.current.resize();
     }
 
+
+  
+
+
     const add_terrain_layer = () => {
 
-
+        // Add terrain layer and set the exaggeration the layer to 1.5x 
         map.current.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
         map.current.addLayer({
             'id': 'sky',
@@ -131,9 +145,10 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             (layer) => layer.type === "symbol" && layer.layout["text-field"]
         ).id;
 
+        const layerName = 'BuildingsLayer';
         map.current.addLayer(
             {
-                id: "BuildingsLayer",
+                id: layerName,
                 source: "composite",
                 "source-layer": "building",
                 filter: ["==", "extrude", "true"],
@@ -169,6 +184,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             labelLayerId
         );
 
+        map.current.setLayoutProperty(layerName, 'visibility','none')
     }
 
 
@@ -204,7 +220,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             },
         });
 
-
+        map.current.setLayoutProperty(layerName, 'visibility','none')
 
         let hoveredStateId = null;
         // When the user moves their mouse over the state-fill layer, we'll update the
@@ -294,7 +310,10 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             "waterway-label"
         );
 
-        countFilter();
+
+        map.current.setLayoutProperty(layerName, 'visibility','none')
+
+     
 
         const small_popup = new mapboxgl.Popup({
             closeButton: false,
@@ -351,6 +370,8 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             map.current.getCanvas().style.cursor = '';
             small_popup.remove();
         });
+
+        
     }
 
     const add_bus_route_layer = () => {
@@ -365,45 +386,45 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
                 'line-cap': 'round'
             },
             'paint': {
-                'line-color': '#870113', //Specify road colour
+                'line-color': '#870113', //Specify road color
                 'line-width': 2 //Specify width of the road
             }
         });
 
+        map.current.setLayoutProperty(layerName, 'visibility','none')
+
     }
 
-    const add_princess_cross_walk_layer = () =>{
+    const add_cross_walk_layer = () => {
         //Create the roads under development layer
-        const layerName = 'PrincessCrossWalkLayer'
+        const layerName = 'CrossWalkLayer'
         map.current.addLayer({
             'id': layerName,
             'type': 'line',
-            'source': 'PrincessCrossWalkData',
+            'source': 'CrossWalkData',
             'layout': {
                 'line-join': 'round',
                 'line-cap': 'round'
             },
             'paint': {
-                'line-color': '#ffffff', //Specify road colour
+                'line-color': '#ffffff', //Specify road color
                 'line-width': 4 //Specify width of the road
             }
         });
 
+        map.current.setLayoutProperty(layerName, 'visibility','none')
 
-      
     }
 
 
 
 
 
-    // If the layer changes (isOn), update the map
+    // If any of the layer in the layerList changes (isOn), update the map
     useEffect(() => {
         if (!map.current) return;
         try {
-            if (map.current !== undefined) {
-                layerFilter();
-            }
+            addLayerFilters();
         }
         catch (e) {
             return
@@ -412,70 +433,51 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
 
 
     //Function is used to show or hide layers on map
-    const layerFilter = () => {
+    const addLayerFilters = () => {
         //Show or hide layer if it's set to on/off
-        layers.forEach(function (item) {
-            try {
-                map.current.setLayoutProperty(item.layerName, 'visibility', `${item.isOn === true && item.showButton === true ? 'visible' : 'none'}`);
-            }
-            catch (e) {
-                return
-            }
+        layers.forEach(function (layer) {
+            map.current.setLayoutProperty(layer.layerName, 'visibility', `${layer.isOn === true ? 'visible' : 'none'}`);
         });
 
         //Reset the map size so it goes into full width and height
         map.current.resize();
     }
 
+
+
     // If the year changes, update the map
     useEffect(() => {
         if (!map.current) return;
         try {
-            if (map.current !== undefined) {
-                countFilter();
-            }
+            addMapFilters();
         }
         catch (e) {
             return
         }
-    }, [currentYear]);
+    }, [currentYear, currentFilterValues]);
 
-  
-
-    // If the current filter range changes, update the map
-    useEffect(() => {
-        if (!map.current) return;
-        try {
-            if (map.current !== undefined) {
-                countFilter();
-            }
-        }
-        catch (e) {
-            return
-        }
-    }, [currentFilterValues]);
 
 
     //Function is used to grab data from a certain year
-    const countFilter = () => {
+    const addMapFilters = () => {
 
-      //Grab data specific to a filter range
-      map.current.setFilter('PedestriansLayer',  ["all",     
-      [">=", ['get', 'count'], currentFilterValues[0]],
-      ["<=", ['get', 'count'], currentFilterValues[1]],
-      ['==', ['string', ['get', 'Year']], currentYear.toString()],
+        //Grab data specific to a filter range and year
+        map.current.setFilter('PedestriansLayer', ["all",
+            [">=", ['get', 'count'], currentFilterValues[0]],
+            ["<=", ['get', 'count'], currentFilterValues[1]],
+            ['==', ['string', ['get', 'Year']], currentYear.toString()],
 
-    ])
+        ])
 
-   
-       
+        //Reset the map size so it goes into full width and height
+        map.current.resize();
     }
 
 
     useEffect(() => {
         if (!map.current) return;
         try {
-            if (map.current !== undefined && isLoaded === true) {
+            if (isLoaded === true) {
                 switchLayer();
             }
         }
@@ -486,8 +488,16 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
 
 
     const switchLayer = () => {
+
+        //Switch the map style but wait until the map sources are added first
         map.current.once("styledata", add_kingston_map_sources);
         map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
+
+        addLayerFilters();
+        addMapFilters();
+
+        //Reset the map size so it goes into full width and height
+        map.current.resize();
 
     }
 

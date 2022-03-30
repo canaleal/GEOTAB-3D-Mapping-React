@@ -11,7 +11,7 @@ import LayerModal from "./components/layer/LayerModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "rc-slider/assets/index.css";
-import AutoPlayButton from "./components/slider/AutoPlayButton";
+
 import Header from "../../components/Header";
 import AboutModal from "../../components/AboutModal";
 import HelpModal from "../../components/HelpModal";
@@ -58,7 +58,7 @@ const KingstonHome = () => {
 
   //Filter values
   const [currentFilterValues, setCurrentFilterValues] = useState();
-  const [filterDetails, setFilterDetails] = useState({ 'min': 0, 'max': 1000, 'step': 100 });
+  const [filterDetails, setFilterDetails] = useState({});
 
   useEffect(() => {
 
@@ -109,19 +109,19 @@ const KingstonHome = () => {
       {
         id: 4,
         layer: "Bus Routes",
-        isOn: true,
+        isOn: false,
         isDynamic: false,
         layerName: "BusRoutesLayer",
         imgPath: "BusRoutes.JPG",
-        showButton: true,
+        showButton: false,
         icon: "fa-bus",
       },
       {
         id: 5,
-        layer: "Princess CrossWalk Routes",
+        layer: "CrossWalk Routes",
         isOn: true,
         isDynamic: false,
-        layerName: "PrincessCrossWalkLayer",
+        layerName: "CrossWalkLayer",
         imgPath: "BusRoutes.JPG",
         showButton: true,
         icon: "fa-person",
@@ -134,7 +134,7 @@ const KingstonHome = () => {
 
     //filter details
     setCurrentFilterValues([0, 1000])
-
+    setFilterDetails({ 'min': 0, 'max': 1000, 'step': 100 });
 
 
     setIsLoaded(true);
@@ -258,108 +258,109 @@ const KingstonHome = () => {
         layerButtonHandler={layerButtonHandler}
       />
 
-      <div className="px-5 py-5">
+
+      {isLoaded ?
+        <div className="px-5 py-5">
 
 
 
-        <div className="grid grid-cols-4 grid-row-3 gap-4 ">
-          <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 slide-in-left">
-            <p className="font-bold">Layers</p>
-            {layers.map((item) => (
-              <span key={item.id}>
-                {item.showButton ? (
-                  <LayerButton item={item} layerHandler={layerHandler} />
-                ) : (
-                  <></>
-                )}
-              </span>
-            ))}
+          <div className="grid grid-cols-4 grid-row-3 gap-4 ">
+            <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4">
+              <p className="font-bold">Layers</p>
+              {layers.map((item) => (
+                <span key={item.id}>
+                  {item.showButton ? (
+                    <LayerButton item={item} layerHandler={layerHandler} />
+                  ) : (
+                    <></>
+                  )}
+                </span>
+              ))}
 
-            <button
-              onClick={() => showModalHandler(layerModalRef)}
-              className={`border block w-full text-sm text-left p-3 mt-10 rounded-md btn-gray`}
-            >
-              <FontAwesomeIcon
-                icon="fa-solid fa-layer-group"
-                size="lg"
-                width={"2rem"}
-              />
-              Add/Remove Layers
-            </button>
-          </div>
+             
+              <button onClick={() =>showModalHandler(layerModalRef)}
+                className={`border slide-in-left  w-full text-left  btn-gray mt-10`}
+                >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-layer-group"
+                  size="lg"
+                  width={"2rem"}
+                /><span>Add/Remove Layers</span>
+              </button>
+            </div>
 
 
-          {isLoaded == true ?
-            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
+            {isLoaded == true ?
+              <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
 
-              <KingstonMap
-                cityId={0}
-                mapStyle={mapStyle}
-                mapBoundaries={mapBoundaries}
-                lng={lng}
-                lat={lat}
-                zoom={zoom}
-                years={years}
-                currentYear={currentYear}
-                layers={layers}
-                currentFilterValues={currentFilterValues}
-                pointOfInterestHandler={pointOfInterestHandler}
-                chartDataHandler={chartDataHandler}
-              />
+                <KingstonMap
+                  cityId={0}
+                  mapStyle={mapStyle}
+                  mapBoundaries={mapBoundaries}
+                  lng={lng}
+                  lat={lat}
+                  zoom={zoom}
+                  years={years}
+                  currentYear={currentYear}
+                  layers={layers}
+                  currentFilterValues={currentFilterValues}
+                  pointOfInterestHandler={pointOfInterestHandler}
+                  chartDataHandler={chartDataHandler}
+                />
 
-              <div className="absolute top-3 left-3 bg-white rounded-lg p-4">
-                <MapStyleSelector mapStyle={mapStyle} mapStyleChangeHandler={mapStyleChangeHandler} />
-              </div>
+                <div className="absolute top-3 left-3 bg-white rounded-lg p-4">
+                  <MapStyleSelector mapStyle={mapStyle} mapStyleChangeHandler={mapStyleChangeHandler} />
+                </div>
 
-              <div className="absolute bottom-10 px-20 box-border w-full">
-                <div className="bg-black px-10 py-4 rounded-lg">
+                <div className="absolute bottom-10 px-20 box-border w-full">
+                  <div className="bg-black px-10 py-4 rounded-lg">
 
-                  <div className='w-64'>
-                    <span className='color-white'>Year - {currentYear}</span>
+                    <div className='w-64'>
+                      <span className='color-white'>Year - {currentYear}</span>
+                    </div>
+
+                    <div className="py-4">
+                      <TimeSlider
+                        timeArray={years}
+                        currentDate={currentYear}
+                        dateSliderHandler={yearSliderHandler}
+                      />
+                    </div>
+
                   </div>
-
-                  <div className="py-4">
-                    <TimeSlider
-                      timeArray={years}
-                      currentDate={currentYear}
-                      dateSliderHandler={yearSliderHandler}
-                    />
-                  </div>
-
                 </div>
               </div>
-            </div>
-            :
-            <></>
-          }
+              :
+              <></>
+            }
 
-
-          <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-            <p className="font-bold">Filter Map - Average # of Pedestrians</p>
-
-
-            <div className="pb-4 px-4">
-              <RangeSlider
-                filterDetails={filterDetails}
-                currentFilterValues={currentFilterValues}
-                filterValueSliderHandler={filterValueSliderHandler}
-              />
-            </div>
-
-
-          </div>
-
-
-          {chartData != null ?
 
             <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-              <p className="font-bold"># of Pedestrians - Average per Hour </p>
-              <PedestrianChart currentYear={currentYear} chartTime={chartTime} chartData={chartData} />
-              <ChartDateToggle years={years} chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
+              <p className="font-bold">Filter Map - Average # of Pedestrians</p>
+
+
+              <div className="pb-4 px-4">
+                <RangeSlider
+                  filterDetails={filterDetails}
+                  currentFilterValues={currentFilterValues}
+                  filterValueSliderHandler={filterValueSliderHandler}
+                />
+              </div>
+
+
             </div>
-            :
-            <></>
-          }
+
+
+            {chartData != null ?
+
+              <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+                <p className="font-bold"># of Pedestrians - Average per Hour </p>
+                <PedestrianChart currentYear={currentYear} chartTime={chartTime} chartData={chartData} />
+                <ChartDateToggle years={years} chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
+              </div>
+              :
+              <></>
+            }
 
 
 
@@ -367,17 +368,24 @@ const KingstonHome = () => {
 
 
 
-          {pointOfInterest != null ?
-            <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
-              <p className="font-bold">Point Of Interest</p>
-              <Streetview pointOfInterest={pointOfInterest} />
-            </div>
-            :
-            <></>
-          }
+            {pointOfInterest != null ?
+              <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
+                <p className="font-bold">Point Of Interest</p>
+                <Streetview pointOfInterest={pointOfInterest} />
+              </div>
+              :
+              <></>
+            }
 
+          </div>
         </div>
-      </div>
+
+        :
+        <></>
+      }
+
+
+
 
       <Footer
         showModalHandler={showModalHandler}

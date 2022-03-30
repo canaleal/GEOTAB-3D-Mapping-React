@@ -39,6 +39,10 @@ code {
 .btn-blue{
     background-color: #3b82f6;
     color: #fff;
+    padding: 0.5rem;
+    border-radius: 0.375rem/* 6px */;
+  
+    
 }
 
 .btn-blue:hover{
@@ -49,6 +53,8 @@ code {
 .btn-gray{
   background-color: #e2e8f0;
   color: #000;
+  padding: 0.5rem;
+  border-radius: 0.375rem/* 6px */;
 }
 
 .btn-gray:hover{

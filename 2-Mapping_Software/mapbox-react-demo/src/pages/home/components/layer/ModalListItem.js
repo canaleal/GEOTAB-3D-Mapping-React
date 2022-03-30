@@ -3,18 +3,19 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const ModalListItem = ({ item, layerButtonHandler }) => {
+const ModalListItem = ({ layer, layerButtonHandler }) => {
     return (
-        <div  className="col-span-4 md:col-span-1  rounded overflow-hidden shadow-lg">
-           
-            <img className="w-full h-32 object-none" src={`http://localhost:3000/assets/images/${item.imgPath}`} alt="Layer Image" />
-        
-            <div className="p-4">
-                <p className="font-bold mb-2">{item.layer}</p>
+        <div className="col-span-1  rounded-lg overflow-hidden shadow-lg">
+
+            <img className="w-full h-32 object-none" src={`http://localhost:3000/assets/images/${layer.imgPath}`} alt="Layer" />
+
+            <div className="p-2">
+                <p className="font-bold my-2">{layer.layer}</p>
                 <p>View data displayed on maps to better visualize the city and surrounding area.</p>
 
-                <button className={`border  block w-full text-center p-3 my-1 rounded-md ${item.showButton ? 'btn-blue' : 'btn-gray'} `} onClick={() => layerButtonHandler(item)}>
-                    <FontAwesomeIcon icon={`fa-solid ${item.icon}`} />
+                <button className={`border  w-full text-center  ${layer.showButton ? 'btn-blue' : 'btn-gray'} `}
+                    onClick={() => layerButtonHandler(layer)}>
+                    <FontAwesomeIcon icon={`fa-solid ${layer.icon}`} />
                 </button>
             </div>
 
