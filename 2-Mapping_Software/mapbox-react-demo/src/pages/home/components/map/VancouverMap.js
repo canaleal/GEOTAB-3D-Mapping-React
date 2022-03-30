@@ -12,7 +12,7 @@ import vancouverBoundary from "./data/vancouver/vancouverBoundary.geojson";
 mapboxgl.accessToken =
     "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, months, currentMonth, layers, pointOfInterestHandler, chartDataHandler }) => {
+const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, currentFilterValues, layers, pointOfInterestHandler, chartDataHandler }) => {
 
     const mapContainerRef = useRef(null);
     const map = useRef(null);
@@ -59,89 +59,88 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
             'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
             'tileSize': 512,
             'maxzoom': 14
-          });
-      
-         
-      
-      
-          map.current.addSource("BoundaryData", {
+        });
+
+
+
+
+        map.current.addSource("BoundaryData", {
             type: "geojson",
             data: vancouverBoundary,
-          })
+        })
 
-      
-         
-      
-      
-      
-      
-      
-          fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-intersections&q=&rows=6105&facet=geo_local_area')
+
+
+
+
+
+
+
+        fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-intersections&q=&rows=6105&facet=geo_local_area')
             .then(response => response.json())
             .then(data => {
-      
-              let geojson = { "type": "FeatureCollection", "features": [] }
-              for (let point of data.records) {
-                let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
-                let properties = point.fields;
-                let temp = [coordinate[1], coordinate[0]];
-                properties['stop_coordinates'] = temp.toString();
-                let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
-                geojson.features.push(feature);
-              }
-              console.log(geojson)
-      
-      
-              map.current.addSource("IntersectionData", {
-                type: "geojson",
-                data: geojson
-              });
+
+                let geojson = { "type": "FeatureCollection", "features": [] }
+                for (let point of data.records) {
+                    let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
+                    let properties = point.fields;
+                    let temp = [coordinate[1], coordinate[0]];
+                    properties['stop_coordinates'] = temp.toString();
+                    let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
+                    geojson.features.push(feature);
+                }
 
 
-              map.current.loadImage(
-                'http://cdn.onlinewebfonts.com/svg/img_113951.png',
-                (error, image) => {
-                  if (error) throw error;
-          
-                  map.current.addImage('camera', image);
-          
-                  
-                  fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174')
-                    .then(response => response.json())
-                    .then(data => {
-          
-                        let geojson = { "type": "FeatureCollection", "features": [] }
-                      for (let point of data.records) {
-                        let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
-                        let properties = point.fields;
-                        let temp = [coordinate[1], coordinate[0]];
-                        properties['stop_coordinates'] = temp.toString();
-                        let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
-                        geojson.features.push(feature);
-                      }
-          
-          
-                      map.current.addSource("TrafficLightCameraData", {
-                        type: "geojson",
-                        data: geojson
-                      });
 
-
-                      setIsLoaded(true)
-                        add_vancouver_map_layers()
-          
-                    })
+                map.current.addSource("IntersectionData", {
+                    type: "geojson",
+                    data: geojson
                 });
-      
-      
-              
-      
+
+
+                map.current.loadImage(
+                    'http://cdn.onlinewebfonts.com/svg/img_113951.png',
+                    (error, image) => {
+                        if (error) throw error;
+
+                        map.current.addImage('camera', image);
+
+                        fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174')
+                            .then(response => response.json())
+                            .then(data => {
+
+                                let geojson = { "type": "FeatureCollection", "features": [] }
+                                for (let point of data.records) {
+                                    let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
+                                    let properties = point.fields;
+                                    let temp = [coordinate[1], coordinate[0]];
+                                    properties['stop_coordinates'] = temp.toString();
+                                    let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
+                                    geojson.features.push(feature);
+                                }
+
+
+                                map.current.addSource("TrafficLightCameraData", {
+                                    type: "geojson",
+                                    data: geojson
+                                });
+
+
+
+                                add_vancouver_map_layers()
+
+                            })
+                    });
+
+
+
+
             })
 
 
 
 
-           
+
 
     }
 
@@ -154,12 +153,20 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
         add_vancouver_trafficCamera_layer();
         add_vancouver_intersection_layer();
 
+
+        // Add all the filters to the map
+        addLayerFilters();
+        addMapFilters();
+
+        // Set the map to be loaded
+        setIsLoaded(true);
+
         map.current.resize();
     }
 
     const add_terrain_layer = () => {
 
-
+        // Add terrain layer and set the exaggeration the layer to 1.5x 
         map.current.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
         map.current.addLayer({
             'id': 'sky',
@@ -181,9 +188,10 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
             (layer) => layer.type === "symbol" && layer.layout["text-field"]
         ).id;
 
+        const layerName = 'BuildingsLayer';
         map.current.addLayer(
             {
-                id: "BuildingsLayer",
+                id: layerName,
                 source: "composite",
                 "source-layer": "building",
                 filter: ["==", "extrude", "true"],
@@ -219,6 +227,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
             labelLayerId
         );
 
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
     }
 
 
@@ -254,7 +263,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
             },
         });
 
-
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
 
         let hoveredStateId = null;
         // When the user moves their mouse over the state-fill layer, we'll update the
@@ -293,28 +302,28 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
 
     const add_vancouver_trafficCamera_layer = () => {
         const layerName = 'TrafficLightCameraLayer'
-    
-    
-    
+
+
+
         map.current.addLayer({
-          'id': layerName,
-          'type': 'symbol',
-          'source': 'TrafficLightCameraData',
-          'layout': {
-            'icon-image': 'camera',
-            'icon-size': 0.015,
-    
-          },
-    
+            'id': layerName,
+            'type': 'symbol',
+            'source': 'TrafficLightCameraData',
+            'layout': {
+                'icon-image': 'camera',
+                'icon-size': 0.015,
+
+            },
+
         });
-    
-    
-    
-    
+
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
+
+
         map.current.on('click', layerName, (e) => {
-          // Copy coordinates array.
-          const coordinates = e.features[0].geometry.coordinates.slice();
-          const description = `
+            // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const description = `
                     <span class="block font-bold">Local Area</span>
                     <span class="block">${e.features[0].properties.geo_local_area}</span>
                     <span class="block font-bold">Map ID</span>
@@ -325,63 +334,63 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
                     
                     
                     `
-    
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-    
-    
-          new mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setHTML(description)
-            .addTo(map.current);
-    
-          //If the user clicks a point save it 
-          pointOfInterestHandler(e.features[0]);
-    
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+            //If the user clicks a point save it 
+            pointOfInterestHandler(e.features[0]);
+
         });
-    
+
         map.current.on('mouseenter', layerName, () => {
-          map.current.getCanvas().style.cursor = 'pointer';
+            map.current.getCanvas().style.cursor = 'pointer';
         });
-    
+
         map.current.on('mouseleave', layerName, () => {
-          map.current.getCanvas().style.cursor = '';
+            map.current.getCanvas().style.cursor = '';
         });
-    
-    
-      }
-    
-    
-      const add_vancouver_intersection_layer = () => {
+
+
+    }
+
+
+    const add_vancouver_intersection_layer = () => {
         const layerName = 'IntersectionLayer'
-    
-    
+
+
         map.current.addLayer(
-          {
-            id: layerName,
-            type: "circle",
-            source: "IntersectionData",
-            minzoom: 7,
-            paint: {
-              // Size circle radius by earthquake magnitude and zoom level
-              'circle-radius': {
-                'base': 3,
-                'stops': [
-                  [12, 5],
-                  [22, 90]
-                ]
-              },
-              // Color circle by earthquake magnitude
-              "circle-color":
-                'red'
-              ,
-    
+            {
+                id: layerName,
+                type: "circle",
+                source: "IntersectionData",
+                minzoom: 7,
+                paint: {
+                    // Size circle radius by earthquake magnitude and zoom level
+                    'circle-radius': {
+                        'base': 3,
+                        'stops': [
+                            [12, 5],
+                            [22, 90]
+                        ]
+                    },
+                    // Color circle by earthquake magnitude
+                    "circle-color":
+                        'red'
+                    ,
+
+                },
             },
-          },
-          "waterway-label"
+            "waterway-label"
         );
-    
+
         map.current.setLayoutProperty(layerName, 'visibility', 'none');
 
 
@@ -395,43 +404,43 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
                       <span class="block">${e.features[0].properties.xstreet}</span>
                      
                       `
-      
+
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-              coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
             }
-      
-      
+
+
             new mapboxgl.Popup()
-              .setLngLat(coordinates)
-              .setHTML(description)
-              .addTo(map.current);
-      
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
             //If the user clicks a point save it 
             pointOfInterestHandler(e.features[0]);
-      
-          });
-      
-    
+
+        });
+
+
         map.current.on('mouseenter', layerName, () => {
             map.current.getCanvas().style.cursor = 'pointer';
-          });
-      
-          map.current.on('mouseleave', layerName, () => {
+        });
+
+        map.current.on('mouseleave', layerName, () => {
             map.current.getCanvas().style.cursor = '';
-          });
-    
-      }
+        });
+
+    }
 
 
 
 
-    // If the layer changes (isOn), update the map
+
+
+    // If any of the layer in the layerList changes (isOn), update the map
     useEffect(() => {
         if (!map.current) return;
         try {
-            if (map.current !== undefined) {
-                layerFilter();
-            }
+            addLayerFilters();
         }
         catch (e) {
             return
@@ -440,86 +449,51 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
 
 
     //Function is used to show or hide layers on map
-    const layerFilter = () => {
+    const addLayerFilters = () => {
         //Show or hide layer if it's set to on/off
-        layers.forEach(function (item) {
-            try {
-                map.current.setLayoutProperty(item.layerName, 'visibility', `${item.isOn === true && item.showButton === true ? 'visible' : 'none'}`);
-            }
-            catch (e) {
-                return
-            }
+        layers.forEach(function (layer) {
+            map.current.setLayoutProperty(layer.layerName, 'visibility', `${layer.isOn === true ? 'visible' : 'none'}`);
         });
 
         //Reset the map size so it goes into full width and height
         map.current.resize();
     }
 
-    // If the year changes, update the map
-    useEffect(() => {
-        if (!map.current) return;
-        try {
-            if (map.current !== undefined) {
-                yearFilter();
-            }
-        }
-        catch (e) {
-            return
-        }
-    }, [currentYear]);
 
 
     // If the year changes, update the map
     useEffect(() => {
         if (!map.current) return;
         try {
-            if (map.current !== undefined) {
-                monthFilter();
-            }
+            addMapFilters();
         }
         catch (e) {
             return
         }
-    }, [currentMonth]);
+    }, [currentYear, currentFilterValues]);
+
+
 
     //Function is used to grab data from a certain year
-    const yearFilter = () => {
+    const addMapFilters = () => {
 
-        let filterYear = 0;
-        let years_temp = years.map(String);
+        //Grab data specific to a filter range and year
+        // map.current.setFilter('PedestriansLayer', ["all",
+        //     [">=", ['get', 'count'], currentFilterValues[0]],
+        //     ["<=", ['get', 'count'], currentFilterValues[1]],
+        //     ['==', ['string', ['get', 'Year']], currentYear.toString()],
 
+        // ])
 
-        if (currentYear.toString() === '0000') {
-            //Grab all data
-            filterYear = ['match', ['get', 'UpdateDate'], years_temp, false, true];
-            map.current.setFilter('ImpedimentsLayer', ['all', filterYear]);
-        } else if (years_temp.includes(currentYear.toString())) {
-            //Grab data specific to a year
-            map.current.setFilter('ImpedimentsLayer', ['==', ['string', ['get', 'Year']], currentYear.toString()]);
-        }
-        else {
-            console.log('error');
-        }
+        //Reset the map size so it goes into full width and height
+        map.current.resize();
     }
 
-
-    //Function is used to grab data from a certain month
-    const monthFilter = () => {
-        let temp_month = currentMonth < 10 ? "0" + currentMonth.toString() : currentMonth.toString();
-        let months_temp = months.map(String);
-        if (months_temp.includes(currentMonth.toString())) {
-            map.current.setFilter('ImpedimentsLayer', ['==', ['string', ['get', 'Month']], temp_month]);
-        }
-        else {
-            console.log('error');
-        }
-    }
 
     useEffect(() => {
         if (!map.current) return;
         try {
-            console.log(isLoaded)
-            if (map.current !== undefined && isLoaded === true) {
+            if (isLoaded === true) {
                 switchLayer();
             }
         }
@@ -530,9 +504,16 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
 
 
     const switchLayer = () => {
+
+        //Switch the map style but wait until the map sources are added first
         map.current.once("styledata", add_vancouver_map_sources);
         map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
-        console.log("🚀 ~ file: VancouverMap.js ~ line 520 ~ switchLayer ~ mapStyle", mapStyle)
+
+        addLayerFilters();
+        addMapFilters();
+
+        //Reset the map size so it goes into full width and height
+        map.current.resize();
 
     }
 

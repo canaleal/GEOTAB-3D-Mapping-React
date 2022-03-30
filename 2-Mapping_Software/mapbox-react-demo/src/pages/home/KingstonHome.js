@@ -5,10 +5,8 @@ import React, { useState, useRef, useEffect, Fragment } from 'react'
 import KingstonMap from "./components/map/KingstonMap";
 import PedestrianChart from "./components/chart/PedestrianChart";
 import TimeSlider from "./components/slider/TimeSlider";
-import LayerButton from "./components/layer/LayerButton";
 import Cover from "../../components/Cover";
 import LayerModal from "./components/layer/LayerModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "rc-slider/assets/index.css";
 
@@ -20,6 +18,7 @@ import Streetview from "./components/streetview/Streetview";
 import ChartDateToggle from './components/chart/ChartDateToggle';
 import MapStyleSelector from './components/map/MapStyleSelector';
 import RangeSlider from './components/slider/RangeSlider';
+import LayerButtonGroup from './components/layer/LayerButtonGroup';
 
 
 const KingstonHome = () => {
@@ -260,79 +259,54 @@ const KingstonHome = () => {
 
 
       {isLoaded ?
-        <div className="px-5 py-5">
+        <div className="p-5">
 
 
 
           <div className="grid grid-cols-4 grid-row-3 gap-4 ">
-            <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4">
-              <p className="font-bold">Layers</p>
-              {layers.map((item) => (
-                <span key={item.id}>
-                  {item.showButton ? (
-                    <LayerButton item={item} layerHandler={layerHandler} />
-                  ) : (
-                    <></>
-                  )}
-                </span>
-              ))}
-
-             
-              <button onClick={() =>showModalHandler(layerModalRef)}
-                className={`border slide-in-left  w-full text-left  btn-gray mt-10`}
-                >
-                <FontAwesomeIcon
-                  icon="fa-solid fa-layer-group"
-                  size="lg"
-                  width={"2rem"}
-                /><span>Add/Remove Layers</span>
-              </button>
+            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
+              <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
             </div>
 
 
-            {isLoaded == true ?
-              <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
 
-                <KingstonMap
-                  cityId={0}
-                  mapStyle={mapStyle}
-                  mapBoundaries={mapBoundaries}
-                  lng={lng}
-                  lat={lat}
-                  zoom={zoom}
-                  years={years}
-                  currentYear={currentYear}
-                  layers={layers}
-                  currentFilterValues={currentFilterValues}
-                  pointOfInterestHandler={pointOfInterestHandler}
-                  chartDataHandler={chartDataHandler}
-                />
+            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen slide-in-right relative">
 
-                <div className="absolute top-3 left-3 bg-white rounded-lg p-4">
-                  <MapStyleSelector mapStyle={mapStyle} mapStyleChangeHandler={mapStyleChangeHandler} />
-                </div>
+              <KingstonMap
+                cityId={0}
+                mapStyle={mapStyle}
+                mapBoundaries={mapBoundaries}
+                lng={lng}
+                lat={lat}
+                zoom={zoom}
+                years={years}
+                currentYear={currentYear}
+                layers={layers}
+                currentFilterValues={currentFilterValues}
+                pointOfInterestHandler={pointOfInterestHandler}
+                chartDataHandler={chartDataHandler}
+              />
 
-                <div className="absolute bottom-10 px-20 box-border w-full">
-                  <div className="bg-black px-10 py-4 rounded-lg">
-
-                    <div className='w-64'>
-                      <span className='color-white'>Year - {currentYear}</span>
-                    </div>
-
-                    <div className="py-4">
-                      <TimeSlider
-                        timeArray={years}
-                        currentDate={currentYear}
-                        dateSliderHandler={yearSliderHandler}
-                      />
-                    </div>
-
-                  </div>
-                </div>
+              <div className="absolute top-3 left-3 bg-white rounded-lg p-4">
+                <MapStyleSelector mapStyle={mapStyle} mapStyleChangeHandler={mapStyleChangeHandler} />
               </div>
-              :
-              <></>
-            }
+
+              <div className="absolute bottom-10 left-10 bg-black px-10 py-4 rounded-lg box-border w-10/12">
+
+                <span className='color-white'>Year - {currentYear}</span>
+
+                <div className="py-4">
+                  <TimeSlider
+                    timeArray={years}
+                    currentDate={currentYear}
+                    dateSliderHandler={yearSliderHandler}
+                  />
+                </div>
+
+              </div>
+            </div>
+
+
 
 
             <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
@@ -359,7 +333,7 @@ const KingstonHome = () => {
                 <ChartDateToggle years={years} chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
               </div>
               :
-              <></>
+              <span></span>
             }
 
 
@@ -374,14 +348,16 @@ const KingstonHome = () => {
                 <Streetview pointOfInterest={pointOfInterest} />
               </div>
               :
-              <></>
+              <span></span>
             }
 
           </div>
         </div>
 
         :
-        <></>
+        <div className='p-5'>
+          <p>Unable to Load Map</p>
+        </div>
       }
 
 

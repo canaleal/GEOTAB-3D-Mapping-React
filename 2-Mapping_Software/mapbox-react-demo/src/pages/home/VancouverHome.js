@@ -3,23 +3,17 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react'
 
 import VancouverMap from "./components/map/VancouverMap";
-import PedestrianChart from "./components/chart/PedestrianChart";
-import TimeSlider from "./components/slider/TimeSlider";
-import LayerButton from "./components/layer/LayerButton";
 import Cover from "../../components/Cover";
 import LayerModal from "./components/layer/LayerModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "rc-slider/assets/index.css";
-import AutoPlayButton from "./components/slider/AutoPlayButton";
 import Header from "../../components/Header";
 import AboutModal from "../../components/AboutModal";
 import HelpModal from "../../components/HelpModal";
 import Footer from "../../components/Footer";
 import Streetview from "./components/streetview/Streetview";
-import ChartDateToggle from './components/chart/ChartDateToggle';
 import MapStyleSelector from './components/map/MapStyleSelector';
-import ImpedimentsChart from './components/chart/ImpedimentsChart';
+import LayerButtonGroup from './components/layer/LayerButtonGroup';
 
 
 const VancouverHome = () => {
@@ -75,7 +69,7 @@ const VancouverHome = () => {
         isOn: true,
         isDynamic: false,
         layerName: "BuildingsLayer",
-        imgPath: "Buildings.JPG",
+        imgPath: "Boundary.JPG",
         showButton: true,
         icon: "fa-building",
       },
@@ -96,7 +90,7 @@ const VancouverHome = () => {
         isOn: true,
         isDynamic: true,
         layerName: "TrafficLightCameraLayer",
-        imgPath: "TrafficCameras.JPG",
+        imgPath: "Boundary.JPG",
         showButton: true,
         icon: "fa-camera",
       },
@@ -106,13 +100,13 @@ const VancouverHome = () => {
         isOn: false,
         isDynamic: false,
         layerName: "IntersectionLayer",
-        imgPath: "Intersections.JPG",
+        imgPath: "Boundary.JPG",
         showButton: false,
         icon: "fa-road",
       },
 
-    
-      
+
+
 
     ]);
 
@@ -242,36 +236,17 @@ const VancouverHome = () => {
         layerButtonHandler={layerButtonHandler}
       />
 
-      <div className="px-5 py-5">
+      {isLoaded ?
+        <div className="p-5">
 
-        <div className="grid grid-cols-4 grid-row-3 gap-4 ">
-          <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 slide-in-left">
-            <p className="font-bold">Layers</p>
-            {layers.map((item) => (
-              <span key={item.id}>
-                {item.showButton ? (
-                  <LayerButton item={item} layerHandler={layerHandler} />
-                ) : (
-                  <></>
-                )}
-              </span>
-            ))}
-
-            <button
-              onClick={() => showModalHandler(layerModalRef)}
-              className={`border block w-full text-sm text-left p-3 mt-10 rounded-md btn-gray`}
-            >
-              <FontAwesomeIcon
-                icon="fa-solid fa-layer-group"
-                size="lg"
-                width={"2rem"}
-              />
-              Add/Remove Layers
-            </button>
-          </div>
+          <div className="grid grid-cols-4 grid-row-3 gap-4 ">
+            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
+              <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
+            </div>
 
 
-          {isLoaded == true ?
+
+
             <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg h-[32rem] md:h-screen slide-in-right relative">
 
               <VancouverMap
@@ -294,29 +269,32 @@ const VancouverHome = () => {
                 <MapStyleSelector mapStyle={mapStyle} mapStyleChangeHandler={mapStyleChangeHandler} />
               </div>
 
-             
+
             </div>
-            :
-            <></>
-          }
 
 
-<div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-                <p className="font-bold">Sample Card</p>
-                <p>Exercitation minim ex nulla aliquip ullamco aliquip tempor exercitation reprehenderit nostrud sunt. Dolore quis magna id nisi ipsum magna esse eiusmod reprehenderit magna. Eu consectetur pariatur laborum deserunt. Magna irure dolore commodo nisi sint esse irure et voluptate nulla consequat. Pariatur excepteur minim adipisicing ea consectetur occaecat et enim fugiat laboris nulla. Aute laboris id irure aliquip velit elit Lorem.</p>
+
+            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+              <p className="font-bold">Sample Card</p>
+              <p>Exercitation minim ex nulla aliquip ullamco aliquip tempor exercitation reprehenderit nostrud sunt. Dolore quis magna id nisi ipsum magna esse eiusmod reprehenderit magna. Eu consectetur pariatur laborum deserunt. Magna irure dolore commodo nisi sint esse irure et voluptate nulla consequat. Pariatur excepteur minim adipisicing ea consectetur occaecat et enim fugiat laboris nulla. Aute laboris id irure aliquip velit elit Lorem.</p>
+            </div>
+
+            {pointOfInterest != null ?
+              <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
+                <p className="font-bold">Point Of Interest</p>
+                <Streetview pointOfInterest={pointOfInterest} />
               </div>
+              :
+              <></>
+            }
 
-          {pointOfInterest != null ?
-            <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
-              <p className="font-bold">Point Of Interest</p>
-              <Streetview pointOfInterest={pointOfInterest} />
-            </div>
-            :
-            <></>
-          }
-
+          </div>
         </div>
-      </div>
+        :
+        <div className='p-5'>
+          <p>Unable to Load Map</p>
+        </div>
+      }
 
       <Footer
         showModalHandler={showModalHandler}

@@ -3,15 +3,11 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react'
 
 import ChicagoMap from "./components/map/ChicagoMap";
-import PedestrianChart from "./components/chart/PedestrianChart";
 import TimeSlider from "./components/slider/TimeSlider";
-import LayerButton from "./components/layer/LayerButton";
 import Cover from "../../components/Cover";
 import LayerModal from "./components/layer/LayerModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "rc-slider/assets/index.css";
-import AutoPlayButton from "./components/slider/AutoPlayButton";
 import Header from "../../components/Header";
 import AboutModal from "../../components/AboutModal";
 import HelpModal from "../../components/HelpModal";
@@ -21,6 +17,7 @@ import ChartDateToggle from './components/chart/ChartDateToggle';
 import MapStyleSelector from './components/map/MapStyleSelector';
 import ImpedimentsChart from './components/chart/ImpedimentsChart';
 import RangeSlider from './components/slider/RangeSlider';
+import LayerButtonGroup from './components/layer/LayerButtonGroup';
 
 
 const ChicagoHome = () => {
@@ -62,7 +59,7 @@ const ChicagoHome = () => {
 
   //Filter values
   const [currentFilterValues, setCurrentFilterValues] = useState();
-  const [filterDetails, setFilterDetails] = useState({ 'min': 0, 'max': 2, 'step':  0.25});
+  const [filterDetails, setFilterDetails] = useState({ 'min': 0, 'max': 2, 'step': 0.25 });
 
   useEffect(() => {
 
@@ -221,9 +218,9 @@ const ChicagoHome = () => {
     setChartTime(item)
   }
 
-  
+
   const filterValueSliderHandler = (item) => {
-  
+
     setCurrentFilterValues(item);
   }
 
@@ -249,37 +246,18 @@ const ChicagoHome = () => {
         layerButtonHandler={layerButtonHandler}
       />
 
-      <div className="px-5 py-5">
+      {isLoaded ?
+        <div className="p-5">
 
-        <div className="grid grid-cols-4 grid-row-3 gap-4 ">
-          <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 slide-in-left">
-            <p className="font-bold">Layers</p>
-            {layers.map((item) => (
-              <span key={item.id}>
-                {item.showButton ? (
-                  <LayerButton item={item} layerHandler={layerHandler} />
-                ) : (
-                  <></>
-                )}
-              </span>
-            ))}
-
-            <button
-              onClick={() => showModalHandler(layerModalRef)}
-              className={`border block w-full text-sm text-left p-3 mt-10 rounded-md btn-gray`}
-            >
-              <FontAwesomeIcon
-                icon="fa-solid fa-layer-group"
-                size="lg"
-                width={"2rem"}
-              />
-              Add/Remove Layers
-            </button>
-          </div>
+          <div className="grid grid-cols-4 grid-row-3 gap-4 ">
+            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
+              <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
+            </div>
 
 
-          {isLoaded == true ?
-            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
+
+
+            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen slide-in-right relative">
 
               <ChicagoMap
                 cityId={0}
@@ -302,8 +280,7 @@ const ChicagoHome = () => {
                 <MapStyleSelector mapStyle={mapStyle} mapStyleChangeHandler={mapStyleChangeHandler} />
               </div>
 
-              <div className="absolute bottom-10 px-20 box-border w-full">
-                <div className="bg-black px-10 py-4 rounded-lg">
+              <div className="absolute bottom-10 left-10 bg-black px-10 py-4 rounded-lg box-border w-10/12">
 
                   <div className='w-64'>
                     <span className='color-white'>Year - {currentYear}</span>
@@ -332,53 +309,56 @@ const ChicagoHome = () => {
                     />
                   </div>
 
-                </div>
+           
               </div>
             </div>
-            :
-            <></>
-          }
 
 
-          <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-            <p className="font-bold">Filter Map - Average Acceleration </p>
-
-
-            <div className="pb-4 px-4">
-              <RangeSlider
-                filterDetails={filterDetails}
-                currentFilterValues={currentFilterValues}
-                filterValueSliderHandler={filterValueSliderHandler}
-              />
-            </div>
-
-
-          </div>
-
-
-          {chartData != null ?
 
             <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-              <p className="font-bold">Average Acceleration</p>
-              <ImpedimentsChart years={years} currentYear={currentYear} currentMonth={currentMonth} chartTime={chartTime} chartData={chartData} />
-              <ChartDateToggle chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
+              <p className="font-bold">Filter Map - Average Acceleration </p>
+
+
+              <div className="pb-4 px-4">
+                <RangeSlider
+                  filterDetails={filterDetails}
+                  currentFilterValues={currentFilterValues}
+                  filterValueSliderHandler={filterValueSliderHandler}
+                />
+              </div>
+
+
             </div>
-            :
-            <></>
-          }
 
 
-          {pointOfInterest != null ?
-            <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
-              <p className="font-bold">Point Of Interest</p>
-              <Streetview pointOfInterest={pointOfInterest} />
-            </div>
-            :
-            <></>
-          }
+            {chartData != null ?
 
+              <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+                <p className="font-bold">Average Acceleration</p>
+                <ImpedimentsChart years={years} currentYear={currentYear} currentMonth={currentMonth} chartTime={chartTime} chartData={chartData} />
+                <ChartDateToggle chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
+              </div>
+              :
+              <span></span>
+            }
+
+
+            {pointOfInterest != null ?
+              <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
+                <p className="font-bold">Point Of Interest</p>
+                <Streetview pointOfInterest={pointOfInterest} />
+              </div>
+              :
+              <span></span>
+            }
+
+          </div>
         </div>
-      </div>
+        :
+        <div className='p-5'>
+          <p>Unable to Load Map</p>
+        </div>
+      }
 
       <Footer
         showModalHandler={showModalHandler}

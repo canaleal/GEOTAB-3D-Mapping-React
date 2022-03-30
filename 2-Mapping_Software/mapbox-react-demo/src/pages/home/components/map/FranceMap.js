@@ -5,14 +5,13 @@ import { useRef, useState, useEffect } from "react";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-
-import chicagoBoundary from "./data/chicago/chicagoBoundary.geojson";
-
+import franceBoundary from "./data/france/franceBoundary.geojson";
+import FranceImpediments from './data/france/franceImpediments.geojson';
 
 mapboxgl.accessToken =
     "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, months, currentMonth, currentFilterValues, layers, pointOfInterestHandler, chartDataHandler }) => {
+const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, currentFilterValues, layers, pointOfInterestHandler, chartDataHandler }) => {
 
     const mapContainerRef = useRef(null);
     const map = useRef(null);
@@ -21,6 +20,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
+        // Create a new map
         map.current = new mapboxgl.Map({
             container: mapContainerRef.current,
             style: `mapbox://styles/mapbox/${mapStyle}`,
@@ -29,15 +29,14 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
         })
 
         map.current.on('load', () => {
-            //Add controls like zoom in and out
             add_map_controls();
-
-            add_chicago_map_sources();
+            add_france_map_sources();
         });
 
         return () => map.current.remove();
     }, []);
 
+    // Add map controls and interactions
     const add_map_controls = () => {
         // Include Static Components that wont be re-rendered   
         map.current.addControl(new mapboxgl.FullscreenControl(), 'bottom-right');
@@ -52,10 +51,8 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
         map.current.addControl(geocoder, 'top-right');
     }
 
-    
-   
-    
-    const add_chicago_map_sources = () => {
+    const add_france_map_sources = () => {
+
 
         map.current.addSource('mapbox-dem', {
             'type': 'raster-dem',
@@ -64,49 +61,50 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
             'maxzoom': 14
         });
 
+
         map.current.addSource("BoundaryData", {
             type: "geojson",
-            data: chicagoBoundary,
+            data: franceBoundary,
         })
 
 
-        fetch('http://localhost:3000/data/impediments.geojson')
-            .then(response => response.json())
-            .then(data => {
 
-                map.current.addSource("ImpedimentsData", {
-                    type: "geojson",
-                    data: data
-                });
+        map.current.addSource("ImpedimentsData", {
+            type: "geojson",
+            data: FranceImpediments,
+        })
 
-                chartDataHandler(data['features']);
 
-             
-                add_chicago_map_layers();
-            });
+        add_france_map_layers()
+
 
 
     }
 
-    
 
-    const add_chicago_map_layers = () => {
 
+
+
+    const add_france_map_layers = () => {
+
+        //Add layers
         add_terrain_layer();
         add_building_layer();
         add_boundary_layer();
         add_impediments_layer();
 
+        // Add all the filters to the map
+        addLayerFilters();
+        addMapFilters();
 
-          // Add all the filters to the map
-          addLayerFilters();
-          addMapFilters();
- 
-          // Set the map to be loaded
-         setIsLoaded(true);
-
+        // Set the map to be loaded
+        setIsLoaded(true);
         map.current.resize();
     }
+
+
+
+
 
     const add_terrain_layer = () => {
 
@@ -171,7 +169,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
             labelLayerId
         );
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
     }
 
 
@@ -207,7 +205,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
             },
         });
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
 
         let hoveredStateId = null;
         // When the user moves their mouse over the state-fill layer, we'll update the
@@ -273,7 +271,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
             "waterway-label"
         );
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+
 
 
         const small_popup = new mapboxgl.Popup({
@@ -342,6 +340,8 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
 
 
 
+
+
     // If any of the layer in the layerList changes (isOn), update the map
     useEffect(() => {
         if (!map.current) return;
@@ -382,15 +382,13 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
 
     //Function is used to grab data from a certain year
     const addMapFilters = () => {
-        let temp_month = currentMonth < 10 ? "0" + currentMonth.toString() : currentMonth.toString();
-        //Grab data specific to a filter range and year
-        map.current.setFilter('ImpedimentsLayer', ["all",
-        [">=", ['get', 'AvgAcceleration'], currentFilterValues[0]],
-        ["<=", ['get', 'AvgAcceleration'], currentFilterValues[1]],
-        ['==', ['string', ['get', 'Year']], currentYear.toString()],
-        ['==', ['string', ['get', 'Month']], temp_month],
 
-        ])
+        //Grab data specific to a filter range and year
+        // map.current.setFilter('ImpedimentsLayer', ["all",
+        //     [">=", ['get', 'count'], currentFilterValues[0]],
+        //     ["<=", ['get', 'count'], currentFilterValues[1]]
+
+        // ])
 
         //Reset the map size so it goes into full width and height
         map.current.resize();
@@ -413,7 +411,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
     const switchLayer = () => {
 
         //Switch the map style but wait until the map sources are added first
-        map.current.once("styledata", add_chicago_map_sources);
+        map.current.once("styledata", add_france_map_sources);
         map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
 
         addLayerFilters();
@@ -434,4 +432,4 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
     );
 }
 
-export default ChicagoMap;
+export default FranceMap;

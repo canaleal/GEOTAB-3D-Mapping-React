@@ -2,28 +2,22 @@ import React, { Fragment } from "react";
 
 import { useState, useEffect, useRef } from "react";
 
-import Map from "./components/map/Map";
-import PedestrianChart from "./components/chart/PedestrianChart";
-import TimeSlider from "./components/slider/TimeSlider";
-import LayerButton from "./components/layer/LayerButton";
 import Cover from "../../components/Cover";
 import LayerModal from "./components/layer/LayerModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "rc-slider/assets/index.css";
-import AutoPlayButton from "./components/slider/AutoPlayButton";
 import Header from "../../components/Header";
 import AboutModal from "../../components/AboutModal";
 import HelpModal from "../../components/HelpModal";
 import Footer from "../../components/Footer";
 import Streetview from "./components/streetview/Streetview";
 import { useParams } from "react-router-dom";
+import LayerButtonGroup from "./components/layer/LayerButtonGroup";
+import MapStyleSelector from "./components/map/MapStyleSelector";
+import FranceMap from "./components/map/FranceMap";
+import RangeSlider from "./components/slider/RangeSlider";
 
 const FranceHome = () => {
-    // Route param
-    let { cityId } = useParams();
-
-
 
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -41,23 +35,28 @@ const FranceHome = () => {
     const [mapBoundaries, setMapBoundaries] = useState([]);
     const [lng, setLng] = useState();
     const [lat, setLat] = useState();
-
     const [zoom, setZoom] = useState();
     const [mapStyle, setMapStyle] = useState("streets-v11");
     const [layers, setLayers] = useState([]);
 
     //POI Details
     const [pointOfInterest, setPointOfInterest] = useState();
+    const [chartData, setChartData] = useState(null);
+    const [chartTime, setChartTime] = useState('year')
 
     //Year details
     const [years, setYears] = useState([]);
     const [currentYear, setCurrentYear] = useState();
+    const [months, setMonths] = useState([]);
+    const [currentMonth, setCurrentMonth] = useState();
 
     //Timer details
     const [isTimerActive, setIsTimerActive] = useState(false);
 
 
-    const [chartData, setChartData] = useState(null)
+    //Filter values
+    const [currentFilterValues, setCurrentFilterValues] = useState();
+    const [filterDetails, setFilterDetails] = useState({ 'min': 0, 'max': 2, 'step': 0.25 });
 
 
     useEffect(() => {
@@ -109,11 +108,15 @@ const FranceHome = () => {
         setLng(2.349014);
         setLat(48.864716);
 
-        setYears([2019, 2020, 2021, 2022]);
+        setYears([2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]);
         setCurrentYear(2020);
 
+        setMonths([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+        setCurrentMonth(1);
 
 
+        //filter details
+        setCurrentFilterValues([0, 2])
 
         setIsLoaded(true);
     }, []);
@@ -205,6 +208,12 @@ const FranceHome = () => {
         setMapStyle(item.target.value);
     };
 
+    const filterValueSliderHandler = (item) => {
+
+        setCurrentFilterValues(item);
+    }
+
+
     return (
         <Fragment>
             <Header city={city} />
@@ -226,42 +235,21 @@ const FranceHome = () => {
                 layerButtonHandler={layerButtonHandler}
             />
 
-            <div className="px-5 py-5">
-                <div className="grid grid-cols-4 grid-row-3 gap-4 ">
-                    <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 slide-in-left">
-                        <p className="font-bold">Layers</p>
-                        {layers.map((item) => (
-                            <span key={item.id}>
-                                {item.showButton ? (
-                                    <LayerButton item={item} layerHandler={layerHandler} />
-                                ) : (
-                                    <span></span>
-                                )}
-                            </span>
-                        ))}
-
-                        <button
-                            onClick={() => showModalHandler(layerModalRef)}
-                            className={`border block w-full text-sm text-left p-3 mt-10 rounded-md btn-gray`}
-                        >
-                            <FontAwesomeIcon
-                                icon="fa-solid fa-layer-group"
-                                size="lg"
-                                width={"2rem"}
-                            />
-                            Add/Remove Layers
-                        </button>
-                    </div>
-
-
-                    {isLoaded ?
-                        <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-full slide-in-right relative">
+            {isLoaded ?
+                <div className="p-5">
+                    <div className="grid grid-cols-4 grid-row-3 gap-4 ">
+                        <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
+                            <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
+                        </div>
 
 
 
 
-                            <Map
-                                cityId={cityId}
+                        <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen slide-in-right relative">
+
+
+                            <FranceMap
+                                cityId={0}
                                 mapStyle={mapStyle}
                                 mapBoundaries={mapBoundaries}
                                 lng={lng}
@@ -274,101 +262,50 @@ const FranceHome = () => {
                                 chartDataHandler={chartDataHandler}
                             />
 
-                            <div className="absolute top-0 bg-white p-4 rounded-lg">
-                                <form className="flex flex-row">
-
-                                    <div >
-                                        <input
-                                            type="radio"
-                                            value="streets-v11"
-                                            checked={mapStyle === 'streets-v11'}
-                                            onChange={mapStyleChangeHandler}
-                                        /> Streets
-                                    </div>
-                                    <div className="px-2">
-                                        <input
-                                            type="radio"
-                                            value="satellite-streets-v11"
-                                            checked={mapStyle === 'satellite-streets-v11'}
-                                            onChange={mapStyleChangeHandler}
-                                        /> Satellite
-                                    </div>
-                                    <div>
-                                        <input
-                                            type="radio"
-                                            value="dark-v10"
-                                            checked={mapStyle === 'dark-v10'}
-                                            onChange={mapStyleChangeHandler}
-                                        /> Dark
-                                    </div>
-
-                                </form>
+                            <div className="absolute top-3 left-3 bg-white rounded-lg p-4">
+                                <MapStyleSelector mapStyle={mapStyle} mapStyleChangeHandler={mapStyleChangeHandler} />
                             </div>
-
-                            {chartData != null ?
-                                <div className="absolute bottom-10 px-20 box-border  w-full">
-                                    <div className="bg-black px-10 py-5  rounded-lg">
-                                        <TimeSlider
-                                            minYear={years[0]}
-                                            maxYear={years[years.length - 1]}
-                                            currentYear={currentYear}
-                                            yearSliderHandler={yearSliderHandler}
-                                        />
-                                    </div>
-                                </div>
-
-                                :
-                                <></>
-
-                            }
 
                         </div>
-                        :
-                        <></>
-                    }
 
 
+                        <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+                            <p className="font-bold">Filter Map - Average Acceleration </p>
 
 
-
-                    {chartData != null ?
-                        <>
-                            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-                                <p className="font-bold">Counting</p>
-                                <PedestrianChart years={years} currentYear={currentYear} />
-                            </div>
-
-                            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-                                <p className="font-bold">Year - {currentYear}</p>
-                                <AutoPlayButton
-                                    isTimerActive={isTimerActive}
-                                    timerToggleHandler={timerToggleHandler}
-                                    timerResetHandler={timerResetHandler}
+                            <div className="pb-4 px-4">
+                                <RangeSlider
+                                    filterDetails={filterDetails}
+                                    currentFilterValues={currentFilterValues}
+                                    filterValueSliderHandler={filterValueSliderHandler}
                                 />
                             </div>
-                        </>
-                        :
-                        <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-                            <p className="font-bold">Sample Card</p>
-                            <p>Exercitation minim ex nulla aliquip ullamco aliquip tempor exercitation reprehenderit nostrud sunt. Dolore quis magna id nisi ipsum magna esse eiusmod reprehenderit magna. Eu consectetur pariatur laborum deserunt. Magna irure dolore commodo nisi sint esse irure et voluptate nulla consequat. Pariatur excepteur minim adipisicing ea consectetur occaecat et enim fugiat laboris nulla. Aute laboris id irure aliquip velit elit Lorem.</p>
+
+
                         </div>
-                    }
+
+                    </div>
+
+                    {pointOfInterest != null ? (
+
+                        <div className="grid grid-cols-4 grid-row-3 gap-4 my-4">
+                            <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
+                                <p className="font-bold">Point Of Interest</p>
+
+                                <Streetview pointOfInterest={pointOfInterest} />
+
+                            </div>
+                        </div>
+                    ) : (
+                        <></>
+                    )}
                 </div>
 
-                {pointOfInterest != null ? (
-
-                    <div className="grid grid-cols-4 grid-row-3 gap-4 my-4">
-                        <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
-                            <p className="font-bold">Point Of Interest</p>
-
-                            <Streetview pointOfInterest={pointOfInterest} />
-
-                        </div>
-                    </div>
-                ) : (
-                    <></>
-                )}
-            </div>
+                :
+                <div className='p-5'>
+                    <p>Unable to Load Map</p>
+                </div>
+            }
 
             <Footer
                 showModalHandler={showModalHandler}

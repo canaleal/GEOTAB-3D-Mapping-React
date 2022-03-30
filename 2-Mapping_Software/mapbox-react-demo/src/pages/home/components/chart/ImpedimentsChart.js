@@ -133,7 +133,7 @@ const ImpedimentsChart = ({ chartTime, currentYear, currentMonth, chartData }) =
 
     //Get average value of each day
     const impediments_data = getAverageValueOfEachDateBySpecificPropertyValue(groups, 'AvgAcceleration');
-
+   
     //Get bar graph labels
     let labels = Object.keys(groups)
 
@@ -186,9 +186,15 @@ const ImpedimentsChart = ({ chartTime, currentYear, currentMonth, chartData }) =
   function getAverageValueOfEachDateBySpecificPropertyValue(groups, property_name){
     let impediments_data = [];
     for (const [key, value] of Object.entries(groups)) {
-      let value_array = value
-      let avg = value_array.reduce((total, next) => total + next['properties'][property_name], 0) / value_array.length
-      impediments_data.push(avg)
+      try{
+        let value_array = value
+        let avg = value_array.reduce((total, next) => total + next['properties'][property_name], 0) / value_array.length
+        impediments_data.push(avg)
+      }
+      catch(Exception){
+        impediments_data.push(0)
+      }
+     
     }
 
     return impediments_data;

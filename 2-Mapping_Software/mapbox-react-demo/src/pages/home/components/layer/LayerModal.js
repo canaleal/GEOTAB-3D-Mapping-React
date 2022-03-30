@@ -43,7 +43,7 @@ const LayerModal = ({ layerModalRef, closeModalHandler, staticLayers, dynamicLay
                     <div className='grid grid-cols-1 md:grid-cols-4  gap-4'>
                         {dynamicLayers.map((layer) => {
                             return (
-                                <ModalListItem key={layer.id} item={layer} layerButtonHandler={layerButtonHandler} />
+                                <ModalListItem key={layer.id} layer={layer} layerButtonHandler={layerButtonHandler} />
                             )
                         })}
                     </div>

@@ -35,7 +35,7 @@ const RangeSlider = ({filterDetails, currentFilterValues, filterValueSliderHandl
       {isLoaded ?
 
         error ?
-          <p>Error! Unable to load projects.</p>
+          <p>Error! Unable to load range slider.</p>
           :
           <Range
           min={filterDetails.min}
