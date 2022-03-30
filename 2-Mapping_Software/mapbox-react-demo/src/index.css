@@ -6,7 +6,7 @@
 :root {
   font-size: 16px;
   font-family: 'Quicksand', sans-serif;
-  transition: all 1s;
+
 }
 
 body {
@@ -33,6 +33,26 @@ p {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+.btn-blue{
+    background-color: #3b82f6;
+    color: #fff;
+}
+
+.btn-blue:hover{
+  background-color: #2b61b8;
+}
+
+
+.btn-gray{
+  background-color: #e2e8f0;
+  color: #000;
+}
+
+.btn-gray:hover{
+  background-color: #b7bcc2;
 }
 
 .popup-box{

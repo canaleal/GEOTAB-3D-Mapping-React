@@ -1,17 +1,11 @@
 
 
-import React, { Fragment, useEffect, useState } from 'react'
+import React  from 'react'
 import ModalListItem from './ModalListItem'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const LayerModal = ({ layerModalRef, closeModalHandler, staticLayers, dynamicLayers, layerButtonHandler }) => {
 
-    useEffect(() => {
-      
-    
-     
-    }, [])
-    
 
 
     return (

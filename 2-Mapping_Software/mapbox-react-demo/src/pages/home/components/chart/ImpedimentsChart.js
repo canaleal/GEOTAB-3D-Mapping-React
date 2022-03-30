@@ -58,116 +58,93 @@ const ImpedimentsChart = ({ chartTime, currentYear, currentMonth, chartData }) =
 
 
 
-    //Group data by year 
-    const groups = chartData.reduce((groups, item) => {
-      const group = (groups[item.properties.Year] || []);
-      group.push(item);
-      groups[item.properties.Year] = group;
-      return groups;
-    }, {});
+    //Group data by year
+    const groups_raw = groupDataBySpecificPropertyValue(chartData, 'Year');
 
-    let impediments_data = []
-    for (const [key, value] of Object.entries(groups)) {
-      let year_array = value
-      let avg = year_array.reduce((total, next) => total + next.properties.AvgAcceleration, 0) / year_array.length
-      impediments_data.push(avg)
-    }
-    let labels = Object.keys(groups)
+    //Get average of each year
+    const impediments_data = getAverageValueOfEachDateBySpecificPropertyValue(groups_raw, 'AvgAcceleration');
+  
+    //Get bar graph labels
+    const labels = Object.keys(groups_raw)
 
 
-    const options = {
-      elements: {
-        bar: {
-          borderWidth: 2,
-        },
-      },
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-
-    const data = {
-      labels,
-      datasets: [
-        {
-          label: `count - ${chartTime}`,
-          data: impediments_data,
-
-          backgroundColor: returnListOfColors(),
-        },
-      ],
-    };
-
-
-    setMapOptions(options);
-    setMapData(data);
-    setIsLoaded(true);
+    const chart_name = 'count';
+    createChart(impediments_data, labels, chart_name);
   }
 
+
+  
+
   const add_month_chart_data = () => {
-    const options = {
-      elements: {
-        bar: {
-          borderWidth: 2,
-        },
-      },
-      responsive: true,
-      maintainAspectRatio: false,
-
-    };
-
-
+   
     //Get current year data
     let currentYear_objects = chartData.filter(function (item) {
       return item.properties.Year === currentYear.toString();
     });
 
     //Group data by month
-    const groups_raw = currentYear_objects.reduce((groups, item) => {
-      const group = (groups[item.properties.Month] || []);
-      group.push(item);
-      groups[item.properties.Month] = group;
-      return groups;
-    }, {});
+    const groups_raw = groupDataBySpecificPropertyValue(currentYear_objects, 'Month');
 
-    //Sort data from Jan to Dec
+    //Sort data from January to December
     let groups = {};
     for (let i = 1; i < 13; i++) {
+
+      //Add a 0 to the month if it's less than 10 (ex: 01, 02, 03)
       let temp_month = i < 10 ? "0" + i.toString() : i.toString();
       groups[i.toString()] = groups_raw[temp_month]
     }
 
-    //Get average acceleration
-    let impediments_data = []
-    for (const [key, value] of Object.entries(groups)) {
-      let month_array = value
-      let avg = month_array.reduce((total, next) => total + next.properties.AvgAcceleration, 0) / month_array.length
-      impediments_data.push(avg)
-    }
+    //Get average value of each date
+    const impediments_data = getAverageValueOfEachDateBySpecificPropertyValue(groups, 'AvgAcceleration');
 
-    
-
+    //Get bar graph labels
     const labels = getListNameOfMonths();
 
-    const data = {
-      labels,
-      datasets: [
-        {
-          label: `count - ${chartTime} (${currentYear})`,
-          data: impediments_data,
 
-          backgroundColor: returnListOfColors(),
-        },
-      ],
-    };
-
-
-    setMapOptions(options);
-    setMapData(data);
-    setIsLoaded(true);
+    const chart_name = 'count -  (' + currentYear  + ')';
+    createChart(impediments_data, labels, chart_name);
   }
 
   const add_day_chart_data = () => {
 
+  
+
+    //Add a 0 to the month if it's less than 10 (ex: 01, 02, 03)
+    let temp_month = currentMonth < 10 ? "0" + currentMonth.toString() : currentMonth.toString()
+
+    //Get current year and month data
+    let currentYearMonth_objects = chartData.filter(function (item) {
+      return item.properties.Year === currentYear.toString() && item.properties.Month === temp_month.toString();
+    });
+
+
+    //Group data by day
+    const groups_raw = groupDataBySpecificPropertyValue(currentYearMonth_objects, 'Day');
+
+
+    //Sort data from day 1 to day 31
+    let groups = {};
+    for (let i = 1; i < 31; i++) {
+
+      //Add a 0 to the day if it's less than 10 (ex: 01, 02, 03)
+      let temp_day = i < 10 ? "0" + i.toString() : i.toString();
+      groups[i.toString()] = groups_raw[temp_day]
+    }
+
+    //Get average value of each day
+    const impediments_data = getAverageValueOfEachDateBySpecificPropertyValue(groups, 'AvgAcceleration');
+
+    //Get bar graph labels
+    let labels = Object.keys(groups)
+
+
+    const chart_name = 'count -  (' + currentYear + '-' + temp_month + ')';
+    createChart(impediments_data, labels, chart_name);
+
+  }
+
+
+  function createChart(chart_data, labels, chart_name){
     const options = {
       elements: {
         bar: {
@@ -176,71 +153,49 @@ const ImpedimentsChart = ({ chartTime, currentYear, currentMonth, chartData }) =
       },
       responsive: true,
       maintainAspectRatio: false,
-
-      // indexAxis: 'y',
     };
-
-    let temp_month = currentMonth < 10 ? "0" + currentMonth.toString() : currentMonth.toString()
-
-    //Get current year data
-    let currentYearMonth_objects = chartData.filter(function (item) {
-      return item.properties.Year === currentYear.toString() && item.properties.Month === temp_month.toString();
-    });
-
-
-
-
-
-    //Group data by day
-    const groups_raw = currentYearMonth_objects.reduce((groups, item) => {
-      const group = (groups[item.properties.Day] || []);
-      group.push(item);
-      groups[item.properties.Day] = group;
-      return groups;
-    }, {});
-
-
-    //Sort data from Jan to Dec
-    let groups = {};
-    for (let i = 1; i < 29; i++) {
-      let temp_day = i < 10 ? "0" + i.toString() : i.toString();
-      groups[i.toString()] = groups_raw[temp_day]
-    }
-
-
-    //Get average acceleration
-    let impediments_data = []
-    for (const [key, value] of Object.entries(groups)) {
-      try {
-        let day_array = value
-        let avg = day_array.reduce((total, next) => total + next.properties.AvgAcceleration, 0) / day_array.length
-        impediments_data.push(avg)
-      }
-      catch {
-
-      }
-
-    }
-
-    let labels = Object.keys(groups)
 
     const data = {
       labels,
       datasets: [
         {
-          label: `count - ${chartTime} (${currentYear} - ${currentMonth})`,
-          data: impediments_data,
+          label: `${chart_name}`,
+          data: chart_data,
 
           backgroundColor: returnListOfColors(),
         },
       ],
     };
 
-
     setMapOptions(options);
     setMapData(data);
     setIsLoaded(true);
   }
+
+  
+
+  function groupDataBySpecificPropertyValue(data, property_name){
+    return data.reduce((groups, item) => {
+      const group = (groups[item['properties'][property_name]] || []);
+      group.push(item);
+      groups[item['properties'][property_name]] = group;
+      return groups;
+    }, {});
+  }
+
+  function getAverageValueOfEachDateBySpecificPropertyValue(groups, property_name){
+    let impediments_data = [];
+    for (const [key, value] of Object.entries(groups)) {
+      let value_array = value
+      let avg = value_array.reduce((total, next) => total + next['properties'][property_name], 0) / value_array.length
+      impediments_data.push(avg)
+    }
+
+    return impediments_data;
+
+  }
+
+  
 
   function returnListOfColors(){
     return ["rgb(255, 99, 132)",
@@ -252,9 +207,6 @@ const ImpedimentsChart = ({ chartTime, currentYear, currentMonth, chartData }) =
     "rgb(201, 203, 207)"]
   }
 
-  function random_rgba() {
-    return "#" + (Math.floor(Math.random() * 16777215).toString(16).toString());
-  }
 
   function getListNameOfMonths() {
     let months = [

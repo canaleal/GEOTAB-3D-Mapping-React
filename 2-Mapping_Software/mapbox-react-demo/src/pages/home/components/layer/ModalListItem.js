@@ -13,7 +13,7 @@ const ModalListItem = ({ item, layerButtonHandler }) => {
                 <p className="font-bold mb-2">{item.layer}</p>
                 <p>View data displayed on maps to better visualize the city and surrounding area.</p>
 
-                <button className={`border  block w-full text-center p-3 my-1 rounded-md ${item.showButton ? 'bg-blue-500 hover:bg-blue-700 color-white' : 'border-black-500 bg-slate-200 hover:bg-slate-300'} `} onClick={() => layerButtonHandler(item)}>
+                <button className={`border  block w-full text-center p-3 my-1 rounded-md ${item.showButton ? 'btn-blue' : 'btn-gray'} `} onClick={() => layerButtonHandler(item)}>
                     <FontAwesomeIcon icon={`fa-solid ${item.icon}`} />
                 </button>
             </div>

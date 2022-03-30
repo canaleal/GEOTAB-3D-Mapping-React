@@ -8,20 +8,24 @@ const RangeSlider = ({filterDetails, currentFilterValues, filterValueSliderHandl
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [marksObject, setMarksObject] = useState();
+  const [sliderMarksList, setSliderMarksList] = useState();
 
   useEffect(() => {
 
+    try {
+      // Create a list of slider marks. The slider marks are the individual filter values in the timeArray
+      let marks_obj = {}
+      for(let i=0; i<=filterDetails.max; i+=filterDetails.step){
+        marks_obj[i] = i.toString();
+      };
+      setSliderMarksList(marks_obj);
+      setIsLoaded(true);
+    }
+    catch (Exception) {
+      setIsLoaded(true);
+      setError(true);
+    }
 
-    let marks_obj = {}
-    
-    for(let i=0; i<=filterDetails.max; i+=filterDetails.step){
-      marks_obj[i] = i.toString();
-    };
-   
-   
-    setMarksObject(marks_obj);
-    setIsLoaded(true);
   }, [])
   
 
@@ -41,7 +45,7 @@ const RangeSlider = ({filterDetails, currentFilterValues, filterValueSliderHandl
           onChange={filterValueSliderHandler}
           dots={true}
           step={filterDetails.step}
-          marks={marksObject}
+          marks={sliderMarksList}
           allowCross={false}
         />
 

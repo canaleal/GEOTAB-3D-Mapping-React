@@ -23,7 +23,7 @@ const SelectCity = () => {
 
     },
     {
-      'link': 3,
+      'link': 'France',
       'name': 'France - Country',
       'img_path': 'http://localhost:3000/assets/images/Country/France.jpg'
 
@@ -42,14 +42,14 @@ const SelectCity = () => {
         {
           cities.map((city => {
             return (
-              <div key={city.link} className="col-span-4 md:col-span-1  rounded overflow-hidden shadow-lg">
+              <div key={city.link} className="col-span-4 md:col-span-1  rounded-lg overflow-hidden shadow-lg bg-white">
                 <img className="w-full h-64 " src={city.img_path} alt="Layer Image" />
 
                 <div className="p-4">
                   <p className="font-bold mb-2">{city.name}</p>
                   <p>View data displayed on maps to better visualize the city and surrounding area.</p>
 
-                  <Link to={{ pathname: `${city.link}` }} className={'border  block w-full text-center p-3 my-1 rounded-md bg-blue-500 hover:bg-blue-700 color-white'} >
+                  <Link to={{ pathname: `${city.link}` }} className={'border  block w-full text-center p-3 my-1 rounded-md btn-blue'} >
                     View Map
                   </Link>
                 </div>

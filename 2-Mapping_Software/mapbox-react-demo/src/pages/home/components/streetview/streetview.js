@@ -13,18 +13,22 @@ const Streetview = (pointOfInterest) => {
   useEffect(() => {
 
     try{
-      console.log( pointOfInterest.pointOfInterest)
-      let coordinates;
+     
+      let coordinates = [];
       if(pointOfInterest.pointOfInterest._geometry.type == 'LineString'){
+        // If the point of interest is a line, get the coordinates of the first point
          coordinates = pointOfInterest.pointOfInterest._geometry.coordinates[0];
       }
       else{
+        // If the point of interest is a point, get the coordinates of the point
          coordinates = pointOfInterest.pointOfInterest._geometry.coordinates;
       }
 
+      // Set the streetview location coordinates using Point of Interest coordinates
       const location_coordinates = { lat: coordinates[1], lng: coordinates[0] };
       
 
+      // Create a new StreetViewService object using the Point of Interest coordinates
       new google.maps.StreetViewPanorama(
         streetviewRef.current, {
         position: location_coordinates,
@@ -48,7 +52,7 @@ const Streetview = (pointOfInterest) => {
   return (
     
 
-    <div ref={streetviewRef} className='h-128 rounded-lg'></div>
+    <div ref={streetviewRef} className='h-96 md:h-128 rounded-lg'></div>
   )
 }
 

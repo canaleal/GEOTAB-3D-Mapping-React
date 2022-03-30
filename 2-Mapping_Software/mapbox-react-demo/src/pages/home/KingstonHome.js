@@ -277,7 +277,7 @@ const KingstonHome = () => {
 
             <button
               onClick={() => showModalHandler(layerModalRef)}
-              className={`border block w-full text-sm text-left p-3 my-1 mt-10 rounded-md border-black-500 bg-slate-200 hover:bg-slate-300`}
+              className={`border block w-full text-sm text-left p-3 mt-10 rounded-md btn-gray`}
             >
               <FontAwesomeIcon
                 icon="fa-solid fa-layer-group"

@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 
-import Home from "./pages/home/Home.js";
 import Error from "./pages/error/Error.js";
 import reportWebVitals from "./reportWebVitals";
 
@@ -31,6 +30,7 @@ import {
 import KingstonHome from "./pages/home/KingstonHome";
 import ChicagoHome from "./pages/home/ChicagoHome";
 import VancouverHome from "./pages/home/VancouverHome";
+import FranceHome from "./pages/home/FranceHome";
 
 
 
@@ -61,7 +61,7 @@ render(
         <Route path="/Kingston" element={<KingstonHome/>} />
         <Route path="/Chicago" element={<ChicagoHome/>} />
         <Route path="/Vancouver" element={<VancouverHome/>} />
-        <Route path=":cityId" element={<Home/>} />
+        <Route path="/France" element={<FranceHome/>} />
         <Route path="*" element={<Error />} />
       </Route>
     </Routes>

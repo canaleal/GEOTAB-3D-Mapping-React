@@ -31,6 +31,7 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
   useEffect(() => {
 
     try{
+
       if (chartTime == 'year') {
         add_year_chart_data();
       }
@@ -41,6 +42,7 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
       else if (chartTime == 'day') {
         add_day_chart_data();
       }
+
     }
     catch (Exception){
       setIsLoaded(true);
@@ -56,66 +58,22 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
   const add_year_chart_data = () =>{
 
 
-      //Group data by year 
-      const groups = chartData.reduce((groups, item) => {
-        const group = (groups[item.properties.Year] || []);
-        group.push(item);
-        groups[item.properties.Year] = group;
-        return groups;
-      }, {});
+      //Group data by year
+      const groups = groupDataBySpecificPropertyValue(chartData, 'Year');
      
-      let ped_data = []
-      for (const [key, value] of Object.entries(groups)) {
-        let year_array = value
-        let avg = year_array.reduce((total, next) => total + next.properties.count, 0) / year_array.length
-        ped_data.push(avg)
-      }
-      let ped_labels = Object.keys(groups)
+      //Get average of each year
+      const ped_data = getAverageValueOfEachDateBySpecificPropertyValue(groups, 'count');
+
+      //Get label of each year
+      const labels = Object.keys(groups)
 
 
-
-      const options = {
-        elements: {
-          bar: {
-            borderWidth: 2,
-          },
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-
-      };
-
-
-      const labels = ped_labels;
-      const data = {
-        labels,
-        datasets: [
-          {
-            label: `count - ${chartTime}`,
-            data: ped_data,
-            backgroundColor: returnListOfColors(),
-          },
-        ],
-      };
-
-
-      setMapOptions(options);
-      setMapData(data);
-      setIsLoaded(true);
+      const chart_name = 'count -  (' + currentYear  + ')';
+      createChart(ped_data, labels, chart_name);
   }
 
   const add_month_chart_data = () =>{
-    const options = {
-      elements: {
-        bar: {
-          borderWidth: 2,
-        },
-      },
-      responsive: true,
-      maintainAspectRatio: false,
-
-    };
-
+    
 
     //Get current year data
     let currentYear_objects = chartData.filter(function (item) {
@@ -123,50 +81,50 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
     });
 
     //Group data by month
-    const groups_raw = currentYear_objects.reduce((groups, item) => {
-      const group = (groups[item.properties.Month] || []);
-      group.push(item);
-      groups[item.properties.Month] = group;
-      return groups;
-    }, {});
+    const groups_raw = groupDataBySpecificPropertyValue(currentYear_objects, 'Month');
+  
 
-    //Sort data from Jan to Dec
+    //Sort data from January to December
     let groups = {};
     for (let i = 1; i < 13; i++) {
+
+      //Add a 0 to the month if it's less than 10 (ex: 01, 02, 03)
       let temp_month = i < 10 ? "0" + i.toString() : i.toString();
       groups[i.toString()] = groups_raw[temp_month]
     }
 
-    //Get average acceleration
-    let impediments_data = []
-    for (const [key, value] of Object.entries(groups)) {
-      let month_array = value
-      let avg = month_array.reduce((total, next) => total + next.properties.count, 0) / month_array.length
-      impediments_data.push(avg)
-    }
+    //Get average of each month
+    const ped_data = getAverageValueOfEachDateBySpecificPropertyValue(groups, 'count');
 
+    //Get label of each month
     const labels = getListNameOfMonths();
 
-    const data = {
-      labels,
-      datasets: [
-        {
-          label: `count - ${chartTime} (${currentYear})`,
-          data: impediments_data,
 
-          backgroundColor: returnListOfColors(),
-        },
-      ],
-    };
-
-
-    setMapOptions(options);
-    setMapData(data);
-    setIsLoaded(true);
+    const chart_name = 'count -  (' + currentYear  + ')';
+    createChart(ped_data, labels, chart_name);
   }
 
   const add_day_chart_data = () =>{
     
+    const labels = [];
+    for (let i = 1; i < 28; i += 5) {
+      labels.push(`${i}-${i + 4}`)
+    }
+
+    //Make random data
+    const ped_data = Array.from(
+      { length: labels.length },
+      () => Math.floor(Math.random() * 10) + 5
+    );
+
+  
+    const chart_name = 'count -  (' + currentYear + '-' + 'temp_month' + ')';
+    createChart(ped_data, labels, chart_name);
+
+  }
+
+
+  function createChart(chart_data, labels, chart_name){
     const options = {
       elements: {
         bar: {
@@ -175,39 +133,44 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
       },
       responsive: true,
       maintainAspectRatio: false,
-
-      // indexAxis: 'y',
     };
-
-    const labels = [];
-    for (let i = 1; i < 28; i += 5) {
-      labels.push(`${i}-${i + 4}`)
-    }
-
-    const colors = [];
-    for (let i = 0; i < 12; i++) {
-      colors.push(random_rgba())
-    }
 
     const data = {
       labels,
       datasets: [
         {
-          label: `count - ${chartTime} (${currentYear} - January)`,
-          data: Array.from(
-            { length: labels.length },
-            () => Math.floor(Math.random() * 10) + 5
-          ),
+          label: `${chart_name}`,
+          data: chart_data,
 
           backgroundColor: returnListOfColors(),
         },
       ],
     };
 
-
     setMapOptions(options);
     setMapData(data);
     setIsLoaded(true);
+  }
+
+  function groupDataBySpecificPropertyValue(data, property_name){
+    return data.reduce((groups, item) => {
+      const group = (groups[item['properties'][property_name]] || []);
+      group.push(item);
+      groups[item['properties'][property_name]] = group;
+      return groups;
+    }, {});
+  }
+
+  function getAverageValueOfEachDateBySpecificPropertyValue(groups, property_name){
+    let impediments_data = [];
+    for (const [key, value] of Object.entries(groups)) {
+      let value_array = value
+      let avg = value_array.reduce((total, next) => total + next['properties'][property_name], 0) / value_array.length
+      impediments_data.push(avg)
+    }
+
+    return impediments_data;
+
   }
 
   function returnListOfColors(){
