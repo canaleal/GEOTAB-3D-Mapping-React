@@ -56,4 +56,4 @@ const GoogleStreetview = (pointOfInterest) => {
   )
 }
 
-export default GoogleStreetview;
+export default React.memo(GoogleStreetview);
