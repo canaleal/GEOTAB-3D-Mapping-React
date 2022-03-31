@@ -124,6 +124,16 @@ const KingstonHome = () => {
         imgPath: "BusRoutes.JPG",
         showButton: true,
         icon: "fa-person",
+      },
+      {
+        id: 6,
+        layer: "Princess and Bagot Pedestrians",
+        isOn: true,
+        isDynamic: false,
+        layerName: "PrincessBagotLayer",
+        imgPath: "BusRoutes.JPG",
+        showButton: true,
+        icon: "fa-person",
       }
     ]);
 

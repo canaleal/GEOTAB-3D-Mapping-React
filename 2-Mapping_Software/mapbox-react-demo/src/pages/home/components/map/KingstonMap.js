@@ -3,7 +3,8 @@ import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-load
 import { useRef, useState, useEffect } from "react";
 import boundary from "./data/kingston/city-neighbourhoods.geojson";
 import buses from "./data/kingston/transit-gtfs-routes.geojson";
-import crosswalk from './data/kingston/CrossWalks.geojson'
+import crosswalk from './data/kingston/CrossWalks.geojson';
+import princess from './data/kingston/princess.geojson';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
@@ -77,6 +78,11 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
             'data': crosswalk
         });
 
+        map.current.addSource('PrincessData', {
+            'type': 'geojson',
+            'data': princess
+        });
+
         fetch('http://localhost:3000/data/pedestrian.geojson')
             .then(response => response.json())
             .then(data => {
@@ -107,6 +113,7 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
         add_pedestrian_layer();
         add_bus_route_layer();
         add_cross_walk_layer();
+        add_princess_layer();
 
         // Add all the filters to the map
         addLayerFilters();
@@ -418,6 +425,91 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
 
 
 
+    const add_princess_layer = () => {
+
+        const layerName = 'PrincessBagotLayer'
+
+        map.current.addLayer({
+            id: layerName,
+            type: "fill",
+            source: "PrincessData",
+            layout: {},
+            paint: {
+                "fill-color": ["get", "fill"],
+                'fill-opacity': [
+                    'case',
+                    ['boolean', ['feature-state', 'hover'], false],
+                    0.8,
+                    0.5
+                ]
+
+            },
+        });
+
+     
+        map.current.setLayoutProperty(layerName, 'visibility','none')
+
+
+        const small_popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+        // When a click event occurs on a feature in the places layer, open a popup at the
+        // location of the feature, with description HTML from its properties.
+        map.current.on('click', layerName, (e) => {
+            // Copy coordinates array.
+
+          
+            const coordinates = e.features[0].geometry.coordinates[0][0].slice();
+            const description = `
+                    <span class="block font-bold">Year</span>
+                    <span class="block">${e.features[0].properties.Year} </span>
+                    <span class="block font-bold">Pedestrian Count</span>
+                    <span class="block">${e.features[0].properties.count}</span>
+                  
+                        
+      `
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+            //If the user clicks a point save it 
+            pointOfInterestHandler(e.features[0]);
+        });
+
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.current.on('mouseenter', layerName, (e) => {
+            map.current.getCanvas().style.cursor = 'pointer';
+            const coordinates = e.features[0].geometry.coordinates[0][0].slice();
+            const description = `<span># of Pedestrians: ${e.features[0].properties.count}</span>`
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            small_popup
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+        });
+
+        // Change it back to a pointer when it leaves.
+        map.current.on('mouseleave', layerName, () => {
+            map.current.getCanvas().style.cursor = '';
+            small_popup.remove();
+        });
+
+        
+    }
+
+
 
 
     // If any of the layer in the layerList changes (isOn), update the map
@@ -463,6 +555,14 @@ const KingstonMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, c
 
         //Grab data specific to a filter range and year
         map.current.setFilter('PedestriansLayer', ["all",
+            [">=", ['get', 'count'], currentFilterValues[0]],
+            ["<=", ['get', 'count'], currentFilterValues[1]],
+            ['==', ['string', ['get', 'Year']], currentYear.toString()],
+
+        ])
+
+
+        map.current.setFilter('PrincessBagotLayer', ["all",
             [">=", ['get', 'count'], currentFilterValues[0]],
             ["<=", ['get', 'count'], currentFilterValues[1]],
             ['==', ['string', ['get', 'Year']], currentYear.toString()],
