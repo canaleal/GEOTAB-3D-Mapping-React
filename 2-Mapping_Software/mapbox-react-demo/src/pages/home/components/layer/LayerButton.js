@@ -6,8 +6,7 @@ const LayerButton = ({ item, layerHandler }) => {
 
   return (
     <button onClick={() => layerHandler(item.id)}
-      className={`border slide-in-left  w-full text-left ${item.isOn ?'btn-blue' : 'btn-gray'} `}
-      value={item.id}>
+      className={`border  w-full text-left ${item.isOn ?'btn-blue' : 'btn-gray'} `} value={item.id}>
       <FontAwesomeIcon icon={`fa-solid ${item.icon} `} size="xl" width={"2rem"}/><span>{item.layer}</span>
     </button>
   )

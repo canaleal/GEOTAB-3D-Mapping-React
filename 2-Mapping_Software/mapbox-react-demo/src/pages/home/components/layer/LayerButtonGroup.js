@@ -1,8 +1,7 @@
 
 
 
-import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
+import React, { Fragment, useEffect } from 'react'
 import LayerButton from './LayerButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -11,10 +10,11 @@ const LayerButtonGroup = ({ layers, layerModalRef, layerHandler, showModalHandle
     return (
 
 
-        <>
+        <Fragment>
 
 
             <p className="font-bold">Layers</p>
+            
             {layers.map((item) => (
                 <span key={item.id}>
                     {item.showButton ? (
@@ -26,9 +26,7 @@ const LayerButtonGroup = ({ layers, layerModalRef, layerHandler, showModalHandle
             ))}
 
 
-            <button onClick={() => showModalHandler(layerModalRef)}
-                className={`border slide-in-left  w-full text-left my-1 btn-gray mt-10`}
-            >
+            <button onClick={() => showModalHandler(layerModalRef)} className={`border slide-in-left  w-full text-left my-1 btn-gray mt-10`}>
                 <FontAwesomeIcon
                     icon="fa-solid fa-layer-group"
                     size="lg"
@@ -38,7 +36,7 @@ const LayerButtonGroup = ({ layers, layerModalRef, layerHandler, showModalHandle
 
 
 
-        </>
+        </Fragment>
     )
 }
 

@@ -84,17 +84,7 @@ const ImpedimentsChart = ({ chartTime, currentYear, currentMonth, chartData }) =
 
     //Group data by month
     const groups_raw = groupDataBySpecificPropertyValue(currentYear_objects, 'Month');
-
-    //Sort data from January to December
-    let groups = {};
-    for (let i = 1; i < 13; i++) {
-
-      //Add a 0 to the month if it's less than 10 (ex: 01, 02, 03)
-      let temp_month = i < 10 ? "0" + i.toString() : i.toString();
-      groups[i.toString()] = groups_raw[temp_month]
-    }
-
-    //Get average value of each date
+    const groups = sortGroupsOfDataByMonth(groups_raw);
     const impediments_data = getAverageValueOfEachDateBySpecificPropertyValue(groups, 'AvgAcceleration');
 
     //Get bar graph labels
@@ -118,25 +108,12 @@ const ImpedimentsChart = ({ chartTime, currentYear, currentMonth, chartData }) =
     });
 
 
-    //Group data by day
     const groups_raw = groupDataBySpecificPropertyValue(currentYearMonth_objects, 'Day');
-
-
-    //Sort data from day 1 to day 31
-    let groups = {};
-    for (let i = 1; i < 31; i++) {
-
-      //Add a 0 to the day if it's less than 10 (ex: 01, 02, 03)
-      let temp_day = i < 10 ? "0" + i.toString() : i.toString();
-      groups[i.toString()] = groups_raw[temp_day]
-    }
-
-    //Get average value of each day
+    const groups = sortGroupsOfDataByDay(groups_raw);
     const impediments_data = getAverageValueOfEachDateBySpecificPropertyValue(groups, 'AvgAcceleration');
    
     //Get bar graph labels
     let labels = Object.keys(groups)
-
 
     const chart_name = 'count -  (' + currentYear + '-' + temp_month + ')';
     createChart(impediments_data, labels, chart_name);
@@ -220,6 +197,28 @@ const ImpedimentsChart = ({ chartTime, currentYear, currentMonth, chartData }) =
       "July", "August", "September", "October", "November", "December"
     ]
     return months
+  }
+
+  function sortGroupsOfDataByMonth(groups_raw){
+    let groups = {};
+    for (let i = 1; i < 13; i++) {
+
+      //Add a 0 to the month if it's less than 10 (ex: 01, 02, 03)
+      let temp_month = i < 10 ? "0" + i.toString() : i.toString();
+      groups[i.toString()] = groups_raw[temp_month]
+    }
+    return groups;
+  }
+
+  function sortGroupsOfDataByDay(groups_raw){
+    let groups = {};
+    for (let i = 1; i < 31; i++) {
+
+      //Add a 0 to the day if it's less than 10 (ex: 01, 02, 03)
+      let temp_day = i < 10 ? "0" + i.toString() : i.toString();
+      groups[i.toString()] = groups_raw[temp_day]
+    }
+    return groups;
   }
 
   return (
