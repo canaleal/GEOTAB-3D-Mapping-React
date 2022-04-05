@@ -1,6 +1,4 @@
-
-
-import React, { useState, useRef, useEffect, Fragment } from 'react'
+import React, { useState, useRef, useEffect, Fragment } from "react";
 
 import KingstonMap from "./components/map/KingstonMap";
 import PedestrianChart from "./components/chart/PedestrianChart";
@@ -15,14 +13,13 @@ import AboutModal from "../../components/AboutModal";
 import HelpModal from "../../components/HelpModal";
 import Footer from "../../components/Footer";
 import GoogleStreetview from "./components/googleStreetview/GoogleStreetview";
-import ChartDateToggle from './components/chart/ChartDateToggle';
-import MapStyleSelector from './components/map/MapStyleSelector';
-import RangeSlider from './components/slider/RangeSlider';
-import LayerButtonGroup from './components/layer/LayerButtonGroup';
-
+import ChartDateToggle from "./components/chart/ChartDateToggle";
+import MapStyleSelector from "./components/map/MapStyleSelector";
+import RangeSlider from "./components/slider/RangeSlider";
+import LayerButtonGroup from "./components/layer/LayerButtonGroup";
+import GradientLegend from "./components/map/GradientLegend";
 
 const KingstonHome = () => {
-
   const [isLoaded, setIsLoaded] = useState(false);
 
   //Popup and black cover
@@ -46,7 +43,7 @@ const KingstonHome = () => {
   //POI Details
   const [pointOfInterest, setPointOfInterest] = useState();
   const [chartData, setChartData] = useState(null);
-  const [chartTime, setChartTime] = useState('year')
+  const [chartTime, setChartTime] = useState("year");
 
   //Year details
   const [years, setYears] = useState([]);
@@ -60,9 +57,7 @@ const KingstonHome = () => {
   const [filterDetails, setFilterDetails] = useState({});
 
   useEffect(() => {
-
-
-    setCity('Kingston');
+    setCity("Kingston");
 
     //Map Details
     setZoom(10);
@@ -72,7 +67,6 @@ const KingstonHome = () => {
     ]);
     setLng(-76.48098);
     setLat(44.22976);
-
 
     setLayers([
       {
@@ -134,7 +128,7 @@ const KingstonHome = () => {
         imgPath: "Pedestrians.JPG",
         showButton: true,
         icon: "fa-person",
-      }
+      },
     ]);
 
     //Chart details
@@ -142,13 +136,11 @@ const KingstonHome = () => {
     setCurrentYear(2014);
 
     //filter details
-    setCurrentFilterValues([0, 1000])
-    setFilterDetails({ 'min': 0, 'max': 1000, 'step': 100 });
-
+    setCurrentFilterValues([0, 1000]);
+    setFilterDetails({ min: 0, max: 1000, step: 100 });
 
     setIsLoaded(true);
   }, []);
-
 
   // Function is used to turn on or off the layer on the map
   const layerHandler = (item) => {
@@ -175,7 +167,7 @@ const KingstonHome = () => {
     }
 
     //Remove point of interest if the pedestrian layer is turned off
-    if (item.layerName === 'PedestriansLayer') {
+    if (item.layerName === "PedestriansLayer") {
       setPointOfInterest(null);
     }
 
@@ -199,7 +191,7 @@ const KingstonHome = () => {
 
   const chartDataHandler = (value) => {
     setChartData(value);
-  }
+  };
 
   useEffect(() => {
     let interval = null;
@@ -237,14 +229,12 @@ const KingstonHome = () => {
   };
 
   const chartTimeTogglerHandler = (item) => {
-    setChartTime(item)
-  }
+    setChartTime(item);
+  };
 
   const filterValueSliderHandler = (item) => {
-
     setCurrentFilterValues(item);
-  }
-
+  };
 
   return (
     <Fragment>
@@ -267,21 +257,19 @@ const KingstonHome = () => {
         layerButtonHandler={layerButtonHandler}
       />
 
-
-      {isLoaded ?
+      {isLoaded ? (
         <div className="p-5">
-
-
-
           <div className="grid grid-cols-4 grid-row-3 gap-4 ">
             <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
-              <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
+              <LayerButtonGroup
+                layers={layers}
+                layerModalRef={layerModalRef}
+                layerHandler={layerHandler}
+                showModalHandler={showModalHandler}
+              />
             </div>
 
-
-
             <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen slide-in-right relative">
-
               <KingstonMap
                 cityId={0}
                 mapStyle={mapStyle}
@@ -298,12 +286,17 @@ const KingstonHome = () => {
               />
 
               <div className="absolute top-3 left-3 bg-white rounded-lg p-4">
-                <MapStyleSelector mapStyle={mapStyle} mapStyleChangeHandler={mapStyleChangeHandler} />
+                <MapStyleSelector
+                  mapStyle={mapStyle}
+                  mapStyleChangeHandler={mapStyleChangeHandler}
+                />
+              </div>
+              <div className="absolute top-16 right-3 bg-white rounded-lg p-4">
+                <GradientLegend />
               </div>
 
               <div className="absolute bottom-10 left-10 bg-black px-10 py-4 rounded-lg box-border w-10/12">
-
-                <span className='color-white'>Year - {currentYear}</span>
+                <span className="color-white">Year - {currentYear}</span>
 
                 <div className="py-4">
                   <TimeSlider
@@ -312,16 +305,11 @@ const KingstonHome = () => {
                     dateSliderHandler={yearSliderHandler}
                   />
                 </div>
-
               </div>
             </div>
 
-
-
-
             <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
               <p className="font-bold">Filter Map - Average # of Pedestrians</p>
-
 
               <div className="pb-4 px-4">
                 <RangeSlider
@@ -330,55 +318,49 @@ const KingstonHome = () => {
                   filterValueSliderHandler={filterValueSliderHandler}
                 />
               </div>
-
-
             </div>
 
-
-            {chartData != null ?
-
+            {chartData != null ? (
               <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
-                <p className="font-bold"># of Pedestrians - Average per Hour </p>
-                <PedestrianChart currentYear={currentYear} chartTime={chartTime} chartData={chartData} />
-                <ChartDateToggle years={years} chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
+                <p className="font-bold">
+                  # of Pedestrians - Average per Hour{" "}
+                </p>
+                <PedestrianChart
+                  currentYear={currentYear}
+                  chartTime={chartTime}
+                  chartData={chartData}
+                />
+                <ChartDateToggle
+                  years={years}
+                  chartTime={chartTime}
+                  chartTimeTogglerHandler={chartTimeTogglerHandler}
+                />
               </div>
-              :
+            ) : (
               <span></span>
-            }
+            )}
 
-
-
-
-
-
-
-            {pointOfInterest != null ?
+            {pointOfInterest != null ? (
               <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
                 <p className="font-bold">Point Of Interest</p>
                 <GoogleStreetview pointOfInterest={pointOfInterest} />
               </div>
-              :
+            ) : (
               <span></span>
-            }
-
+            )}
           </div>
         </div>
-
-        :
-        <div className='p-5'>
+      ) : (
+        <div className="p-5">
           <p>Unable to Load Map</p>
         </div>
-      }
-
-
-
+      )}
 
       <Footer
         showModalHandler={showModalHandler}
         aboutModalRef={aboutModalRef}
         helpModalRef={helpModalRef}
       />
-
     </Fragment>
   );
 };
