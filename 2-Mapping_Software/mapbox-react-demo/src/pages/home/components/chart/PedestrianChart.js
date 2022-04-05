@@ -80,20 +80,8 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
       return item.properties.Year === currentYear.toString();
     });
 
-    //Group data by month
     const groups_raw = groupDataBySpecificPropertyValue(currentYear_objects, 'Month');
-  
-
-    //Sort data from January to December
-    let groups = {};
-    for (let i = 1; i < 13; i++) {
-
-      //Add a 0 to the month if it's less than 10 (ex: 01, 02, 03)
-      let temp_month = i < 10 ? "0" + i.toString() : i.toString();
-      groups[i.toString()] = groups_raw[temp_month]
-    }
-
-    //Get average of each month
+    const groups = sortGroupsOfDataByMonth(groups_raw);
     const ped_data = getAverageValueOfEachDateBySpecificPropertyValue(groups, 'count');
 
     //Get label of each month
@@ -193,6 +181,28 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
       "July", "August", "September", "October", "November", "December"
     ]
     return months
+  }
+
+  function sortGroupsOfDataByMonth(groups_raw){
+    let groups = {};
+    for (let i = 1; i < 13; i++) {
+
+      //Add a 0 to the month if it's less than 10 (ex: 01, 02, 03)
+      let temp_month = i < 10 ? "0" + i.toString() : i.toString();
+      groups[i.toString()] = groups_raw[temp_month]
+    }
+    return groups;
+  }
+
+  function sortGroupsOfDataByDay(groups_raw){
+    let groups = {};
+    for (let i = 1; i < 31; i++) {
+
+      //Add a 0 to the day if it's less than 10 (ex: 01, 02, 03)
+      let temp_day = i < 10 ? "0" + i.toString() : i.toString();
+      groups[i.toString()] = groups_raw[temp_day]
+    }
+    return groups;
   }
 
   return (
