@@ -27,9 +27,10 @@ const RangeSlider = ({filterDetails, currentFilterValues, filterValueSliderHandl
   // Create a list of slider marks. The slider marks are the individual filter values in the timeArray
   const getSliderTicks = (max, min, step) =>{
     let marks_obj = {}
-    for(let i=0; i<=max; i+=step){
+    for(let i=min; i<=max; i+=step){
       marks_obj[i] = i.toString();
     };
+    return marks_obj;
   }
   
 

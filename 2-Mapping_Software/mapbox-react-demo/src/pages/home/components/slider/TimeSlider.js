@@ -8,25 +8,17 @@ const TimeSlider = ({ timeArray, currentDate, dateSliderHandler }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [sliderMarksList, setSliderMarksList] = useState();
-  const [minDate, setMinDate] = useState();
-  const [maxDate, setMaxDate] = useState();
+
 
   useEffect(() => {
 
 
     try {
 
-      // Create a list of slider marks. The slider marks are the individual dates in the timeArray
-      let marks_obj = {}
-      const time_length = timeArray.length;
-      for (let i = 0; i < time_length; i++) {
-        marks_obj[timeArray[i]] = timeArray[i].toString();
-      };
-      setSliderMarksList(marks_obj);
 
-      // Get the min and max date from the timeArray
-      setMinDate(timeArray[0]);
-      setMaxDate(timeArray[timeArray.length - 1]);
+      // Set slider ticks using max, min, step
+      setSliderMarksList(getSliderTicks(timeArray[timeArray.length-1], timeArray[0], 1));
+
       setIsLoaded(true);
 
     }
@@ -36,6 +28,15 @@ const TimeSlider = ({ timeArray, currentDate, dateSliderHandler }) => {
     }
 
   }, [])
+
+  // Create a list of slider marks. The slider marks are the individual filter values in the timeArray
+  const getSliderTicks = (max, min, step) =>{
+    let marks_obj = {}
+    for(let i=min; i<=max; i+=step){
+      marks_obj[i] = i.toString();
+    };
+    return marks_obj;
+  }
 
 
   return (
@@ -47,8 +48,8 @@ const TimeSlider = ({ timeArray, currentDate, dateSliderHandler }) => {
           <p>Error! Unable to load slider.</p>
           :
           <Slider
-            min={minDate}
-            max={maxDate}
+            min={timeArray[0]}
+            max={timeArray[timeArray.length - 1]}
             value={currentDate}
             onChange={dateSliderHandler}
             dots={true}
