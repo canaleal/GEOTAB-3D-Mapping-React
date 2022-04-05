@@ -131,7 +131,7 @@ const KingstonHome = () => {
         isOn: true,
         isDynamic: false,
         layerName: "PrincessBagotLayer",
-        imgPath: "BusRoutes.JPG",
+        imgPath: "Pedestrians.JPG",
         showButton: true,
         icon: "fa-person",
       }

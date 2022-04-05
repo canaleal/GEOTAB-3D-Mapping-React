@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const SelectCity = () => {
 
@@ -31,6 +31,8 @@ const SelectCity = () => {
 
   ])
 
+  
+
 
 
   return (
@@ -49,7 +51,7 @@ const SelectCity = () => {
                   <p className="font-bold mb-2">{city.name}</p>
                   <p>View data displayed on maps to better visualize the city and surrounding area.</p>
 
-                  <Link to={{ pathname: `${city.link}` }} className={'border  block w-full text-center p-3 my-1 rounded-md btn-blue'} >
+                  <Link to={{ pathname: `${city.link}` }} className={'border  block text-center  rounded-md btn-blue'} >
                     View Map
                   </Link>
                 </div>
