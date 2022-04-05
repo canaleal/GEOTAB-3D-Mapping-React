@@ -21,15 +21,16 @@ import GradientLegend from "./components/map/GradientLegend";
 
 const KingstonHome = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [error, setError] = useState(false);
 
   //Popup and black cover
-  const layerModalRef = useRef();
+  const coverRef = useRef();
 
-  //References for each modal
+  const layerModalRef = useRef();
   const helpModalRef = useRef();
   const aboutModalRef = useRef();
 
-  const coverRef = useRef();
+  
 
   // Initial Map Details
   const [city, setCity] = useState();
@@ -56,90 +57,101 @@ const KingstonHome = () => {
   const [currentFilterValues, setCurrentFilterValues] = useState();
   const [filterDetails, setFilterDetails] = useState({});
 
+
+
+
   useEffect(() => {
-    setCity("Kingston");
+    try{
+      setCity("Kingston");
 
-    //Map Details
-    setZoom(10);
-    setMapBoundaries([
-      [-76.788, 44.107], // Southwest coordinates
-      [-76.17, 44.52], // Northeast coordinates
-    ]);
-    setLng(-76.48098);
-    setLat(44.22976);
+      //Map Details
+      setZoom(10);
+      setMapBoundaries([
+        [-76.788, 44.107], // Southwest coordinates
+        [-76.17, 44.52], // Northeast coordinates
+      ]);
+      setLng(-76.48098);
+      setLat(44.22976);
+  
+      setLayers([
+        {
+          id: 1,
+          layer: "Buildings",
+          isOn: true,
+          isDynamic: false,
+          layerName: "BuildingsLayer",
+          imgPath: "Buildings.JPG",
+          showButton: true,
+          icon: "fa-building",
+        },
+        {
+          id: 2,
+          layer: "City Boundary",
+          isOn: true,
+          isDynamic: false,
+          layerName: "CityBoundaryLayer",
+          imgPath: "Boundary.JPG",
+          showButton: true,
+          icon: "fa-border-all",
+        },
+        {
+          id: 3,
+          layer: "Pedestrians",
+          isOn: true,
+          isDynamic: false,
+          layerName: "PedestriansLayer",
+          imgPath: "Pedestrians.JPG",
+          showButton: true,
+          icon: "fa-person",
+        },
+        {
+          id: 4,
+          layer: "Bus Routes",
+          isOn: false,
+          isDynamic: false,
+          layerName: "BusRoutesLayer",
+          imgPath: "BusRoutes.JPG",
+          showButton: false,
+          icon: "fa-bus",
+        },
+        {
+          id: 5,
+          layer: "CrossWalk Routes",
+          isOn: true,
+          isDynamic: false,
+          layerName: "CrossWalkLayer",
+          imgPath: "BusRoutes.JPG",
+          showButton: true,
+          icon: "fa-person",
+        },
+        {
+          id: 6,
+          layer: "Princess and Bagot Pedestrians",
+          isOn: true,
+          isDynamic: false,
+          layerName: "PrincessBagotLayer",
+          imgPath: "Pedestrians.JPG",
+          showButton: true,
+          icon: "fa-person",
+        },
+      ]);
+  
+      //Chart details
+      setYears([2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]);
+      setCurrentYear(2014);
+  
+      //filter details
+      setCurrentFilterValues([0, 1000]);
+      setFilterDetails({ min: 0, max: 1000, step: 100 });
+  
+      setIsLoaded(true);
 
-    setLayers([
-      {
-        id: 1,
-        layer: "Buildings",
-        isOn: true,
-        isDynamic: false,
-        layerName: "BuildingsLayer",
-        imgPath: "Buildings.JPG",
-        showButton: true,
-        icon: "fa-building",
-      },
-      {
-        id: 2,
-        layer: "City Boundary",
-        isOn: true,
-        isDynamic: false,
-        layerName: "CityBoundaryLayer",
-        imgPath: "Boundary.JPG",
-        showButton: true,
-        icon: "fa-border-all",
-      },
-      {
-        id: 3,
-        layer: "Pedestrians",
-        isOn: true,
-        isDynamic: false,
-        layerName: "PedestriansLayer",
-        imgPath: "Pedestrians.JPG",
-        showButton: true,
-        icon: "fa-person",
-      },
-      {
-        id: 4,
-        layer: "Bus Routes",
-        isOn: false,
-        isDynamic: false,
-        layerName: "BusRoutesLayer",
-        imgPath: "BusRoutes.JPG",
-        showButton: false,
-        icon: "fa-bus",
-      },
-      {
-        id: 5,
-        layer: "CrossWalk Routes",
-        isOn: true,
-        isDynamic: false,
-        layerName: "CrossWalkLayer",
-        imgPath: "BusRoutes.JPG",
-        showButton: true,
-        icon: "fa-person",
-      },
-      {
-        id: 6,
-        layer: "Princess and Bagot Pedestrians",
-        isOn: true,
-        isDynamic: false,
-        layerName: "PrincessBagotLayer",
-        imgPath: "Pedestrians.JPG",
-        showButton: true,
-        icon: "fa-person",
-      },
-    ]);
-
-    //Chart details
-    setYears([2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]);
-    setCurrentYear(2014);
-
-    //filter details
-    setCurrentFilterValues([0, 1000]);
-    setFilterDetails({ min: 0, max: 1000, step: 100 });
-
-    setIsLoaded(true);
+    }
+    catch{
+      setIsLoaded(true);
+      setError(true);
+    }
+    
   }, []);
 
   // Function is used to turn on or off the layer on the map
@@ -179,7 +191,7 @@ const KingstonHome = () => {
     setPointOfInterest(null);
   };
 
-  //Turn the timer on or off
+  
   function timerToggleHandler() {
     setIsTimerActive(!isTimerActive);
   }

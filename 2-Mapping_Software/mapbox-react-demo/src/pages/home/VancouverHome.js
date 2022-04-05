@@ -21,13 +21,13 @@ const VancouverHome = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   //Popup and black cover
+  const coverRef = useRef();
+  
   const layerModalRef = useRef();
-
-  //References for each modal
   const helpModalRef = useRef();
   const aboutModalRef = useRef();
 
-  const coverRef = useRef();
+ 
 
   // Initial Map Details
   const [city, setCity] = useState();

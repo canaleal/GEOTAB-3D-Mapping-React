@@ -1,6 +1,6 @@
 
 
-import Slider, { Range } from "rc-slider";
+import { Range } from "rc-slider";
 import { useState, useEffect } from "react";
 
 const RangeSlider = ({filterDetails, currentFilterValues, filterValueSliderHandler }) => {
@@ -13,12 +13,8 @@ const RangeSlider = ({filterDetails, currentFilterValues, filterValueSliderHandl
   useEffect(() => {
 
     try {
-      // Create a list of slider marks. The slider marks are the individual filter values in the timeArray
-      let marks_obj = {}
-      for(let i=0; i<=filterDetails.max; i+=filterDetails.step){
-        marks_obj[i] = i.toString();
-      };
-      setSliderMarksList(marks_obj);
+
+      setSliderMarksList(getSliderTicks(filterDetails.max, filterDetails.min, filterDetails.step));
       setIsLoaded(true);
     }
     catch (Exception) {
@@ -27,6 +23,14 @@ const RangeSlider = ({filterDetails, currentFilterValues, filterValueSliderHandl
     }
 
   }, [])
+
+  // Create a list of slider marks. The slider marks are the individual filter values in the timeArray
+  const getSliderTicks = (max, min, step) =>{
+    let marks_obj = {}
+    for(let i=0; i<=max; i+=step){
+      marks_obj[i] = i.toString();
+    };
+  }
   
 
   return (
