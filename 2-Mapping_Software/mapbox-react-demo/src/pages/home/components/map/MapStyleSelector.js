@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 
 const MapStyleSelector = ({ mapStyle, mapStyleChangeHandler }) => {
 
@@ -10,23 +10,21 @@ const MapStyleSelector = ({ mapStyle, mapStyleChangeHandler }) => {
 
     useEffect(() => {
 
-        try{
-         setMapStyleOptions([
-            {
-                'name': 'Streets', 'value': 'streets-v11'
-            },
-            { 'name': 'Dark', 'value': 'dark-v10' },
-            { 'name': 'Outdoors', 'value': 'outdoors-v11' },
-        {'name':'Satellite','value':'satellite-streets-v11'}
-        
-        ])
+        try {
+            setMapStyleOptions([
+                { 'name': 'Streets', 'value': 'streets-v11'},
+                { 'name': 'Dark', 'value': 'dark-v10' },
+                { 'name': 'Outdoors', 'value': 'outdoors-v11' },
+                { 'name': 'Satellite', 'value': 'satellite-streets-v11' }
+
+            ])
             setIsLoaded(true)
         }
-        catch{
+        catch {
             setIsLoaded(true);
             setError(true);
         }
-      
+
     }, [])
 
 
@@ -34,44 +32,44 @@ const MapStyleSelector = ({ mapStyle, mapStyleChangeHandler }) => {
     return (
 
 
-        <div >
+        <Fragment >
 
-      {isLoaded ?
+            {isLoaded ?
 
-        error ?
-          <p>Error! Unable to load map selector.</p>
-          :
-          <form >
-
-
-          {
-              mapStyleOptions.map((item) => {
-                  return (
-                      <div key={item.name}>
-                          <input
-                              type="radio"
-                              value={item.value}
-                              checked={mapStyle === item.value}
-                              onChange={mapStyleChangeHandler}
-                          /> {item.name}
-                      </div>
-                  )
-              })
-
-          }
+                error ?
+                    <p>Error! Unable to load map selector.</p>
+                    :
+                    <form >
 
 
-      </form>
+                        {
+                            mapStyleOptions.map((item) => {
+                                return (
+                                    <div key={item.name}>
+                                        <input
+                                            type="radio"
+                                            value={item.value}
+                                            checked={mapStyle === item.value}
+                                            onChange={mapStyleChangeHandler}
+                                        /> {item.name}
+                                    </div>
+                                )
+                            })
 
-        :
-        <p>Loading</p>
-      }
+                        }
+
+
+                    </form>
+
+                :
+                <p>Loading</p>
+            }
 
 
 
-    </div>
+        </Fragment>
 
-      
+
 
     )
 }

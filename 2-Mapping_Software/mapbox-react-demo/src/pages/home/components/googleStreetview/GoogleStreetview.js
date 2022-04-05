@@ -14,7 +14,7 @@ const GoogleStreetview = (pointOfInterest) => {
   useEffect(() => {
 
 
-    let location_coordinates = getLocationCoordinates(pointOfInterest);
+    const location_coordinates = getLocationCoordinates(pointOfInterest);
 
     setStreetViewPanorama(new google.maps.StreetViewPanorama(
       streetviewRef.current, {

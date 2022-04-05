@@ -283,13 +283,11 @@ const KingstonHome = () => {
 
             <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen slide-in-right relative">
               <KingstonMap
-                cityId={0}
                 mapStyle={mapStyle}
                 mapBoundaries={mapBoundaries}
                 lng={lng}
                 lat={lat}
                 zoom={zoom}
-                years={years}
                 currentYear={currentYear}
                 layers={layers}
                 currentFilterValues={currentFilterValues}
