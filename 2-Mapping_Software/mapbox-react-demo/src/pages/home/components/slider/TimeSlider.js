@@ -1,5 +1,5 @@
 import Slider from "rc-slider";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 const TimeSlider = ({ timeArray, currentDate, dateSliderHandler }) => {
 
@@ -70,4 +70,4 @@ const TimeSlider = ({ timeArray, currentDate, dateSliderHandler }) => {
   )
 };
 
-export default TimeSlider;
+export default React.memo(TimeSlider);

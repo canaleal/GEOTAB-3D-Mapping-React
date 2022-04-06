@@ -253,19 +253,19 @@ const KingstonHome = () => {
       <Header city={city} />
 
       <Cover coverRef={coverRef} />
-      <AboutModal
+      
+      {/* <AboutModal
         aboutModalRef={aboutModalRef}
         closeModalHandler={closeModalHandler}
       />
       <HelpModal
         helpModalRef={helpModalRef}
         closeModalHandler={closeModalHandler}
-      />
+      /> */}
       <LayerModal
         layerModalRef={layerModalRef}
         closeModalHandler={closeModalHandler}
-        staticLayers={layers.filter((item) => item.isDynamic === false)}
-        dynamicLayers={layers.filter((item) => item.isDynamic === true)}
+        layers = {layers}
         layerButtonHandler={layerButtonHandler}
       />
 
@@ -281,7 +281,7 @@ const KingstonHome = () => {
               />
             </div>
 
-            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen slide-in-right relative">
+            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen  relative">
               <KingstonMap
                 mapStyle={mapStyle}
                 mapBoundaries={mapBoundaries}
@@ -318,7 +318,7 @@ const KingstonHome = () => {
               </div>
             </div>
 
-            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 ">
               <p className="font-bold">Filter Map - Average # of Pedestrians</p>
 
               <div className="pb-4 px-4">
@@ -331,7 +331,7 @@ const KingstonHome = () => {
             </div>
 
             {chartData != null ? (
-              <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+              <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4">
                 <p className="font-bold">
                   # of Pedestrians - Average per Hour{" "}
                 </p>
@@ -366,11 +366,17 @@ const KingstonHome = () => {
         </div>
       )}
 
+
+
+
       <Footer
         showModalHandler={showModalHandler}
         aboutModalRef={aboutModalRef}
         helpModalRef={helpModalRef}
       />
+
+
+
     </Fragment>
   );
 };

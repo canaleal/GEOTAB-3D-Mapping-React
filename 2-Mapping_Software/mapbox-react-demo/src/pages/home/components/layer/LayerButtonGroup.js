@@ -26,7 +26,7 @@ const LayerButtonGroup = ({ layers, layerModalRef, layerHandler, showModalHandle
             ))}
 
 
-            <button onClick={() => showModalHandler(layerModalRef)} className={`border slide-in-left  w-full text-left my-1 btn-gray mt-10`}>
+            <button onClick={() => showModalHandler(layerModalRef)} className={`border   w-full text-left my-1 btn-gray mt-10`}>
                 <FontAwesomeIcon
                     icon="fa-solid fa-layer-group"
                     size="lg"

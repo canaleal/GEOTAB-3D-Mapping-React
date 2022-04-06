@@ -17,9 +17,9 @@ const AboutModal = ({aboutModalRef, closeModalHandler}) => {
 
         <p>The City promotes and fosters open government principles of participation, innovation, transparency and accountability. The data catalogue supports these principles and is the first step in making it easier to view, obtain and use the information the City has gathered.</p>
         
-        <img className='' src='https://perspective.ca/wp-content/uploads/2018/10/city-of-kingston-ontario-perspective-globe-and-mail.jpg' about='city'/>
+        
     </div>
   )
 }
 
-export default AboutModal;
+export default React.memo(AboutModal);
