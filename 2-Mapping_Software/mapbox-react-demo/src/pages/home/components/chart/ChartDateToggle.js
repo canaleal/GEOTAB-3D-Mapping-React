@@ -26,4 +26,4 @@ const ChartDateToggle = ({ chartTime, chartTimeTogglerHandler }) => {
     )
 }
 
-export default ChartDateToggle;
+export default React.memo(ChartDateToggle);

@@ -7,7 +7,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
@@ -226,4 +226,4 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
   )
 };
 
-export default PedestrianChart;
+export default React.memo(PedestrianChart);

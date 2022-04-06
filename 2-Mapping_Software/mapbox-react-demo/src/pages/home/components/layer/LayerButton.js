@@ -14,4 +14,4 @@ const LayerButton = ({ item, layerHandler }) => {
 
 
 
-export default LayerButton;
+export default React.memo(LayerButton);

@@ -18,6 +18,7 @@ import MapStyleSelector from './components/map/MapStyleSelector';
 import ImpedimentsChart from './components/chart/ImpedimentsChart';
 import RangeSlider from './components/slider/RangeSlider';
 import LayerButtonGroup from './components/layer/LayerButtonGroup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 const ChicagoHome = () => {
@@ -241,8 +242,7 @@ const ChicagoHome = () => {
       <LayerModal
         layerModalRef={layerModalRef}
         closeModalHandler={closeModalHandler}
-        staticLayers={layers.filter((item) => item.isDynamic === false)}
-        dynamicLayers={layers.filter((item) => item.isDynamic === true)}
+        layers={layers}
         layerButtonHandler={layerButtonHandler}
       />
 
@@ -252,12 +252,21 @@ const ChicagoHome = () => {
           <div className="grid grid-cols-4 grid-row-3 gap-4 ">
             <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
               <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
+            
+            
+              <button onClick={() => showModalHandler(layerModalRef)} className={`border   w-full text-left my-1 btn-gray mt-10`}>
+                <FontAwesomeIcon
+                  icon="fa-solid fa-layer-group"
+                  size="xl"
+                  width={"2rem"}
+                /><span>Add/Remove Layers</span>
+              </button>
             </div>
 
 
 
 
-            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen slide-in-right relative">
+            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen  relative">
 
               <ChicagoMap
                 cityId={0}
@@ -315,7 +324,7 @@ const ChicagoHome = () => {
 
 
 
-            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 ">
               <p className="font-bold">Filter Map - Average Acceleration </p>
 
 
@@ -333,7 +342,7 @@ const ChicagoHome = () => {
 
             {chartData != null ?
 
-              <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left">
+              <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 ">
                 <p className="font-bold">Average Acceleration</p>
                 <ImpedimentsChart years={years} currentYear={currentYear} currentMonth={currentMonth} chartTime={chartTime} chartData={chartData} />
                 <ChartDateToggle chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
@@ -344,7 +353,7 @@ const ChicagoHome = () => {
 
 
             {pointOfInterest != null ?
-              <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
+              <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 ">
                 <p className="font-bold">Point Of Interest</p>
                 <GoogleStreetview pointOfInterest={pointOfInterest} />
               </div>

@@ -18,6 +18,7 @@ import MapStyleSelector from "./components/map/MapStyleSelector";
 import RangeSlider from "./components/slider/RangeSlider";
 import LayerButtonGroup from "./components/layer/LayerButtonGroup";
 import GradientLegend from "./components/map/GradientLegend";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const KingstonHome = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -30,7 +31,7 @@ const KingstonHome = () => {
   const helpModalRef = useRef();
   const aboutModalRef = useRef();
 
-  
+
 
   // Initial Map Details
   const [city, setCity] = useState();
@@ -61,7 +62,7 @@ const KingstonHome = () => {
 
 
   useEffect(() => {
-    try{
+    try {
       setCity("Kingston");
 
       //Map Details
@@ -72,7 +73,7 @@ const KingstonHome = () => {
       ]);
       setLng(-76.48098);
       setLat(44.22976);
-  
+
       setLayers([
         {
           id: 1,
@@ -135,23 +136,23 @@ const KingstonHome = () => {
           icon: "fa-person",
         },
       ]);
-  
+
       //Chart details
       setYears([2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]);
       setCurrentYear(2014);
-  
+
       //filter details
       setCurrentFilterValues([0, 1000]);
       setFilterDetails({ min: 0, max: 1000, step: 100 });
-  
+
       setIsLoaded(true);
 
     }
-    catch{
+    catch {
       setIsLoaded(true);
       setError(true);
     }
-    
+
   }, []);
 
   // Function is used to turn on or off the layer on the map
@@ -188,10 +189,9 @@ const KingstonHome = () => {
 
   const yearSliderHandler = (value) => {
     setCurrentYear(value);
-    setPointOfInterest(null);
   };
 
-  
+
   function timerToggleHandler() {
     setIsTimerActive(!isTimerActive);
   }
@@ -253,7 +253,7 @@ const KingstonHome = () => {
       <Header city={city} />
 
       <Cover coverRef={coverRef} />
-      
+
       {/* <AboutModal
         aboutModalRef={aboutModalRef}
         closeModalHandler={closeModalHandler}
@@ -265,7 +265,7 @@ const KingstonHome = () => {
       <LayerModal
         layerModalRef={layerModalRef}
         closeModalHandler={closeModalHandler}
-        layers = {layers}
+        layers={layers}
         layerButtonHandler={layerButtonHandler}
       />
 
@@ -279,6 +279,14 @@ const KingstonHome = () => {
                 layerHandler={layerHandler}
                 showModalHandler={showModalHandler}
               />
+
+              <button onClick={() => showModalHandler(layerModalRef)} className={`border   w-full text-left my-1 btn-gray mt-10`}>
+                <FontAwesomeIcon
+                  icon="fa-solid fa-layer-group"
+                  size="xl"
+                  width={"2rem"}
+                /><span>Add/Remove Layers</span>
+              </button>
             </div>
 
             <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen  relative">

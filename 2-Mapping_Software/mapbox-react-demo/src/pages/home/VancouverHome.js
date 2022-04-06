@@ -14,6 +14,7 @@ import Footer from "../../components/Footer";
 import GoogleStreetview from "./components/googleStreetview/GoogleStreetview";
 import MapStyleSelector from './components/map/MapStyleSelector';
 import LayerButtonGroup from './components/layer/LayerButtonGroup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 const VancouverHome = () => {
@@ -230,8 +231,7 @@ const VancouverHome = () => {
       <LayerModal
         layerModalRef={layerModalRef}
         closeModalHandler={closeModalHandler}
-        staticLayers={layers.filter((item) => item.isDynamic === false)}
-        dynamicLayers={layers.filter((item) => item.isDynamic === true)}
+        layers={layers}
         layerButtonHandler={layerButtonHandler}
       />
 
@@ -241,12 +241,22 @@ const VancouverHome = () => {
           <div className="grid grid-cols-4 grid-row-2 gap-4 ">
             <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
               <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
+           
+           
+              <button onClick={() => showModalHandler(layerModalRef)} className={`border   w-full text-left my-1 btn-gray mt-10`}>
+                <FontAwesomeIcon
+                  icon="fa-solid fa-layer-group"
+                  size="xl"
+                  width={"2rem"}
+                /><span>Add/Remove Layers</span>
+              </button>
+           
             </div>
 
 
 
 
-            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg  slide-in-right relative">
+            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg   relative">
 
               <VancouverMap
                 cityId={0}
@@ -275,7 +285,7 @@ const VancouverHome = () => {
 
         
             {pointOfInterest != null ?
-              <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 slide-in-left">
+              <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 ">
                 <p className="font-bold">Point Of Interest</p>
                 <GoogleStreetview pointOfInterest={pointOfInterest} />
               </div>

@@ -26,13 +26,7 @@ const LayerButtonGroup = ({ layers, layerModalRef, layerHandler, showModalHandle
             ))}
 
 
-            <button onClick={() => showModalHandler(layerModalRef)} className={`border   w-full text-left my-1 btn-gray mt-10`}>
-                <FontAwesomeIcon
-                    icon="fa-solid fa-layer-group"
-                    size="lg"
-                    width={"2rem"}
-                /><span>Add/Remove Layers</span>
-            </button>
+          
 
 
 
@@ -41,4 +35,4 @@ const LayerButtonGroup = ({ layers, layerModalRef, layerHandler, showModalHandle
 }
 
 
-export default LayerButtonGroup;
+export default React.memo(LayerButtonGroup);

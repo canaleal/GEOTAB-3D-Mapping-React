@@ -29,4 +29,4 @@ const Footer = ({showModalHandler, helpModalRef }) => {
   )
 }
 
-export default Footer;
+export default React.memo(Footer);

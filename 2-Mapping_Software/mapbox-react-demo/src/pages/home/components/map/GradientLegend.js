@@ -1,3 +1,5 @@
+import React from "react";
+
 const GradientLegend = () => {
   return (
     <div className="flex flex-col items-center justify-center">
@@ -8,4 +10,4 @@ const GradientLegend = () => {
   );
 };
 
-export default GradientLegend;
+export default React.memo(GradientLegend);

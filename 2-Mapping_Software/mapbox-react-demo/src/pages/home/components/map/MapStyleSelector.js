@@ -74,4 +74,4 @@ const MapStyleSelector = ({ mapStyle, mapStyleChangeHandler }) => {
     )
 }
 
-export default MapStyleSelector;
+export default React.memo(MapStyleSelector);
