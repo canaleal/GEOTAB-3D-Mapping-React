@@ -10,7 +10,7 @@ const LayerModal = ({ layerModalRef, closeModalHandler, layers, layerButtonHandl
 
 
     return (
-        <div ref={layerModalRef} className='popup-box flex flex-col rounded-lg p-5'>
+        <div ref={layerModalRef} className='popup-box flex flex-col rounded-lg p-5 '>
 
 
             <div className='grid grid-cols-1  md:grid-cols-4  gap-4'>

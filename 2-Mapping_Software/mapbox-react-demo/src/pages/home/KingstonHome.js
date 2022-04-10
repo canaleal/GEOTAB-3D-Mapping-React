@@ -9,8 +9,7 @@ import LayerModal from "./components/layer/LayerModal";
 import "rc-slider/assets/index.css";
 
 import Header from "../../components/Header";
-import AboutModal from "../../components/AboutModal";
-import HelpModal from "../../components/HelpModal";
+
 import Footer from "../../components/Footer";
 import GoogleStreetview from "./components/googleStreetview/GoogleStreetview";
 import ChartDateToggle from "./components/chart/ChartDateToggle";
@@ -28,9 +27,6 @@ const KingstonHome = () => {
   const coverRef = useRef();
 
   const layerModalRef = useRef();
-  const helpModalRef = useRef();
-  const aboutModalRef = useRef();
-
 
 
   // Initial Map Details
@@ -254,14 +250,7 @@ const KingstonHome = () => {
 
       <Cover coverRef={coverRef} />
 
-      {/* <AboutModal
-        aboutModalRef={aboutModalRef}
-        closeModalHandler={closeModalHandler}
-      />
-      <HelpModal
-        helpModalRef={helpModalRef}
-        closeModalHandler={closeModalHandler}
-      /> */}
+  
       <LayerModal
         layerModalRef={layerModalRef}
         closeModalHandler={closeModalHandler}
@@ -272,7 +261,7 @@ const KingstonHome = () => {
       {isLoaded ? (
         <div className="p-5">
           <div className="grid grid-cols-4 grid-row-3 gap-4 ">
-            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
+            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4 slow-ani">
               <LayerButtonGroup
                 layers={layers}
                 layerModalRef={layerModalRef}
@@ -289,7 +278,7 @@ const KingstonHome = () => {
               </button>
             </div>
 
-            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg relative">
+            <div className="col-span-4 md:col-span-3 row-span-3 border h-128 md:h-full bg-white rounded-lg relative">
               <KingstonMap
                 mapStyle={mapStyle}
                 mapBoundaries={mapBoundaries}
@@ -376,8 +365,6 @@ const KingstonHome = () => {
 
 
 
-
-      <Footer/>
 
 
 

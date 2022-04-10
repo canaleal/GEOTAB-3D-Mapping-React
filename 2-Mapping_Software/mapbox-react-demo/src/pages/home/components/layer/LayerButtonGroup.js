@@ -3,9 +3,9 @@
 
 import React, { Fragment, useEffect } from 'react'
 import LayerButton from './LayerButton';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const LayerButtonGroup = ({ layers, layerModalRef, layerHandler, showModalHandler }) => {
+
+const LayerButtonGroup = ({ layers, layerHandler }) => {
 
     return (
 
@@ -24,11 +24,6 @@ const LayerButtonGroup = ({ layers, layerModalRef, layerHandler, showModalHandle
                     )}
                 </span>
             ))}
-
-
-          
-
-
 
         </Fragment>
     )

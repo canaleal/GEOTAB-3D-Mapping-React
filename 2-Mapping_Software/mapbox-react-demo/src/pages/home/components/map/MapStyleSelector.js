@@ -33,7 +33,7 @@ const MapStyleSelector = ({ mapStyle, mapStyleChangeHandler }) => {
                                 checked={mapStyle === item.value}
                                 onChange={mapStyleChangeHandler}
                             />
-                            <label className='text-sm ml-2' for={item.name}>{item.name}</label> 
+                            <label className='text-sm ml-2' htmlFor={item.name}>{item.name}</label> 
                         </div>
                     )
                 })

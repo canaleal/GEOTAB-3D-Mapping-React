@@ -1,6 +1,7 @@
 import { Outlet, Link } from "react-router-dom";
 import "./App.css";
 import { Fragment } from "react";
+import Footer from "./components/Footer";
 
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
       </nav>
 
       <Outlet />
+
+      <Footer />
     </Fragment>
   );
 }

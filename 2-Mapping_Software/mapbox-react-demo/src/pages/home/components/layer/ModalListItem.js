@@ -7,7 +7,7 @@ const ModalListItem = ({ layer, layerButtonHandler }) => {
     return (
         <div className="col-span-1  rounded-lg overflow-hidden shadow-lg">
 
-            <img className="w-full h-32 object-none" src={`http://localhost:3000/assets/images/${layer.imgPath}`} alt="Layer" />
+            <img height="100" width="auto" className="w-full h-32 object-none" src={`http://localhost:3000/assets/images/${layer.imgPath}`} alt='' />
 
             <div className="p-2">
                 <p className="font-bold my-2">{layer.layer}</p>

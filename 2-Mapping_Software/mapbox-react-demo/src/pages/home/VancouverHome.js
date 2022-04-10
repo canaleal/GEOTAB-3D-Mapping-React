@@ -8,8 +8,7 @@ import LayerModal from "./components/layer/LayerModal";
 
 import "rc-slider/assets/index.css";
 import Header from "../../components/Header";
-import AboutModal from "../../components/AboutModal";
-import HelpModal from "../../components/HelpModal";
+
 import Footer from "../../components/Footer";
 import GoogleStreetview from "./components/googleStreetview/GoogleStreetview";
 import MapStyleSelector from './components/map/MapStyleSelector';
@@ -146,10 +145,7 @@ const VancouverHome = () => {
       temp_dict[objIndex].isOn = false;
     }
 
-    //Remove point of interest if the pedestrian layer is turned off
-    if (item.layerName === 'TrafficLightCameraLayer') {
-      setPointOfInterest(null);
-    }
+ 
 
     setLayers(temp_dict);
   };
@@ -220,14 +216,7 @@ const VancouverHome = () => {
       <Header city={city} />
 
       <Cover coverRef={coverRef} />
-      <AboutModal
-        aboutModalRef={aboutModalRef}
-        closeModalHandler={closeModalHandler}
-      />
-      <HelpModal
-        helpModalRef={helpModalRef}
-        closeModalHandler={closeModalHandler}
-      />
+     
       <LayerModal
         layerModalRef={layerModalRef}
         closeModalHandler={closeModalHandler}
@@ -301,7 +290,6 @@ const VancouverHome = () => {
         </div>
       }
 
-<Footer/>
 
     </Fragment>
   );

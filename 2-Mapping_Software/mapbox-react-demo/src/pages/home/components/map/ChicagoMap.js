@@ -426,7 +426,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
 
 
     return (
-        <div className="h-full w-full " >
+        <div className="h-full w-full map" >
             <div ref={mapContainerRef} className='h-full rounded-lg' />
 
         </div>

@@ -4,7 +4,7 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap");
 :root {
-  font-size: 16px;
+ 
   font-family: 'Quicksand', sans-serif;
 
 }
@@ -39,7 +39,17 @@ code {
   background-color: #35367a;
 
 }
+.bg-smoke{
+	background-color: #f8f9f2;
+}
 
+.slow-ani{
+  transition: all 1s;
+}
+
+.map{
+  transition: all 1s;
+}
 
 .btn-blue{
     background-color: #35367a;

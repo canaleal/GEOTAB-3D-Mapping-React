@@ -9,8 +9,7 @@ import LayerModal from "./components/layer/LayerModal";
 
 import "rc-slider/assets/index.css";
 import Header from "../../components/Header";
-import AboutModal from "../../components/AboutModal";
-import HelpModal from "../../components/HelpModal";
+
 import Footer from "../../components/Footer";
 import GoogleStreetview from "./components/googleStreetview/GoogleStreetview";
 import ChartDateToggle from './components/chart/ChartDateToggle';
@@ -231,14 +230,7 @@ const ChicagoHome = () => {
       <Header city={city} />
 
       <Cover coverRef={coverRef} />
-      <AboutModal
-        aboutModalRef={aboutModalRef}
-        closeModalHandler={closeModalHandler}
-      />
-      <HelpModal
-        helpModalRef={helpModalRef}
-        closeModalHandler={closeModalHandler}
-      />
+    
       <LayerModal
         layerModalRef={layerModalRef}
         closeModalHandler={closeModalHandler}
@@ -369,7 +361,7 @@ const ChicagoHome = () => {
         </div>
       }
 
-<Footer/>
+
     </Fragment>
   );
 };
