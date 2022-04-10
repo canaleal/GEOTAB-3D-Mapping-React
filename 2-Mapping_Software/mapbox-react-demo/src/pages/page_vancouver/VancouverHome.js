@@ -2,17 +2,17 @@
 
 import React, { useState, useRef, useEffect, Fragment } from 'react'
 
-import VancouverMap from "./components/map/VancouverMap";
+import VancouverMap from "./components/VancouverMap";
 import Cover from "../../components/Cover";
-import LayerModal from "./components/layer/LayerModal";
+import LayerModal from "../components/layer/LayerModal";
 
 import "rc-slider/assets/index.css";
 import Header from "../../components/Header";
 
 import Footer from "../../components/Footer";
-import GoogleStreetview from "./components/googleStreetview/GoogleStreetview";
-import MapStyleSelector from './components/map/MapStyleSelector';
-import LayerButtonGroup from './components/layer/LayerButtonGroup';
+import GoogleStreetview from "../components/googleStreetview/GoogleStreetview";
+import MapStyleSelector from '../components/map/MapStyleSelector';
+import LayerButtonGroup from '../components/layer/LayerButtonGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 

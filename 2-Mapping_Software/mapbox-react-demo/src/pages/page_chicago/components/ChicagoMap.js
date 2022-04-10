@@ -6,7 +6,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
-import chicagoBoundary from "./data/chicago/chicagoBoundary.geojson";
+import chicagoBoundary from "./data/chicagoBoundary.geojson";
 
 
 mapboxgl.accessToken =

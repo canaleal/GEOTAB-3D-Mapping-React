@@ -3,18 +3,18 @@ import React, { Fragment } from "react";
 import { useState, useEffect, useRef } from "react";
 
 import Cover from "../../components/Cover";
-import LayerModal from "./components/layer/LayerModal";
+import LayerModal from "../components/layer/LayerModal";
 
 import "rc-slider/assets/index.css";
 import Header from "../../components/Header";
 
 import Footer from "../../components/Footer";
-import GoogleStreetview from "./components/googleStreetview/GoogleStreetview";
+import GoogleStreetview from "../components/googleStreetview/GoogleStreetview";
 import { useParams } from "react-router-dom";
-import LayerButtonGroup from "./components/layer/LayerButtonGroup";
-import MapStyleSelector from "./components/map/MapStyleSelector";
-import FranceMap from "./components/map/FranceMap";
-import RangeSlider from "./components/slider/RangeSlider";
+import LayerButtonGroup from "../components/layer/LayerButtonGroup";
+import MapStyleSelector from "../components/map/MapStyleSelector";
+import FranceMap from "./components/FranceMap";
+import RangeSlider from "../components/slider/RangeSlider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const FranceHome = () => {

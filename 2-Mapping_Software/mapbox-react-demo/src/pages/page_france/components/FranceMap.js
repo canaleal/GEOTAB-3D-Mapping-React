@@ -5,8 +5,8 @@ import { useRef, useState, useEffect } from "react";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import franceBoundary from "./data/france/franceBoundary.geojson";
-import FranceImpediments from './data/france/franceImpediments.geojson';
+import franceBoundary from "./data/franceBoundary.geojson";
+import FranceImpediments from './data/franceImpediments.geojson';
 
 mapboxgl.accessToken =
     "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";

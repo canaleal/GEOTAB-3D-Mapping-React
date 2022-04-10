@@ -1,19 +1,18 @@
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { useRef, useState, useEffect } from "react";
-import boundary from "./data/kingston/city-neighbourhoods.geojson";
-import buses from "./data/kingston/transit-gtfs-routes.geojson";
-import crosswalk from './data/kingston/CrossWalks.geojson';
-import princess from './data/kingston/princess.geojson';
+
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+
+import vancouverBoundary from "./data/city_boundary.geojson";
 
 
 mapboxgl.accessToken =
     "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, currentFilterValues, layers, pointOfInterestHandler, chartDataHandler }) => {
+const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, currentYear, currentFilterValues, layers, pointOfInterestHandler, chartDataHandler }) => {
 
     const mapContainerRef = useRef(null);
     const map = useRef(null);
@@ -22,23 +21,23 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        // Create a new map
         map.current = new mapboxgl.Map({
             container: mapContainerRef.current,
             style: `mapbox://styles/mapbox/${mapStyle}`,
             center: [lng, lat],
             zoom: zoom,
         })
-   
+
         map.current.on('load', () => {
+            //Add controls like zoom in and out
             add_map_controls();
-            add_kingston_map_sources();
+
+            add_vancouver_map_sources();
         });
 
         return () => map.current.remove();
     }, []);
 
-    // Add map controls and interactions
     const add_map_controls = () => {
         // Include Static Components that wont be re-rendered   
         map.current.addControl(new mapboxgl.FullscreenControl(), 'bottom-right');
@@ -53,8 +52,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         map.current.addControl(geocoder, 'top-right');
     }
 
-    const add_kingston_map_sources = () => {
-
+    const add_vancouver_map_sources = () => {
 
         map.current.addSource('mapbox-dem', {
             'type': 'raster-dem',
@@ -63,57 +61,98 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             'maxzoom': 14
         });
 
+
+
+
         map.current.addSource("BoundaryData", {
             type: "geojson",
-            data: boundary,
+            data: vancouverBoundary,
         })
 
-        map.current.addSource('Buses', {
-            'type': 'geojson',
-            'data': buses
-        });
 
-        map.current.addSource('CrossWalkData', {
-            'type': 'geojson',
-            'data': crosswalk
-        });
 
-        map.current.addSource('PrincessData', {
-            'type': 'geojson',
-            'data': princess
-        });
 
-        fetch('http://localhost:3000/data/pedestrian.geojson')
+
+
+
+
+        fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-intersections&q=&rows=6105&facet=geo_local_area')
             .then(response => response.json())
             .then(data => {
 
-                map.current.addSource("PedestrianData", {
+                let geojson = { "type": "FeatureCollection", "features": [] }
+                for (let point of data.records) {
+                    let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
+                    let properties = point.fields;
+                    let temp = [coordinate[1], coordinate[0]];
+                    properties['stop_coordinates'] = temp.toString();
+                    let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
+                    geojson.features.push(feature);
+                }
+
+
+
+                map.current.addSource("IntersectionData", {
                     type: "geojson",
-                    data: data
+                    data: geojson
                 });
 
-                chartDataHandler(data['features']);
 
-                
-                add_kingston_map_layers();
-            });
+                map.current.loadImage(
+                    'http://cdn.onlinewebfonts.com/svg/img_113951.png',
+                    (error, image) => {
+                        if (error) throw error;
+
+                        map.current.addImage('camera', image);
+
+                        fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174')
+                            .then(response => response.json())
+                            .then(data => {
+
+                                let geojson = { "type": "FeatureCollection", "features": [] }
+                                for (let point of data.records) {
+                                    let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
+                                    let properties = point.fields;
+                                    let temp = [coordinate[1], coordinate[0]];
+                                    properties['stop_coordinates'] = temp.toString();
+                                    let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
+                                    geojson.features.push(feature);
+                                }
+
+
+                                map.current.addSource("TrafficLightCameraData", {
+                                    type: "geojson",
+                                    data: geojson
+                                });
+
+
+
+                                add_vancouver_map_layers()
+
+                            })
+                    });
+
+
+
+
+            })
+
+
+
+
+
 
     }
 
 
+    const add_vancouver_map_layers = () => {
 
-
-
-    const add_kingston_map_layers = () => {
-
-        // Add layers to the map
         add_terrain_layer();
         add_building_layer();
         add_boundary_layer();
-        add_pedestrian_layer();
-        add_bus_route_layer();
-        add_cross_walk_layer();
-        add_princess_layer();
+        add_vancouver_trafficCamera_layer();
+        add_vancouver_intersection_layer();
+
 
         // Add all the filters to the map
         addLayerFilters();
@@ -121,12 +160,9 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
 
         // Set the map to be loaded
         setIsLoaded(true);
+
         map.current.resize();
     }
-
-
-  
-
 
     const add_terrain_layer = () => {
 
@@ -191,7 +227,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             labelLayerId
         );
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
     }
 
 
@@ -227,7 +263,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             },
         });
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
 
         let hoveredStateId = null;
         // When the user moves their mouse over the state-fill layer, we'll update the
@@ -263,88 +299,116 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
 
     }
 
-    const add_pedestrian_layer = () => {
-        const layerName = 'PedestriansLayer'
+
+    const add_vancouver_trafficCamera_layer = () => {
+        const layerName = 'TrafficLightCameraLayer'
+
+
+
+        map.current.addLayer({
+            'id': layerName,
+            'type': 'symbol',
+            'source': 'TrafficLightCameraData',
+            'layout': {
+                'icon-image': 'camera',
+                'icon-size': 0.015,
+
+            },
+
+        });
+
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
+
+
+        map.current.on('click', layerName, (e) => {
+            // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const description = `
+                    <span class="block font-bold">Local Area</span>
+                    <span class="block">${e.features[0].properties.geo_local_area}</span>
+                    <span class="block font-bold">Map ID</span>
+                    <span class="block">${e.features[0].properties.mapid}</span>
+                    <span class="block font-bold">Street Name</span>
+                    <span  class="block">${e.features[0].properties.name}</span>
+                    <a class="border  block w-full text-center p-3 my-1 rounded-md bg-blue-500 hover:bg-blue-700 color-white" href="${e.features[0].properties.url}" target="_blank" >Traffic Link</a>
+                    
+                    
+                    `
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+            //If the user clicks a point save it 
+            pointOfInterestHandler(e.features[0]);
+
+        });
+
+        map.current.on('mouseenter', layerName, () => {
+            map.current.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.current.on('mouseleave', layerName, () => {
+            map.current.getCanvas().style.cursor = '';
+        });
+
+
+    }
+
+
+    const add_vancouver_intersection_layer = () => {
+        const layerName = 'IntersectionLayer'
+
+
         map.current.addLayer(
             {
                 id: layerName,
                 type: "circle",
-                source: "PedestrianData",
+                source: "IntersectionData",
                 minzoom: 7,
                 paint: {
                     // Size circle radius by earthquake magnitude and zoom level
-                    "circle-radius": [
-                        "interpolate",
-                        ["linear"],
-                        ["zoom"],
-                        7,
-                        ["interpolate", ["linear"], ["get", "count"], 1, 2, 3, 4],
-                        16,
-                        ["interpolate", ["linear"], ["get", "count"], 2, 4, 6, 8],
-                    ],
+                    'circle-radius': {
+                        'base': 3,
+                        'stops': [
+                            [12, 5],
+                            [22, 90]
+                        ]
+                    },
                     // Color circle by earthquake magnitude
-                    "circle-color": [
-                        "interpolate",
-                        ["linear"],
-                        ["get", "count"],
-                        100,
-                        "rgb(116,237,134)",
-                        200,
-                        "rgb(217, 161, 77)",
-                        300,
-                        "rgb(250, 97, 156)",
-                        400,
-                        "rgb(194, 129, 71)",
-                        500,
-                        "rgb(168, 28, 48)",
-                        600,
-                        "rgb(204, 77, 125)",
-                        700,
-                        "rgb(194, 58, 96)",
-                        800,
-                        "rgb(180, 40, 68)",
-                        900,
-                        "rgb(163, 24, 40)",
-                        1000,
-                        "rgb(144, 11, 10)",
-                    ],
-                    "circle-stroke-color": "white",
-                    "circle-stroke-width": 1,
-                    // Transition from heatmap to circle layer by zoom level
-                    "circle-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0, 8, 1],
+                    "circle-color":
+                        'red'
+                    ,
+
                 },
             },
             "waterway-label"
         );
 
+        map.current.setLayoutProperty(layerName, 'visibility', 'none');
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
 
-     
-
-        const small_popup = new mapboxgl.Popup({
-            closeButton: false,
-            closeOnClick: false
-        });
-        // When a click event occurs on a feature in the places layer, open a popup at the
-        // location of the feature, with description HTML from its properties.
         map.current.on('click', layerName, (e) => {
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates.slice();
             const description = `
-                    <span class="block font-bold">Street Name</span>
-                    <span class="block">${e.features[0].properties.name} </span>
-                    <span class="block font-bold">Year</span>
-                    <span class="block">${e.features[0].properties.Year}</span>
-                    <span class="block font-bold">Average Pedestrian Count</span>
-                    <span class="block">${e.features[0].properties.count}</span>
-                    <img src="${e.features[0].properties.img_url}" alt="TEST" height=auto width="100%"/>
-                        
-      `
+                        <span class="block font-bold">Local Area</span>
+                      <span class="block">${e.features[0].properties.geo_local_area}</span>
+                      <span class="block font-bold">Intersection Name</span>
+                      <span class="block">${e.features[0].properties.xstreet}</span>
+                     
+                      `
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
             }
+
 
             new mapboxgl.Popup()
                 .setLngLat(coordinates)
@@ -353,161 +417,21 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
 
             //If the user clicks a point save it 
             pointOfInterestHandler(e.features[0]);
+
         });
 
-        // Change the cursor to a pointer when the mouse is over the places layer.
-        map.current.on('mouseenter', layerName, (e) => {
+
+        map.current.on('mouseenter', layerName, () => {
             map.current.getCanvas().style.cursor = 'pointer';
-            const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = `<span>People (AVG/HR) : ${e.features[0].properties.count}</span>`
-
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            small_popup
-                .setLngLat(coordinates)
-                .setHTML(description)
-                .addTo(map.current);
-
         });
 
-        // Change it back to a pointer when it leaves.
         map.current.on('mouseleave', layerName, () => {
             map.current.getCanvas().style.cursor = '';
-            small_popup.remove();
         });
-
-        
-    }
-
-    const add_bus_route_layer = () => {
-        //Create the roads under development layer
-        const layerName = 'BusRoutesLayer'
-        map.current.addLayer({
-            'id': layerName,
-            'type': 'line',
-            'source': 'Buses',
-            'layout': {
-                'line-join': 'round',
-                'line-cap': 'round'
-            },
-            'paint': {
-                'line-color': '#870113', //Specify road color
-                'line-width': 2 //Specify width of the road
-            }
-        });
-
-        map.current.setLayoutProperty(layerName, 'visibility','none')
-
-    }
-
-    const add_cross_walk_layer = () => {
-        //Create the roads under development layer
-        const layerName = 'CrossWalkLayer'
-        map.current.addLayer({
-            'id': layerName,
-            'type': 'line',
-            'source': 'CrossWalkData',
-            'layout': {
-                'line-join': 'round',
-                'line-cap': 'round'
-            },
-            'paint': {
-                'line-color': '#ffffff', //Specify road color
-                'line-width': 4 //Specify width of the road
-            }
-        });
-
-        map.current.setLayoutProperty(layerName, 'visibility','none')
 
     }
 
 
-
-    const add_princess_layer = () => {
-
-        const layerName = 'PrincessBagotLayer'
-
-        map.current.addLayer({
-            id: layerName,
-            type: "fill",
-            source: "PrincessData",
-            layout: {},
-            paint: {
-                "fill-color": ["get", "fill"],
-                'fill-opacity': [
-                    'case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    0.8,
-                    0.5
-                ]
-
-            },
-        });
-
-     
-        map.current.setLayoutProperty(layerName, 'visibility','none')
-
-
-        const small_popup = new mapboxgl.Popup({
-            closeButton: false,
-            closeOnClick: false
-        });
-        // When a click event occurs on a feature in the places layer, open a popup at the
-        // location of the feature, with description HTML from its properties.
-        map.current.on('click', layerName, (e) => {
-            // Copy coordinates array.
-
-          
-            const coordinates = e.features[0].geometry.coordinates[0][0].slice();
-            const description = `
-                    <span class="block font-bold">Year</span>
-                    <span class="block">${e.features[0].properties.Year} </span>
-                    <span class="block font-bold">Pedestrian Count</span>
-                    <span class="block">${e.features[0].properties.count}</span>
-                  
-                        
-      `
-
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(description)
-                .addTo(map.current);
-
-            //If the user clicks a point save it 
-            pointOfInterestHandler(e.features[0]);
-        });
-
-        // Change the cursor to a pointer when the mouse is over the places layer.
-        map.current.on('mouseenter', layerName, (e) => {
-            map.current.getCanvas().style.cursor = 'pointer';
-            const coordinates = e.features[0].geometry.coordinates[0][0].slice();
-            const description = `<span># of Pedestrians: ${e.features[0].properties.count}</span>`
-
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            small_popup
-                .setLngLat(coordinates)
-                .setHTML(description)
-                .addTo(map.current);
-
-        });
-
-        // Change it back to a pointer when it leaves.
-        map.current.on('mouseleave', layerName, () => {
-            map.current.getCanvas().style.cursor = '';
-            small_popup.remove();
-        });
-
-        
-    }
 
 
 
@@ -554,20 +478,12 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
     const addMapFilters = () => {
 
         //Grab data specific to a filter range and year
-        map.current.setFilter('PedestriansLayer', ["all",
-            [">=", ['get', 'count'], currentFilterValues[0]],
-            ["<=", ['get', 'count'], currentFilterValues[1]],
-            ['==', ['string', ['get', 'Year']], currentYear.toString()],
+        // map.current.setFilter('PedestriansLayer', ["all",
+        //     [">=", ['get', 'count'], currentFilterValues[0]],
+        //     ["<=", ['get', 'count'], currentFilterValues[1]],
+        //     ['==', ['string', ['get', 'Year']], currentYear.toString()],
 
-        ])
-
-
-        map.current.setFilter('PrincessBagotLayer', ["all",
-            [">=", ['get', 'count'], currentFilterValues[0]],
-            ["<=", ['get', 'count'], currentFilterValues[1]],
-            ['==', ['string', ['get', 'Year']], currentYear.toString()],
-
-        ])
+        // ])
 
         //Reset the map size so it goes into full width and height
         map.current.resize();
@@ -590,7 +506,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
     const switchLayer = () => {
 
         //Switch the map style but wait until the map sources are added first
-        map.current.once("styledata", add_kingston_map_sources);
+        map.current.once("styledata", add_vancouver_map_sources);
         map.current.setStyle("mapbox://styles/mapbox/" + mapStyle);
 
         addLayerFilters();
@@ -611,4 +527,4 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
     );
 }
 
-export default KingstonMap;
+export default VancouverMap;

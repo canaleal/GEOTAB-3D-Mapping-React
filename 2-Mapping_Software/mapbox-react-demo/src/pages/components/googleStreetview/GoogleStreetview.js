@@ -4,8 +4,6 @@ import { useRef, useState, useEffect } from "react";
 
 const GoogleStreetview = (pointOfInterest) => {
 
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   const streetviewRef = useRef();
   const [streetViewPanorama, setStreetViewPanorama] = useState();

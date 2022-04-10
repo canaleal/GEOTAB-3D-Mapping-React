@@ -27,10 +27,10 @@ import {
   faCamera,
   faRoad
 } from "@fortawesome/free-solid-svg-icons";
-import KingstonHome from "./pages/home/KingstonHome";
-import ChicagoHome from "./pages/home/ChicagoHome";
-import VancouverHome from "./pages/home/VancouverHome";
-import FranceHome from "./pages/home/FranceHome";
+import KingstonHome from "./pages/page_kingston/KingstonHome";
+import ChicagoHome from "./pages/page_chicago/ChicagoHome";
+import VancouverHome from "./pages/page_vancouver/VancouverHome";
+import FranceHome from "./pages/page_france/FranceHome";
 
 
 
