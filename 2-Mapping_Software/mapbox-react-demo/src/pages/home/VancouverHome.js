@@ -256,7 +256,7 @@ const VancouverHome = () => {
 
 
 
-            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg   relative">
+            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg h-[32rem] md:h-screen    relative">
 
               <VancouverMap
                 cityId={0}
@@ -285,7 +285,7 @@ const VancouverHome = () => {
 
         
             {pointOfInterest != null ?
-              <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 ">
+              <div className="col-span-4 md:col-span-4 border bg-white rounded-lg p-4 ">
                 <p className="font-bold">Point Of Interest</p>
                 <GoogleStreetview pointOfInterest={pointOfInterest} />
               </div>

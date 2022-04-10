@@ -289,7 +289,7 @@ const KingstonHome = () => {
               </button>
             </div>
 
-            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen  relative">
+            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg relative">
               <KingstonMap
                 mapStyle={mapStyle}
                 mapBoundaries={mapBoundaries}
