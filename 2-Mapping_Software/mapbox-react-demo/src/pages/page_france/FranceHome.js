@@ -8,9 +8,7 @@ import LayerModal from "../components/layer/LayerModal";
 import "rc-slider/assets/index.css";
 import Header from "../../components/Header";
 
-import Footer from "../../components/Footer";
 import GoogleStreetview from "../components/googleStreetview/GoogleStreetview";
-import { useParams } from "react-router-dom";
 import LayerButtonGroup from "../components/layer/LayerButtonGroup";
 import MapStyleSelector from "../components/map/MapStyleSelector";
 import FranceMap from "./components/FranceMap";
@@ -24,9 +22,6 @@ const FranceHome = () => {
     //Popup and black cover
     const layerModalRef = useRef();
 
-    //References for each modal
-    const helpModalRef = useRef();
-    const aboutModalRef = useRef();
 
     const coverRef = useRef();
 
@@ -219,7 +214,7 @@ const FranceHome = () => {
             <Header city={city} />
 
             <Cover coverRef={coverRef} />
-           
+
             <LayerModal
                 layerModalRef={layerModalRef}
                 closeModalHandler={closeModalHandler}
@@ -228,25 +223,25 @@ const FranceHome = () => {
             />
 
             {isLoaded ?
-                <div className="p-5">
+                <main>
                     <div className="grid grid-cols-4 grid-row-3 gap-4 ">
-                        <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
+                        <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 1}}>
                             <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
-                      
+
                             <button onClick={() => showModalHandler(layerModalRef)} className={`border   w-full text-left my-1 btn-gray mt-10`}>
-                <FontAwesomeIcon
-                  icon="fa-solid fa-layer-group"
-                  size="xl"
-                  width={"2rem"}
-                /><span>Add/Remove Layers</span>
-              </button>
-                      
+                                <FontAwesomeIcon
+                                    icon="fa-solid fa-layer-group"
+                                    size="xl"
+                                    width={"2rem"}
+                                /><span>Add/Remove Layers</span>
+                            </button>
+
                         </div>
 
 
 
 
-                        <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen  relative">
+                        <div className="col-span-4 md:col-span-3 row-span-3 border h-128 md:h-full bg-white rounded-lg   relative slide-in-right">
 
 
                             <FranceMap
@@ -273,7 +268,7 @@ const FranceHome = () => {
                         </div>
 
 
-                        <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 ">
+                        <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 2}}>
                             <p className="font-bold">Filter Map - Average Acceleration </p>
 
 
@@ -288,18 +283,28 @@ const FranceHome = () => {
 
                         </div>
 
+
+                        <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 3}}>
+                            <p className="font-bold">Map Data Disclaimer</p>
+                            <p>The Github france-geojson project offers in GeoJSON format maps of the regions, departments, arrondissements, cantons and municipalities of France (mainland and overseas departments) from data published by IGN and INSEE.</p>
+                        </div>
+
+
+
+                        {pointOfInterest != null ?
+                            <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 " >
+                                <p className="font-bold">Point Of Interest</p>
+                                <GoogleStreetview pointOfInterest={pointOfInterest} />
+                            </div>
+                            :
+                            <span></span>
+                        }
+
                     </div>
 
 
-                    {pointOfInterest != null ?
-                        <div className="col-span-4 md:col-span-1  border bg-white rounded-lg p-4 ">
-                            <p className="font-bold">Point Of Interest</p>
-                            <GoogleStreetview pointOfInterest={pointOfInterest} />
-                        </div>
-                        :
-                        <span></span>
-                    }
-                </div>
+
+                </main>
 
                 :
                 <div className='p-5'>

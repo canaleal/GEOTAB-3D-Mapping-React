@@ -319,7 +319,9 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
         map.current.on('mouseenter', layerName, (e) => {
             map.current.getCanvas().style.cursor = 'pointer';
             const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = `<span  class="block">${e.features[0].properties.AvgAcceleration}</span>`
+            const description =  `  <span class="block font-bold">Average Acceleration</span>
+            <span  class="block">${e.features[0].properties.AvgAcceleration}</span>
+            `
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -376,13 +378,14 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
         catch (e) {
             return
         }
-    }, [currentYear, currentFilterValues]);
+    }, [currentYear, currentFilterValues, currentMonth]);
 
 
 
     //Function is used to grab data from a certain year
     const addMapFilters = () => {
         let temp_month = currentMonth < 10 ? "0" + currentMonth.toString() : currentMonth.toString();
+       
         //Grab data specific to a filter range and year
         map.current.setFilter('ImpedimentsLayer', ["all",
         [">=", ['get', 'AvgAcceleration'], currentFilterValues[0]],

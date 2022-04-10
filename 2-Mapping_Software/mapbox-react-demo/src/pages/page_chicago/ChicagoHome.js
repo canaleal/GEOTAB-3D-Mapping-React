@@ -10,7 +10,6 @@ import LayerModal from "../components/layer/LayerModal";
 import "rc-slider/assets/index.css";
 import Header from "../../components/Header";
 
-import Footer from "../../components/Footer";
 import GoogleStreetview from "../components/googleStreetview/GoogleStreetview";
 import ChartDateToggle from '../components/chart/ChartDateToggle';
 import MapStyleSelector from '../components/map/MapStyleSelector';
@@ -27,9 +26,6 @@ const ChicagoHome = () => {
   //Popup and black cover
   const layerModalRef = useRef();
 
-  //References for each modal
-  const helpModalRef = useRef();
-  const aboutModalRef = useRef();
 
   const coverRef = useRef();
 
@@ -157,12 +153,12 @@ const ChicagoHome = () => {
 
   const yearSliderHandler = (value) => {
     setCurrentYear(value);
-    setPointOfInterest(null);
+
   };
 
   const monthSliderHandler = (value) => {
     setCurrentMonth(value);
-    setPointOfInterest(null);
+
   };
 
   //Turn the timer on or off
@@ -230,7 +226,7 @@ const ChicagoHome = () => {
       <Header city={city} />
 
       <Cover coverRef={coverRef} />
-    
+
       <LayerModal
         layerModalRef={layerModalRef}
         closeModalHandler={closeModalHandler}
@@ -239,13 +235,13 @@ const ChicagoHome = () => {
       />
 
       {isLoaded ?
-        <div className="p-5">
+        <main>
 
           <div className="grid grid-cols-4 grid-row-3 gap-4 ">
-            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
+            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 1}}>
               <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
-            
-            
+
+
               <button onClick={() => showModalHandler(layerModalRef)} className={`border   w-full text-left my-1 btn-gray mt-10`}>
                 <FontAwesomeIcon
                   icon="fa-solid fa-layer-group"
@@ -258,7 +254,7 @@ const ChicagoHome = () => {
 
 
 
-            <div className="col-span-4 md:col-span-3 row-span-3 border bg-white rounded-lg h-[32rem] md:h-screen  relative">
+            <div className="col-span-4 md:col-span-3 row-span-3 border h-128 md:h-full bg-white rounded-lg   relative slide-in-right">
 
               <ChicagoMap
                 cityId={0}
@@ -283,40 +279,40 @@ const ChicagoHome = () => {
 
               <div className="absolute bottom-10 left-10 bg-black px-10 py-4 rounded-lg box-border w-10/12">
 
-                  <div className='w-64'>
-                    <span className='color-white'>Year - {currentYear}</span>
-                  </div>
+                <div className='w-64'>
+                  <span className='color-white'>Year - {currentYear}</span>
+                </div>
 
-                  <div className="py-4">
-                    <TimeSlider
-                      timeArray={years}
+                <div className="py-4">
+                  <TimeSlider
+                    timeArray={years}
 
-                      currentDate={currentYear}
-                      dateSliderHandler={yearSliderHandler}
-                    />
-                  </div>
+                    currentDate={currentYear}
+                    dateSliderHandler={yearSliderHandler}
+                  />
+                </div>
 
 
-                  <div className='w-64 mt-4'>
-                    <span className='color-white'>Month - {currentMonth}</span>
-                  </div>
+                <div className='w-64 mt-4'>
+                  <span className='color-white'>Month - {currentMonth}</span>
+                </div>
 
-                  <div className="py-4">
-                    <TimeSlider
-                      timeArray={months}
+                <div className="py-4">
+                  <TimeSlider
+                    timeArray={months}
 
-                      currentDate={currentMonth}
-                      dateSliderHandler={monthSliderHandler}
-                    />
-                  </div>
+                    currentDate={currentMonth}
+                    dateSliderHandler={monthSliderHandler}
+                  />
+                </div>
 
-           
+
               </div>
             </div>
 
 
 
-            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 ">
+            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 2}}>
               <p className="font-bold">Filter Map - Average Acceleration </p>
 
 
@@ -332,16 +328,19 @@ const ChicagoHome = () => {
             </div>
 
 
-            {chartData != null ?
 
-              <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 ">
+
+            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 3}}>
+              {chartData != null ? <Fragment>
                 <p className="font-bold">Average Acceleration</p>
                 <ImpedimentsChart years={years} currentYear={currentYear} currentMonth={currentMonth} chartTime={chartTime} chartData={chartData} />
                 <ChartDateToggle chartTime={chartTime} chartTimeTogglerHandler={chartTimeTogglerHandler} />
-              </div>
-              :
-              <span></span>
-            }
+              </Fragment>
+
+                : <div className="h-64"><span>Loading Chart Data after Map Loads.</span></div>
+              }
+
+            </div>
 
 
             {pointOfInterest != null ?
@@ -354,7 +353,7 @@ const ChicagoHome = () => {
             }
 
           </div>
-        </div>
+        </main>
         :
         <div className='p-5'>
           <p>Unable to Load Map</p>

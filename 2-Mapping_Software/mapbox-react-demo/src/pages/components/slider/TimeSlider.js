@@ -1,5 +1,5 @@
 import Slider from "rc-slider";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 
 const TimeSlider = ({ timeArray, currentDate, dateSliderHandler }) => {
 
@@ -40,7 +40,7 @@ const TimeSlider = ({ timeArray, currentDate, dateSliderHandler }) => {
 
 
   return (
-    <div >
+    <Fragment >
 
       {isLoaded ?
 
@@ -63,7 +63,7 @@ const TimeSlider = ({ timeArray, currentDate, dateSliderHandler }) => {
 
 
 
-    </div>
+    </Fragment>
 
 
 

@@ -330,7 +330,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
                     <span class="block">${e.features[0].properties.mapid}</span>
                     <span class="block font-bold">Street Name</span>
                     <span  class="block">${e.features[0].properties.name}</span>
-                    <a class="border  block w-full text-center p-3 my-1 rounded-md bg-blue-500 hover:bg-blue-700 color-white" href="${e.features[0].properties.url}" target="_blank" >Traffic Link</a>
+                    <a class="border  block w-full text-center btn-blue" href="${e.features[0].properties.url}" target="_blank" >Traffic Link</a>
                     
                     
                     `

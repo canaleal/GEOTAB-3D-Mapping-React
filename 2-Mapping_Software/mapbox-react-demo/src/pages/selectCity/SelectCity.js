@@ -36,15 +36,15 @@ const SelectCity = () => {
 
 
   return (
-    <div className="p-10">
+    <main>
 
 
-      <div className='grid grid-cols-4  gap-4'>
+      <div className='grid grid-cols-1 md:grid-cols-4  gap-4'>
 
         {
           cities.map((city => {
             return (
-              <div key={city.link} className="col-span-4 md:col-span-1  rounded-lg overflow-hidden shadow-lg bg-white">
+              <div key={city.link} className="col-span-1  rounded-lg overflow-hidden shadow-lg bg-white">
                 <img className="w-full h-64" src={city.img_path} alt="Layer Image" />
 
                 <div className="p-4">
@@ -62,7 +62,7 @@ const SelectCity = () => {
         }
       </div>
 
-    </div>
+    </main>
   )
 }
 

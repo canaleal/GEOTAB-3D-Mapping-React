@@ -10,7 +10,6 @@ import "rc-slider/assets/index.css";
 
 import Header from "../../components/Header";
 
-import Footer from "../../components/Footer";
 import GoogleStreetview from "../components/googleStreetview/GoogleStreetview";
 import ChartDateToggle from "../components/chart/ChartDateToggle";
 import MapStyleSelector from "../components/map/MapStyleSelector";
@@ -250,7 +249,7 @@ const KingstonHome = () => {
 
       <Cover coverRef={coverRef} />
 
-  
+
       <LayerModal
         layerModalRef={layerModalRef}
         closeModalHandler={closeModalHandler}
@@ -259,9 +258,9 @@ const KingstonHome = () => {
       />
 
       {isLoaded ? (
-        <div className="p-5">
+        <main>
           <div className="grid grid-cols-4 grid-row-3 gap-4 ">
-            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4 slow-ani">
+            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 1}}>
               <LayerButtonGroup
                 layers={layers}
                 layerModalRef={layerModalRef}
@@ -278,7 +277,7 @@ const KingstonHome = () => {
               </button>
             </div>
 
-            <div className="col-span-4 md:col-span-3 row-span-3 border h-128 md:h-full bg-white rounded-lg relative">
+            <div className="col-span-4 md:col-span-3 row-span-3 border h-128 md:h-full bg-white rounded-lg relative slide-in-right">
               <KingstonMap
                 mapStyle={mapStyle}
                 mapBoundaries={mapBoundaries}
@@ -315,7 +314,7 @@ const KingstonHome = () => {
               </div>
             </div>
 
-            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 ">
+            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 2}}>
               <p className="font-bold">Filter Map - Average # of Pedestrians</p>
 
               <div className="pb-4 px-4">
@@ -327,8 +326,9 @@ const KingstonHome = () => {
               </div>
             </div>
 
-            {chartData != null ? (
-              <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4">
+
+            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 4}}>
+              {chartData != null ? <Fragment>
                 <p className="font-bold">
                   # of Pedestrians - Average per Hour{" "}
                 </p>
@@ -342,13 +342,16 @@ const KingstonHome = () => {
                   chartTime={chartTime}
                   chartTimeTogglerHandler={chartTimeTogglerHandler}
                 />
-              </div>
-            ) : (
-              <span></span>
-            )}
+              </Fragment>
+
+                : <div className="h-64"><span>Loading Chart Data after Map Loads.</span></div>
+              }
+
+            </div>
+
 
             {pointOfInterest != null ? (
-              <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4 slide-in-left">
+              <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4">
                 <p className="font-bold">Point Of Interest</p>
                 <GoogleStreetview pointOfInterest={pointOfInterest} />
               </div>
@@ -356,7 +359,7 @@ const KingstonHome = () => {
               <span></span>
             )}
           </div>
-        </div>
+        </main>
       ) : (
         <div className="p-5">
           <p>Unable to Load Map</p>

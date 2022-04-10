@@ -338,7 +338,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
                     <span class="block">${e.features[0].properties.Year}</span>
                     <span class="block font-bold">Average Pedestrian Count</span>
                     <span class="block">${e.features[0].properties.count}</span>
-                    <img src="${e.features[0].properties.img_url}" alt="TEST" height=auto width="100%"/>
+                    <img class="mt-2 rounded-lg" src="${e.features[0].properties.img_url}" alt="" height=auto width="100%"/>
                         
       `
 

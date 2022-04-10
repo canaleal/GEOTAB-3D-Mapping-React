@@ -317,7 +317,9 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
         map.current.on('mouseenter', layerName, (e) => {
             map.current.getCanvas().style.cursor = 'pointer';
             const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = `<span  class="block">${e.features[0].properties.AvgAcceleration}</span>`
+            const description = `  <span class="block font-bold">Average Acceleration</span>
+            <span  class="block">${e.features[0].properties.AvgAcceleration}</span>
+            `
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;

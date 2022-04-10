@@ -9,7 +9,6 @@ import LayerModal from "../components/layer/LayerModal";
 import "rc-slider/assets/index.css";
 import Header from "../../components/Header";
 
-import Footer from "../../components/Footer";
 import GoogleStreetview from "../components/googleStreetview/GoogleStreetview";
 import MapStyleSelector from '../components/map/MapStyleSelector';
 import LayerButtonGroup from '../components/layer/LayerButtonGroup';
@@ -22,12 +21,10 @@ const VancouverHome = () => {
 
   //Popup and black cover
   const coverRef = useRef();
-  
-  const layerModalRef = useRef();
-  const helpModalRef = useRef();
-  const aboutModalRef = useRef();
 
- 
+  const layerModalRef = useRef();
+
+
 
   // Initial Map Details
   const [city, setCity] = useState();
@@ -72,8 +69,8 @@ const VancouverHome = () => {
         imgPath: "Buildings.JPG",
         showButton: true,
         icon: "fa-building",
-    },
-    {
+      },
+      {
         id: 2,
         layer: "City Boundary",
         isOn: true,
@@ -82,7 +79,7 @@ const VancouverHome = () => {
         imgPath: "Boundary.JPG",
         showButton: true,
         icon: "fa-border-all",
-    },
+      },
       {
         id: 3,
         layer: "Traffic Cameras",
@@ -145,7 +142,7 @@ const VancouverHome = () => {
       temp_dict[objIndex].isOn = false;
     }
 
- 
+
 
     setLayers(temp_dict);
   };
@@ -216,7 +213,7 @@ const VancouverHome = () => {
       <Header city={city} />
 
       <Cover coverRef={coverRef} />
-     
+
       <LayerModal
         layerModalRef={layerModalRef}
         closeModalHandler={closeModalHandler}
@@ -225,13 +222,13 @@ const VancouverHome = () => {
       />
 
       {isLoaded ?
-        <div className="p-5">
+        <main>
 
-          <div className="grid grid-cols-4 grid-row-2 gap-4 ">
-            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4">
+          <div className="grid grid-cols-4 grid-row-3 gap-4 ">
+            <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 1}}>
               <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
-           
-           
+
+
               <button onClick={() => showModalHandler(layerModalRef)} className={`border   w-full text-left my-1 btn-gray mt-10`}>
                 <FontAwesomeIcon
                   icon="fa-solid fa-layer-group"
@@ -239,13 +236,13 @@ const VancouverHome = () => {
                   width={"2rem"}
                 /><span>Add/Remove Layers</span>
               </button>
-           
+
             </div>
 
 
 
 
-            <div className="col-span-4 md:col-span-3 row-span-2 border bg-white rounded-lg h-[32rem] md:h-screen    relative">
+            <div className="col-span-4 md:col-span-3 row-span-3 border h-128 md:h-full bg-white rounded-lg   relative slide-in-right">
 
               <VancouverMap
                 cityId={0}
@@ -268,11 +265,23 @@ const VancouverHome = () => {
               </div>
 
 
+
+
+
+            </div>
+
+
+            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 2}}>
+              <p className="font-bold">Map Data Disclaimer</p>
+              <p>We share our traffic data with the public, so that you can be informed of what is happening in the city, and provide your input.</p>
+            </div>
+
+            <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 3}}>
+              <img src="https://vancouver.ca/images/cov/feature/covlogo-share.png" alt="Vancouver Logo" className="w-full" />
             </div>
 
 
 
-        
             {pointOfInterest != null ?
               <div className="col-span-4 md:col-span-4 border bg-white rounded-lg p-4 ">
                 <p className="font-bold">Point Of Interest</p>
@@ -283,7 +292,7 @@ const VancouverHome = () => {
             }
 
           </div>
-        </div>
+        </main>
         :
         <div className='p-5'>
           <p>Unable to Load Map</p>
