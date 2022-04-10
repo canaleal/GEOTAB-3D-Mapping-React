@@ -369,12 +369,7 @@ const ChicagoHome = () => {
         </div>
       }
 
-      <Footer
-        showModalHandler={showModalHandler}
-        aboutModalRef={aboutModalRef}
-        helpModalRef={helpModalRef}
-      />
-
+<Footer/>
     </Fragment>
   );
 };

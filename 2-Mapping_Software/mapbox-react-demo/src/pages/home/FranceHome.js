@@ -315,11 +315,7 @@ const FranceHome = () => {
                 </div>
             }
 
-            <Footer
-                showModalHandler={showModalHandler}
-                aboutModalRef={aboutModalRef}
-                helpModalRef={helpModalRef}
-            />
+<Footer/>
         </Fragment>
     );
 };

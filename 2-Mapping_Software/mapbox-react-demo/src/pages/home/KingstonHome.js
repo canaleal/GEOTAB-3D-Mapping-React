@@ -377,11 +377,7 @@ const KingstonHome = () => {
 
 
 
-      <Footer
-        showModalHandler={showModalHandler}
-        aboutModalRef={aboutModalRef}
-        helpModalRef={helpModalRef}
-      />
+      <Footer/>
 
 
 
