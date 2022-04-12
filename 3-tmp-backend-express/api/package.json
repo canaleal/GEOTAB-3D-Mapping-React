@@ -1,0 +1,14 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "temporary api for kingston meeting",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sheridan-geotab-team",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
