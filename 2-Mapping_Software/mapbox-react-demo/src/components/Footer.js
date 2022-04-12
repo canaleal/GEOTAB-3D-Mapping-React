@@ -70,19 +70,9 @@ const Footer = ({ }) => {
   const [aboutList, setAboutList] = useState([
     {
       "id": 0,
-      "name": "Linkedin",
-      "link": "https://www.linkedin.com/in/alex-canales",
-    },
-    {
-      "id": 1,
-      "name": "Github",
-      "link": "https://github.com/canaleal",
-    },
-    {
-      "id": 2,
-      "name": "Bitbucket",
-      "link": "https://bitbucket.org/Canaleal/",
-    },
+      "name": "Geotab",
+      "link": "https://www.geotab.com/",
+    }
   ]);
 
   return (
@@ -132,11 +122,11 @@ const Footer = ({ }) => {
           <div className='grid grid-cols-1 sm:grid-cols-3 mt-8'>
             <div className='col-span-1 py-2'>
               <p className='font-bold'>Disclaimer</p>
-              <p className='font-bold text-xs my-2'> © Alex Canales Portfolio. All rights reserved. </p>
+              <p className='font-bold text-xs my-2'> © USARS 3D Mapping. All rights reserved. </p>
               <p className='font-bold text-xs my-2'>Website Terms and Policies</p>
 
 
-              <p className='text-xs my-2'>If you require any more information or have any questions about our site's disclaimer, please feel free to contact me by email at alexcanales766@gmail.com. The Disclaimer was generated with the help of the Disclaimer Generator.
+              <p className='text-xs my-2'>If you require any more information or have any questions about our site's disclaimer, please feel free to contact me by email at xyz@gmail.com. The Disclaimer was generated with the help of the Disclaimer Generator.
                 All the information on this website - Showcase - is published in good faith and for general information purpose only.
               </p>
 
