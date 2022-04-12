@@ -1,14 +1,13 @@
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { useRef, useState, useEffect } from "react";
-import boundary from "./data/city_boundary.geojson";
-import buses from "./data/bus_routes.geojson";
-import crosswalk from './data/crosswalk_lines.geojson';
-import princess from './data/princess_arrows.geojson';
+
+
+
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-
+import { getDataUsingFetch } from '../../../util/FetchingData';
 
 mapboxgl.accessToken =
     "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
@@ -53,7 +52,9 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         map.current.addControl(geocoder, 'top-right');
     }
 
-    const add_kingston_map_sources = () => {
+    const add_kingston_map_sources = async () => {
+
+
 
 
         map.current.addSource('mapbox-dem', {
@@ -63,40 +64,40 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             'maxzoom': 14
         });
 
+        let raw_url = "http://localhost:3000/data/kingston/";
+        const boundaryData = await getDataUsingFetch(raw_url+"city_boundary.geojson");    
+        const busRoutesData = await getDataUsingFetch(raw_url+"bus_routes.geojson");
+        const crossWalkData = await getDataUsingFetch(raw_url+"crosswalk_lines.geojson");
+        const princessPedestrianData = await getDataUsingFetch(raw_url+"princess_arrows.geojson");
+        const pedestrianData = await getDataUsingFetch(raw_url+"pedestrian.geojson");
+        
         map.current.addSource("BoundaryData", {
             type: "geojson",
-            data: boundary,
+            data: boundaryData,
         })
 
         map.current.addSource('Buses', {
             'type': 'geojson',
-            'data': buses
+            'data': busRoutesData
         });
 
         map.current.addSource('CrossWalkData', {
             'type': 'geojson',
-            'data': crosswalk
+            'data': crossWalkData
         });
 
         map.current.addSource('PrincessData', {
             'type': 'geojson',
-            'data': princess
+            'data': princessPedestrianData
         });
 
-        fetch('http://localhost:3000/data/pedestrian.geojson')
-            .then(response => response.json())
-            .then(data => {
+        map.current.addSource('PedestrianData', {
+            'type': 'geojson',
+            'data': pedestrianData
+        });
+        chartDataHandler(pedestrianData['features']);
 
-                map.current.addSource("PedestrianData", {
-                    type: "geojson",
-                    data: data
-                });
-
-                chartDataHandler(data['features']);
-
-                
-                add_kingston_map_layers();
-            });
+        add_kingston_map_layers();
 
     }
 

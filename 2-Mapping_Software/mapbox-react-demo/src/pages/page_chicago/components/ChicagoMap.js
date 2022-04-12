@@ -6,7 +6,8 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
-import chicagoBoundary from "./data/chicagoBoundary.geojson";
+import { getDataUsingFetch } from '../../../util/FetchingData';
+
 
 
 mapboxgl.accessToken =
@@ -55,7 +56,7 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
     
    
     
-    const add_chicago_map_sources = () => {
+    const add_chicago_map_sources = async () => {
 
         map.current.addSource('mapbox-dem', {
             'type': 'raster-dem',
@@ -64,28 +65,26 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
             'maxzoom': 14
         });
 
+        let raw_url = "http://localhost:3000/data/chicago/";
+        const boundaryData = await getDataUsingFetch(raw_url+"chicago_boundary.geojson");        
+        const ChicagoImpediments = await getDataUsingFetch(raw_url+"chicago_impediments.geojson");
+
+
         map.current.addSource("BoundaryData", {
             type: "geojson",
-            data: chicagoBoundary,
+            data: boundaryData,
         })
 
 
-        fetch('http://localhost:3000/data/impediments.geojson')
-            .then(response => response.json())
-            .then(data => {
+        map.current.addSource("ImpedimentsData", {
+            type: "geojson",
+            data: ChicagoImpediments,
+        })
 
-                map.current.addSource("ImpedimentsData", {
-                    type: "geojson",
-                    data: data
-                });
-
-                chartDataHandler(data['features']);
+        chartDataHandler(ChicagoImpediments['features']);
 
              
-                add_chicago_map_layers();
-            });
-
-
+        add_chicago_map_layers();
     }
 
     

@@ -6,7 +6,8 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
-import vancouverBoundary from "./data/city_boundary.geojson";
+import { getDataUsingFetch, getVancouverPointDataUsingFetchAndClean } from '../../../util/FetchingData';
+
 
 
 mapboxgl.accessToken =
@@ -52,7 +53,22 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
         map.current.addControl(geocoder, 'top-right');
     }
 
-    const add_vancouver_map_sources = () => {
+
+
+    const add_map_images = async (url, name) => {
+        map.current.loadImage(
+            url,
+            (error, image) => {
+                if (error) throw error;
+
+                map.current.addImage(name, image);
+
+            }
+        );
+    }
+
+
+    const add_vancouver_map_sources = async () => {
 
         map.current.addSource('mapbox-dem', {
             'type': 'raster-dem',
@@ -63,85 +79,30 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
 
 
 
-
+        let raw_url = "http://localhost:3000/data/vancouver/";
+        const boundaryData = await getDataUsingFetch(raw_url+"vancouver_boundary.geojson");        
+        
         map.current.addSource("BoundaryData", {
             type: "geojson",
-            data: vancouverBoundary,
+            data: boundaryData,
         })
 
+      
+        const IntersectionData = await getVancouverPointDataUsingFetchAndClean('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-intersections&q=&rows=6105&facet=geo_local_area');
+        map.current.addSource("IntersectionData", {
+            type: "geojson",
+            data: IntersectionData
+        });
+
+        await add_map_images("http://cdn.onlinewebfonts.com/svg/img_113951.png", "camera");
+        const TrafficCameraData = await getVancouverPointDataUsingFetchAndClean('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174');
+        map.current.addSource("TrafficLightCameraData", {
+            type: "geojson",
+            data: TrafficCameraData
+        });
 
 
-
-
-
-
-
-        fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-intersections&q=&rows=6105&facet=geo_local_area')
-            .then(response => response.json())
-            .then(data => {
-
-                let geojson = { "type": "FeatureCollection", "features": [] }
-                for (let point of data.records) {
-                    let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
-                    let properties = point.fields;
-                    let temp = [coordinate[1], coordinate[0]];
-                    properties['stop_coordinates'] = temp.toString();
-                    let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
-                    geojson.features.push(feature);
-                }
-
-
-
-                map.current.addSource("IntersectionData", {
-                    type: "geojson",
-                    data: geojson
-                });
-
-
-                map.current.loadImage(
-                    'http://cdn.onlinewebfonts.com/svg/img_113951.png',
-                    (error, image) => {
-                        if (error) throw error;
-
-                        map.current.addImage('camera', image);
-
-                        fetch('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=web-cam-url-links&q=&rows=174')
-                            .then(response => response.json())
-                            .then(data => {
-
-                                let geojson = { "type": "FeatureCollection", "features": [] }
-                                for (let point of data.records) {
-                                    let coordinate = [parseFloat(point.fields.geom.coordinates[0]), parseFloat(point.fields.geom.coordinates[1])];
-                                    let properties = point.fields;
-                                    let temp = [coordinate[1], coordinate[0]];
-                                    properties['stop_coordinates'] = temp.toString();
-                                    let feature = { "type": "Feature", "geometry": { "type": "Point", "coordinates": coordinate }, "properties": properties }
-                                    geojson.features.push(feature);
-                                }
-
-
-                                map.current.addSource("TrafficLightCameraData", {
-                                    type: "geojson",
-                                    data: geojson
-                                });
-
-
-
-                                add_vancouver_map_layers()
-
-                            })
-                    });
-
-
-
-
-            })
-
-
-
-
-
-
+        add_vancouver_map_layers()
     }
 
 

@@ -5,8 +5,7 @@ import { useRef, useState, useEffect } from "react";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import franceBoundary from "./data/franceBoundary.geojson";
-import FranceImpediments from './data/franceImpediments.geojson';
+import { getDataUsingFetch } from '../../../util/FetchingData';
 
 mapboxgl.accessToken =
     "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
@@ -51,7 +50,7 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
         map.current.addControl(geocoder, 'top-right');
     }
 
-    const add_france_map_sources = () => {
+    const add_france_map_sources = async () => {
 
 
         map.current.addSource('mapbox-dem', {
@@ -61,12 +60,16 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
             'maxzoom': 14
         });
 
+        
+        let raw_url = "http://localhost:3000/data/france/";
+        const boundaryData = await getDataUsingFetch(raw_url+"france_boundary.geojson");        
+        const FranceImpediments = await getDataUsingFetch(raw_url+"france_impediments.geojson");
+
 
         map.current.addSource("BoundaryData", {
             type: "geojson",
-            data: franceBoundary,
+            data: boundaryData,
         })
-
 
 
         map.current.addSource("ImpedimentsData", {
@@ -255,10 +258,10 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
                 paint: {
 
                     'circle-radius': {
-                        'base': 5,
+                        'base': 8,
 
                         'stops': [
-                            [12, 4],
+                            [12, 8],
                             [22, 180]
                         ]
                     },
