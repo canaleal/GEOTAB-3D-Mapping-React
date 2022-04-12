@@ -6,4 +6,4 @@ const Cover = ({coverRef}) => {
   )
 }
 
-export default Cover;
+export default React.memo(Cover);

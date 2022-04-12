@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const SelectCity = () => {
 
@@ -31,25 +31,27 @@ const SelectCity = () => {
 
   ])
 
+  
+
 
 
   return (
-    <div className="p-10">
+    <main>
 
 
-      <div className='grid grid-cols-4  gap-4'>
+      <div className='grid grid-cols-1 md:grid-cols-4  gap-4'>
 
         {
           cities.map((city => {
             return (
-              <div key={city.link} className="col-span-4 md:col-span-1  rounded-lg overflow-hidden shadow-lg bg-white">
+              <div key={city.link} className="col-span-1  rounded-lg overflow-hidden shadow-lg bg-white">
                 <img className="w-full h-64" src={city.img_path} alt="Layer Image" />
 
                 <div className="p-4">
                   <p className="font-bold mb-2">{city.name}</p>
                   <p>View data displayed on maps to better visualize the city and surrounding area.</p>
 
-                  <Link to={{ pathname: `${city.link}` }} className={'border  block w-full text-center p-3 my-1 rounded-md btn-blue'} >
+                  <Link to={{ pathname: `${city.link}` }} className={'border  block text-center  rounded-md btn-blue'} >
                     View Map
                   </Link>
                 </div>
@@ -60,7 +62,7 @@ const SelectCity = () => {
         }
       </div>
 
-    </div>
+    </main>
   )
 }
 
