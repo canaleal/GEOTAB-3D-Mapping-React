@@ -118,7 +118,7 @@ const KingstonHome = () => {
           layerName: "CrossWalkLayer",
           imgPath: "BusRoutes.JPG",
           showButton: true,
-          icon: "fa-person",
+          icon: "fa-person-walking",
         },
         {
           id: 6,
@@ -129,6 +129,16 @@ const KingstonHome = () => {
           imgPath: "Pedestrians.JPG",
           showButton: true,
           icon: "fa-person",
+        },
+        {
+          id: 7,
+          layer: "Princess and Bagot Trees",
+          isOn: true,
+          isDynamic: false,
+          layerName: "TreesLayer",
+          imgPath: "Pedestrians.JPG",
+          showButton: true,
+          icon: "fa-tree",
         },
       ]);
 

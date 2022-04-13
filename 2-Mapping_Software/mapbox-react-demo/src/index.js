@@ -25,7 +25,9 @@ import {
   faPlay,
   faPause,
   faCamera,
-  faRoad
+  faRoad,
+  faTree,
+  faPersonWalking,
 } from "@fortawesome/free-solid-svg-icons";
 import KingstonHome from "./pages/page_kingston/KingstonHome";
 import ChicagoHome from "./pages/page_chicago/ChicagoHome";
@@ -47,6 +49,8 @@ library.add(
   faCamera,
   faRoad,
   faHelmetSafety,
+  faPersonWalking,
+  faTree,
   faPlay,
   faPause
 );

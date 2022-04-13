@@ -70,6 +70,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         const crossWalkData = await getDataUsingFetch(raw_url+"crosswalk_lines.geojson");
         const princessPedestrianData = await getDataUsingFetch(raw_url+"princess_arrows.geojson");
         const pedestrianData = await getDataUsingFetch(raw_url+"pedestrian.geojson");
+        const treesData = await getDataUsingFetch(raw_url+"trees.geojson");
         
         map.current.addSource("BoundaryData", {
             type: "geojson",
@@ -86,6 +87,11 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             'data': crossWalkData
         });
 
+        map.current.addSource('TreesData', {
+            'type': 'geojson',
+            'data': treesData
+        });
+
         map.current.addSource('PrincessData', {
             'type': 'geojson',
             'data': princessPedestrianData
@@ -96,6 +102,10 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             'data': pedestrianData
         });
         chartDataHandler(pedestrianData['features']);
+
+       
+
+       
 
         add_kingston_map_layers();
 
@@ -115,6 +125,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         add_bus_route_layer();
         add_cross_walk_layer();
         add_princess_layer();
+        add_trees_layer();
 
         // Add all the filters to the map
         addLayerFilters();
@@ -508,6 +519,125 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         });
 
         
+    }
+
+
+    const add_trees_layer = () =>{
+        console.log('adding trees layer')
+        const layerName = 'TreesLayer'
+       
+        map.current.addLayer(
+            {
+                id: layerName,
+                type: "circle",
+                source: "TreesData",
+                minzoom: 7,
+                paint: {
+                    // Size circle radius by earthquake magnitude and zoom level
+                    "circle-radius": [
+                        "interpolate",
+                        ["linear"],
+                        ["zoom"],
+                        7,
+                        ["interpolate", ["linear"], ["get", "diameter"], 1, 2, 3, 4],
+                        16,
+                        ["interpolate", ["linear"], ["get", "diameter"], 2, 4, 6, 8],
+                    ],
+                    // Color circle by earthquake magnitude
+                    "circle-color": [
+                        "interpolate",
+                        ["linear"],
+                        ["get", "diameter"],
+                        100,
+                        "rgb(116,237,134)",
+                        200,
+                        "rgb(217, 161, 77)",
+                        300,
+                        "rgb(250, 97, 156)",
+                        400,
+                        "rgb(194, 129, 71)",
+                        500,
+                        "rgb(168, 28, 48)",
+                        600,
+                        "rgb(204, 77, 125)",
+                        700,
+                        "rgb(194, 58, 96)",
+                        800,
+                        "rgb(180, 40, 68)",
+                        900,
+                        "rgb(163, 24, 40)",
+                        1000,
+                        "rgb(144, 11, 10)",
+                    ],
+                    "circle-stroke-color": "white",
+                    "circle-stroke-width": 1,
+                    // Transition from heatmap to circle layer by zoom level
+                    "circle-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0, 8, 1],
+                },
+            },
+            "waterway-label"
+        );
+
+        map.current.setLayoutProperty(layerName, 'visibility','visible')
+
+
+        const small_popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        map.current.on('click', layerName, (e) => {
+            // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates.slice();
+
+            let description_raw = ""
+            for (let i = 0; i < e.features[0].properties.description.length; i++) {
+                description_raw += `<span>${e.features[0].properties.description[i]}</span>`
+            }
+
+            const description = description_raw;
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+        
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+            //If the user clicks a point save it 
+            pointOfInterestHandler(e.features[0]);
+        });
+
+
+
+
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.current.on('mouseenter', layerName, (e) => {
+            map.current.getCanvas().style.cursor = 'pointer';
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const description =  `  <span class="block font-bold">Tree Name</span>
+            <span  class="block">${e.features[0].properties.common_name}</span>
+            `
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            small_popup
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+        });
+
+        // Change it back to a pointer when it leaves.
+        map.current.on('mouseleave', layerName, () => {
+            map.current.getCanvas().style.cursor = '';
+            small_popup.remove();
+        });
     }
 
 
