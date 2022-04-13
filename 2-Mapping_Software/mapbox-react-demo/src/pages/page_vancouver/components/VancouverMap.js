@@ -79,15 +79,17 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
 
 
 
-        let raw_url = "http://localhost:3000/data/vancouver/";
-        const boundaryData = await getDataUsingFetch(raw_url+"vancouver_boundary.geojson");        
-        
+  
+        let currentLocation = window.location.protocol + "//" + window.location.host;
+        let raw_url = currentLocation+ "/data/vancouver/";
+        const boundaryData = await getDataUsingFetch(raw_url + "vancouver_boundary.geojson");
+
         map.current.addSource("BoundaryData", {
             type: "geojson",
             data: boundaryData,
         })
 
-      
+
         const IntersectionData = await getVancouverPointDataUsingFetchAndClean('https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-intersections&q=&rows=6105&facet=geo_local_area');
         map.current.addSource("IntersectionData", {
             type: "geojson",
@@ -99,6 +101,12 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
         map.current.addSource("TrafficLightCameraData", {
             type: "geojson",
             data: TrafficCameraData
+        });
+
+        const treesData = await getDataUsingFetch(raw_url + "trees.geojson");
+        map.current.addSource('TreesData', {
+            'type': 'geojson',
+            'data': treesData
         });
 
 
@@ -113,7 +121,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
         add_boundary_layer();
         add_vancouver_trafficCamera_layer();
         add_vancouver_intersection_layer();
-
+        add_trees_layer();
 
         // Add all the filters to the map
         addLayerFilters();
@@ -128,7 +136,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
     const add_terrain_layer = () => {
 
         // Add terrain layer and set the exaggeration the layer to 1.5x 
-        map.current.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+        map.current.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.0 });
         map.current.addLayer({
             'id': 'sky',
             'type': 'sky',
@@ -358,13 +366,16 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
         map.current.on('click', layerName, (e) => {
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = `
-                        <span class="block font-bold">Local Area</span>
-                      <span class="block">${e.features[0].properties.geo_local_area}</span>
-                      <span class="block font-bold">Intersection Name</span>
-                      <span class="block">${e.features[0].properties.xstreet}</span>
-                     
-                      `
+            let description_raw = ""
+            const sliced = Object.fromEntries(
+                Object.entries(e.features[0].properties).slice(0, 3)
+            );
+            for (const [key, value] of Object.entries(sliced)) {
+                description_raw += `<span class="block font-bold">${key}</span><span class="block">${value}</span>`
+            }
+
+
+            const description = description_raw;
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -393,6 +404,101 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
     }
 
 
+    const add_trees_layer = () => {
+
+        const layerName = 'TreesLayer'
+
+        map.current.addLayer(
+            {
+                id: layerName,
+                type: "circle",
+                source: "TreesData",
+                minzoom: 7,
+                paint: {
+
+                    "circle-radius": [
+                        "interpolate",
+                        ["linear"],
+                        ["zoom"],
+                        7,
+                        ["interpolate", ["linear"], ["get", "diameter"], 1, 2, 3, 4],
+                        16,
+                        ["interpolate", ["linear"], ["get", "diameter"], 3, 6, 9, 12],
+                    ],
+
+                    "circle-color":
+                        'green'
+                    ,
+                },
+            },
+            "waterway-label"
+        );
+
+        map.current.setLayoutProperty(layerName, 'visibility', 'visible')
+
+
+        const small_popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        map.current.on('click', layerName, (e) => {
+            // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates.slice();
+
+            let description_raw = ""
+            const sliced = Object.fromEntries(
+                Object.entries(e.features[0].properties).slice(0, 5)
+            );
+            for (const [key, value] of Object.entries(sliced)) {
+                description_raw += `<span class="block font-bold">${key}</span><span class="block">${value}</span>`
+            }
+
+
+            const description = description_raw;
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+            //If the user clicks a point save it 
+            pointOfInterestHandler(e.features[0]);
+        });
+
+
+
+
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.current.on('mouseenter', layerName, (e) => {
+            map.current.getCanvas().style.cursor = 'pointer';
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const description = `  <span class="block font-bold">Tree Name</span>
+            <span  class="block">${e.features[0].properties.common_name}</span>
+            `
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            small_popup
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+        });
+
+        // Change it back to a pointer when it leaves.
+        map.current.on('mouseleave', layerName, () => {
+            map.current.getCanvas().style.cursor = '';
+            small_popup.remove();
+        });
+    }
 
 
 
@@ -439,12 +545,11 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
     const addMapFilters = () => {
 
         //Grab data specific to a filter range and year
-        // map.current.setFilter('PedestriansLayer', ["all",
-        //     [">=", ['get', 'count'], currentFilterValues[0]],
-        //     ["<=", ['get', 'count'], currentFilterValues[1]],
-        //     ['==', ['string', ['get', 'Year']], currentYear.toString()],
-
-        // ])
+        map.current.setFilter('TreesLayer', ["all",
+            [">=", ['get', 'diameter'], currentFilterValues[0]],
+            ["<=", ['get', 'diameter'], currentFilterValues[1]]
+        
+        ])
 
         //Reset the map size so it goes into full width and height
         map.current.resize();

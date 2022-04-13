@@ -12,7 +12,7 @@ import { getDataUsingFetch } from '../../../util/FetchingData';
 mapboxgl.accessToken =
     "pk.eyJ1IjoiY2FuYWxlYWwiLCJhIjoiY2t6Nmg2Z2R4MTBtcDJ2cW9xMXI2d2hqYyJ9.ef3NOXxDnIy4WawQuaFopg";
 
-const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, currentFilterValues, layers, pointOfInterestHandler, chartDataHandler }) => {
+const KingstonMap = ({ mapStyle, mapBoundaries, lng, lat, zoom, currentYear, currentFilterValues, layers, pointOfInterestHandler, chartDataHandler }) => {
 
     const mapContainerRef = useRef(null);
     const map = useRef(null);
@@ -28,7 +28,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             center: [lng, lat],
             zoom: zoom,
         })
-   
+
         map.current.on('load', () => {
             add_map_controls();
             add_kingston_map_sources();
@@ -64,14 +64,15 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             'maxzoom': 14
         });
 
-        let raw_url = "http://localhost:3000/data/kingston/";
-        const boundaryData = await getDataUsingFetch(raw_url+"city_boundary.geojson");    
-        const busRoutesData = await getDataUsingFetch(raw_url+"bus_routes.geojson");
-        const crossWalkData = await getDataUsingFetch(raw_url+"crosswalk_lines.geojson");
-        const princessPedestrianData = await getDataUsingFetch(raw_url+"princess_arrows.geojson");
-        const pedestrianData = await getDataUsingFetch(raw_url+"pedestrian.geojson");
-        const treesData = await getDataUsingFetch(raw_url+"trees.geojson");
-        
+        let currentLocation = window.location.protocol + "//" + window.location.host;
+        let raw_url = currentLocation+ "/data/kingston/";
+        const boundaryData = await getDataUsingFetch(raw_url + "city_boundary.geojson");
+        const busRoutesData = await getDataUsingFetch(raw_url + "bus_routes.geojson");
+        const crossWalkData = await getDataUsingFetch(raw_url + "crosswalk_lines.geojson");
+        const princessPedestrianData = await getDataUsingFetch(raw_url + "princess_arrows.geojson");
+        const pedestrianData = await getDataUsingFetch(raw_url + "pedestrian.geojson");
+
+
         map.current.addSource("BoundaryData", {
             type: "geojson",
             data: boundaryData,
@@ -87,10 +88,6 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             'data': crossWalkData
         });
 
-        map.current.addSource('TreesData', {
-            'type': 'geojson',
-            'data': treesData
-        });
 
         map.current.addSource('PrincessData', {
             'type': 'geojson',
@@ -103,9 +100,14 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         });
         chartDataHandler(pedestrianData['features']);
 
-       
+        const treesData = await getDataUsingFetch(raw_url + "trees.geojson");
+        map.current.addSource('TreesData', {
+            'type': 'geojson',
+            'data': treesData
+        });
 
-       
+
+
 
         add_kingston_map_layers();
 
@@ -127,6 +129,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         add_princess_layer();
         add_trees_layer();
 
+
         // Add all the filters to the map
         addLayerFilters();
         addMapFilters();
@@ -137,7 +140,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
     }
 
 
-  
+
 
 
     const add_terrain_layer = () => {
@@ -203,7 +206,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             labelLayerId
         );
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
     }
 
 
@@ -239,7 +242,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             },
         });
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
 
         let hoveredStateId = null;
         // When the user moves their mouse over the state-fill layer, we'll update the
@@ -330,9 +333,9 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         );
 
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
 
-     
+
 
         const small_popup = new mapboxgl.Popup({
             closeButton: false,
@@ -348,6 +351,8 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
                     <span class="block">${e.features[0].properties.name} </span>
                     <span class="block font-bold">Year</span>
                     <span class="block">${e.features[0].properties.Year}</span>
+                    <span class="block font-bold">Month</span>
+                    <span class="block">${e.features[0].properties.Month}</span>
                     <span class="block font-bold">Average Pedestrian Count</span>
                     <span class="block">${e.features[0].properties.count}</span>
                     <img class="mt-2 rounded-lg" src="${e.features[0].properties.img_url}" alt="" height=auto width="100%"/>
@@ -371,7 +376,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         map.current.on('mouseenter', layerName, (e) => {
             map.current.getCanvas().style.cursor = 'pointer';
             const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = `<span>People (AVG/HR) : ${e.features[0].properties.count}</span>`
+            const description = `<span class="block font-bold">Average Pedestrian Count</span><span>People (AVG/HR) : ${e.features[0].properties.count}</span>`
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -390,7 +395,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             small_popup.remove();
         });
 
-        
+
     }
 
     const add_bus_route_layer = () => {
@@ -410,7 +415,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             }
         });
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
 
     }
 
@@ -431,7 +436,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             }
         });
 
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
 
     }
 
@@ -458,8 +463,8 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             },
         });
 
-     
-        map.current.setLayoutProperty(layerName, 'visibility','none')
+
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
 
 
         const small_popup = new mapboxgl.Popup({
@@ -471,16 +476,18 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         map.current.on('click', layerName, (e) => {
             // Copy coordinates array.
 
-          
+
             const coordinates = e.features[0].geometry.coordinates[0][0].slice();
-            const description = `
-                    <span class="block font-bold">Year</span>
-                    <span class="block">${e.features[0].properties.Year} </span>
-                    <span class="block font-bold">Pedestrian Count</span>
-                    <span class="block">${e.features[0].properties.count}</span>
-                  
-                        
-      `
+            let description_raw = ""
+            const sliced = Object.fromEntries(
+                Object.entries(e.features[0].properties).slice(0, 5)
+            );
+            for (const [key, value] of Object.entries(sliced)) {
+                description_raw += `<span class="block font-bold">${key}</span><span class="block">${value}</span>`
+            }
+
+
+            const description = description_raw;
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -499,7 +506,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         map.current.on('mouseenter', layerName, (e) => {
             map.current.getCanvas().style.cursor = 'pointer';
             const coordinates = e.features[0].geometry.coordinates[0][0].slice();
-            const description = `<span># of Pedestrians: ${e.features[0].properties.count}</span>`
+            const description = `<span class="block font-bold">Average Pedestrian Count</span><span># of Pedestrians: ${e.features[0].properties.count}</span>`
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -518,14 +525,14 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             small_popup.remove();
         });
 
-        
+
     }
 
 
-    const add_trees_layer = () =>{
-        console.log('adding trees layer')
+    const add_trees_layer = () => {
+
         const layerName = 'TreesLayer'
-       
+
         map.current.addLayer(
             {
                 id: layerName,
@@ -533,52 +540,26 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
                 source: "TreesData",
                 minzoom: 7,
                 paint: {
-                    // Size circle radius by earthquake magnitude and zoom level
+
                     "circle-radius": [
                         "interpolate",
                         ["linear"],
                         ["zoom"],
                         7,
-                        ["interpolate", ["linear"], ["get", "diameter"], 1, 2, 3, 4],
+                        ["interpolate", ["linear"], ["get", "trunk_diameter"], 1, 2, 3, 4],
                         16,
-                        ["interpolate", ["linear"], ["get", "diameter"], 2, 4, 6, 8],
+                        ["interpolate", ["linear"], ["get", "trunk_diameter"], 3, 6, 9, 12],
                     ],
-                    // Color circle by earthquake magnitude
-                    "circle-color": [
-                        "interpolate",
-                        ["linear"],
-                        ["get", "diameter"],
-                        100,
-                        "rgb(116,237,134)",
-                        200,
-                        "rgb(217, 161, 77)",
-                        300,
-                        "rgb(250, 97, 156)",
-                        400,
-                        "rgb(194, 129, 71)",
-                        500,
-                        "rgb(168, 28, 48)",
-                        600,
-                        "rgb(204, 77, 125)",
-                        700,
-                        "rgb(194, 58, 96)",
-                        800,
-                        "rgb(180, 40, 68)",
-                        900,
-                        "rgb(163, 24, 40)",
-                        1000,
-                        "rgb(144, 11, 10)",
-                    ],
-                    "circle-stroke-color": "white",
-                    "circle-stroke-width": 1,
-                    // Transition from heatmap to circle layer by zoom level
-                    "circle-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0, 8, 1],
+
+                    "circle-color":
+                        'green'
+                    ,
                 },
             },
             "waterway-label"
         );
 
-        map.current.setLayoutProperty(layerName, 'visibility','visible')
+        map.current.setLayoutProperty(layerName, 'visibility', 'visible')
 
 
         const small_popup = new mapboxgl.Popup({
@@ -591,9 +572,13 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             const coordinates = e.features[0].geometry.coordinates.slice();
 
             let description_raw = ""
-            for (let i = 0; i < e.features[0].properties.description.length; i++) {
-                description_raw += `<span>${e.features[0].properties.description[i]}</span>`
+            const sliced = Object.fromEntries(
+                Object.entries(e.features[0].properties).slice(0, 5)
+            );
+            for (const [key, value] of Object.entries(sliced)) {
+                description_raw += `<span class="block font-bold">${key}</span><span class="block">${value}</span>`
             }
+
 
             const description = description_raw;
 
@@ -601,7 +586,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
             }
 
-        
+
             new mapboxgl.Popup()
                 .setLngLat(coordinates)
                 .setHTML(description)
@@ -618,7 +603,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
         map.current.on('mouseenter', layerName, (e) => {
             map.current.getCanvas().style.cursor = 'pointer';
             const coordinates = e.features[0].geometry.coordinates.slice();
-            const description =  `  <span class="block font-bold">Tree Name</span>
+            const description = `  <span class="block font-bold">Tree Name</span>
             <span  class="block">${e.features[0].properties.common_name}</span>
             `
 
@@ -639,6 +624,7 @@ const KingstonMap = ({  mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cu
             small_popup.remove();
         });
     }
+
 
 
 

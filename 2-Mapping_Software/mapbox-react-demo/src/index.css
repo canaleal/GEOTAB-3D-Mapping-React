@@ -73,12 +73,22 @@ code {
     monospace;
 }
 
-.bg-sky{
+.bg-blue{
   background-color: #35367a;
-
+  color: white;
 }
+.bg-green{
+	background-color: #007a3e;
+  color: white;
+}
+.bg-red{
+  background-color: #9e3535;
+  color: white;
+}
+
 .bg-smoke{
 	background-color: #f8f9f2;
+  color: black;
 }
 
 .slow-ani{
@@ -208,6 +218,7 @@ code {
 .slide-in-right {
   -webkit-animation: slide-in-right 1s ease-in-out both;
   animation: slide-in-right 1s ease-in-out both;
+  animation-delay: calc(var(--order) * 100ms);
 }
 
 /* ----------------------------------------------

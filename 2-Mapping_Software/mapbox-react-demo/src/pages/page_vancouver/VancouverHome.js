@@ -13,6 +13,7 @@ import GoogleStreetview from "../components/googleStreetview/GoogleStreetview";
 import MapStyleSelector from '../components/map/MapStyleSelector';
 import LayerButtonGroup from '../components/layer/LayerButtonGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import RangeSlider from '../components/slider/RangeSlider';
 
 
 const VancouverHome = () => {
@@ -32,7 +33,7 @@ const VancouverHome = () => {
   const [lng, setLng] = useState();
   const [lat, setLat] = useState();
   const [zoom, setZoom] = useState();
-  const [mapStyle, setMapStyle] = useState("streets-v11");
+  const [mapStyle, setMapStyle] = useState("satellite-streets-v11");
   const [layers, setLayers] = useState([]);
 
   //POI Details
@@ -48,6 +49,11 @@ const VancouverHome = () => {
 
   //Timer details
   const [isTimerActive, setIsTimerActive] = useState(false);
+
+  //Filter values
+  const [currentFilterValues, setCurrentFilterValues] = useState();
+  const [filterDetails, setFilterDetails] = useState({});
+
 
   useEffect(() => {
 
@@ -100,6 +106,16 @@ const VancouverHome = () => {
         showButton: false,
         icon: "fa-road",
       },
+      {
+        id: 5,
+        layer: "Some Vancouver Trees",
+        isOn: false,
+        isDynamic: false,
+        layerName: "TreesLayer",
+        imgPath: "Trees.JPG",
+        showButton: true,
+        icon: "fa-tree",
+      },
 
 
 
@@ -112,6 +128,11 @@ const VancouverHome = () => {
 
     setYears([2022]);
     setCurrentYear(2022);
+
+
+    //filter details
+    setCurrentFilterValues([0, 70]);
+    setFilterDetails({ min: 0, max: 70, step: 5 });
 
 
     setIsLoaded(true);
@@ -133,17 +154,20 @@ const VancouverHome = () => {
   // Function is used to show or not show the button for each layer
   const layerButtonHandler = (item) => {
     // Make a copy of the layers array and find the index of the layer.
-    const temp_dict = [...layers];
+    let temp_dict = [...layers];
     const objIndex = temp_dict.findIndex((x) => x.id === item.id);
     temp_dict[objIndex].showButton = !temp_dict[objIndex].showButton;
 
-    // If the button isn't being displayed, turn it off
+    
+    // If the button isn't being displayed, turn the layer off from the map
     if (temp_dict[objIndex].showButton === false) {
       temp_dict[objIndex].isOn = false;
     }
+    else{
+      temp_dict[objIndex].isOn = true;
+    } 
 
-
-
+   
     setLayers(temp_dict);
   };
 
@@ -208,9 +232,14 @@ const VancouverHome = () => {
     setChartTime(item)
   }
 
+  const filterValueSliderHandler = (item) => {
+    setCurrentFilterValues(item);
+  };
+
+
   return (
     <Fragment>
-      <Header city={city} />
+      <Header city={city} color={'bg-blue'}/>
 
       <Cover coverRef={coverRef} />
 
@@ -256,6 +285,7 @@ const VancouverHome = () => {
                 months={months}
                 currentMonth={currentMonth}
                 layers={layers}
+                currentFilterValues={currentFilterValues}
                 pointOfInterestHandler={pointOfInterestHandler}
                 chartDataHandler={chartDataHandler}
               />
@@ -272,8 +302,15 @@ const VancouverHome = () => {
 
 
             <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 2}}>
-              <p className="font-bold">Map Data Disclaimer</p>
-              <p>We share our traffic data with the public, so that you can be informed of what is happening in the city, and provide your input.</p>
+              <p className="font-bold">Filter Map - Tree Diameter (CM)</p>
+
+              <div className="pb-4 px-4">
+                <RangeSlider
+                  filterDetails={filterDetails}
+                  currentFilterValues={currentFilterValues}
+                  filterValueSliderHandler={filterValueSliderHandler}
+                />
+              </div>
             </div>
 
             <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 3}}>

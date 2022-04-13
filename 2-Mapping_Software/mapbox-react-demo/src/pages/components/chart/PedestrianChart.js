@@ -9,6 +9,7 @@ import {
 } from "chart.js";
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
+import { getMonthStringGivenValue } from "../../../util/GetMonth";
 
 ChartJS.register(
   CategoryScale,
@@ -19,7 +20,7 @@ ChartJS.register(
   Legend
 );
 
-const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
+const PedestrianChart = ({ chartTime, currentYear, currentMonth, chartData }) => {
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -51,7 +52,7 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
    
 
 
-  }, [currentYear, chartTime])
+  }, [currentYear, currentMonth, chartTime])
 
 
 
@@ -96,7 +97,7 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
     
     const labels = [];
     for (let i = 1; i < 28; i += 5) {
-      labels.push(`${i}-${i + 4}`)
+      labels.push(`${i}`)
     }
 
     //Make random data
@@ -106,7 +107,7 @@ const PedestrianChart = ({ chartTime, currentYear, chartData }) => {
     );
 
   
-    const chart_name = 'count -  (' + currentYear + '-' + 'temp_month' + ')';
+    const chart_name = 'count -  (' + currentYear + '-' + getMonthStringGivenValue(currentMonth) + ')';
     createChart(ped_data, labels, chart_name);
 
   }

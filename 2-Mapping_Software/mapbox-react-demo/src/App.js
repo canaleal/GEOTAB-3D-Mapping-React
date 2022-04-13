@@ -7,14 +7,7 @@ import Footer from "./components/Footer";
 function App() {
   return (
     <Fragment>
-      <nav className="bg-sky color-white">
-        <div className="px-5 py-2">
-          <Link to="/" className="nav-item">
-            <span className="text-xl weight-bold">USARS 3D Mapping</span>
-          </Link>
-
-        </div>
-      </nav>
+     
 
       <Outlet />
 

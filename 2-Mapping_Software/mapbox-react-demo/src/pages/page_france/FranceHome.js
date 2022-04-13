@@ -78,16 +78,26 @@ const FranceHome = () => {
             },
             {
                 id: 2,
-                layer: "Regions Boundary",
+                layer: "Country Boundary Layer",
                 isOn: true,
                 isDynamic: false,
-                layerName: "CityBoundaryLayer",
+                layerName: "CountryBoundaryLayer",
                 imgPath: "Boundary.JPG",
                 showButton: true,
                 icon: "fa-border-all",
             },
             {
                 id: 3,
+                layer: "Department Boundary Layer",
+                isOn: true,
+                isDynamic: false,
+                layerName: "DepartmentBoundaryLayer",
+                imgPath: "Boundary.JPG",
+                showButton: true,
+                icon: "fa-border-all",
+            },
+            {
+                id: 4,
                 layer: "Road Impediments",
                 isOn: true,
                 isDynamic: false,
@@ -128,25 +138,26 @@ const FranceHome = () => {
         setLayers(temp_dict);
     };
 
+    
     // Function is used to show or not show the button for each layer
-    const layerButtonHandler = (item) => {
-        // Make a copy of the layers array and find the index of the layer.
-        const temp_dict = [...layers];
-        const objIndex = temp_dict.findIndex((x) => x.id === item.id);
-        temp_dict[objIndex].showButton = !temp_dict[objIndex].showButton;
+  const layerButtonHandler = (item) => {
+    // Make a copy of the layers array and find the index of the layer.
+    let temp_dict = [...layers];
+    const objIndex = temp_dict.findIndex((x) => x.id === item.id);
+    temp_dict[objIndex].showButton = !temp_dict[objIndex].showButton;
 
-        // If the button isn't being displayed, turn it off
-        if (temp_dict[objIndex].showButton === false) {
-            temp_dict[objIndex].isOn = false;
-        }
+    
+    // If the button isn't being displayed, turn the layer off from the map
+    if (temp_dict[objIndex].showButton === false) {
+      temp_dict[objIndex].isOn = false;
+    }
+    else{
+      temp_dict[objIndex].isOn = true;
+    } 
 
-        //Remove point of interest if the pedestrian layer is turned off
-        if (item.layerName === 'PedestriansLayer') {
-            setPointOfInterest(null);
-        }
-
-        setLayers(temp_dict);
-    };
+   
+    setLayers(temp_dict);
+  };
 
     const yearSliderHandler = (value) => {
         setCurrentYear(value);
@@ -211,7 +222,7 @@ const FranceHome = () => {
 
     return (
         <Fragment>
-            <Header city={city} />
+            <Header city={city} color={'bg-blue'}/>
 
             <Cover coverRef={coverRef} />
 
@@ -225,18 +236,7 @@ const FranceHome = () => {
             {isLoaded ?
                 <main>
                     <div className="grid grid-cols-4 grid-row-3 gap-4 ">
-                        <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 1}}>
-                            <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
-
-                            <button onClick={() => showModalHandler(layerModalRef)} className={`border   w-full text-left my-1 btn-gray mt-10`}>
-                                <FontAwesomeIcon
-                                    icon="fa-solid fa-layer-group"
-                                    size="xl"
-                                    width={"2rem"}
-                                /><span>Add/Remove Layers</span>
-                            </button>
-
-                        </div>
+                       
 
 
 
@@ -267,8 +267,21 @@ const FranceHome = () => {
 
                         </div>
 
+                        <div className="col-span-4  md:col-span-1  border bg-white rounded-lg p-4 slide-in-right" style={{ '--order': 1 }}>
+                            <LayerButtonGroup layers={layers} layerModalRef={layerModalRef} layerHandler={layerHandler} showModalHandler={showModalHandler} />
 
-                        <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 2}}>
+                            <button onClick={() => showModalHandler(layerModalRef)} className={`border   w-full text-left my-1 btn-gray mt-10`}>
+                                <FontAwesomeIcon
+                                    icon="fa-solid fa-layer-group"
+                                    size="xl"
+                                    width={"2rem"}
+                                /><span>Add/Remove Layers</span>
+                            </button>
+
+                        </div>
+
+
+                        <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-right" style={{ '--order': 2 }}>
                             <p className="font-bold">Filter Map - Average Acceleration </p>
 
 
@@ -284,7 +297,7 @@ const FranceHome = () => {
                         </div>
 
 
-                        <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-left" style={{'--order': 3}}>
+                        <div className="col-span-4 md:col-span-1 border bg-white rounded-lg p-4 slide-in-right" style={{ '--order': 3 }}>
                             <p className="font-bold">Map Data Disclaimer</p>
                             <p>The Github france-geojson project offers in GeoJSON format maps of the regions, departments, arrondissements, cantons and municipalities of France (mainland and overseas departments) from data published by IGN and INSEE.</p>
                         </div>

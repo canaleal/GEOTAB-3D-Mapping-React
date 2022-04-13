@@ -17,6 +17,8 @@ import ImpedimentsChart from '../components/chart/ImpedimentsChart';
 import RangeSlider from '../components/slider/RangeSlider';
 import LayerButtonGroup from '../components/layer/LayerButtonGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import TimeScaleDropDown from '../components/slider/TimeScaleDropDown';
+import { getMonthStringGivenValue } from '../../util/GetMonth';
 
 
 const ChicagoHome = () => {
@@ -35,7 +37,7 @@ const ChicagoHome = () => {
   const [lng, setLng] = useState();
   const [lat, setLat] = useState();
   const [zoom, setZoom] = useState();
-  const [mapStyle, setMapStyle] = useState("streets-v11");
+  const [mapStyle, setMapStyle] = useState("dark-v10");
   const [layers, setLayers] = useState([]);
 
   //POI Details
@@ -48,6 +50,10 @@ const ChicagoHome = () => {
   const [currentYear, setCurrentYear] = useState();
   const [months, setMonths] = useState([]);
   const [currentMonth, setCurrentMonth] = useState();
+  const [days, setDays] = useState([]);
+  const [currentDay, setCurrentDay] = useState();
+ 
+  const [timeScale, setTimeScale] = useState('Year');
 
   //Timer details
   const [isTimerActive, setIsTimerActive] = useState(false);
@@ -111,6 +117,8 @@ const ChicagoHome = () => {
     setMonths([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
     setCurrentMonth(1);
 
+    setDays([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]);
+    setCurrentDay(1);
 
     //filter details
     setCurrentFilterValues([0, 2])
@@ -134,20 +142,20 @@ const ChicagoHome = () => {
   // Function is used to show or not show the button for each layer
   const layerButtonHandler = (item) => {
     // Make a copy of the layers array and find the index of the layer.
-    const temp_dict = [...layers];
+    let temp_dict = [...layers];
     const objIndex = temp_dict.findIndex((x) => x.id === item.id);
     temp_dict[objIndex].showButton = !temp_dict[objIndex].showButton;
 
-    // If the button isn't being displayed, turn it off
+    
+    // If the button isn't being displayed, turn the layer off from the map
     if (temp_dict[objIndex].showButton === false) {
       temp_dict[objIndex].isOn = false;
     }
+    else{
+      temp_dict[objIndex].isOn = true;
+    } 
 
-    //Remove point of interest if the pedestrian layer is turned off
-    if (item.layerName === 'ImpedimentsLayer') {
-      setPointOfInterest(null);
-    }
-
+   
     setLayers(temp_dict);
   };
 
@@ -159,6 +167,10 @@ const ChicagoHome = () => {
   const monthSliderHandler = (value) => {
     setCurrentMonth(value);
 
+  };
+
+  const daySliderHandler = (value) => {
+    setCurrentDay(value);
   };
 
   //Turn the timer on or off
@@ -216,14 +228,18 @@ const ChicagoHome = () => {
 
 
   const filterValueSliderHandler = (item) => {
-
     setCurrentFilterValues(item);
   }
 
 
+  const handleTimeScaleChange = (event) => {
+    setTimeScale(event.target.value);
+  };
+
+
   return (
     <Fragment>
-      <Header city={city} />
+      <Header city={city} color={'bg-blue'}/>
 
       <Cover coverRef={coverRef} />
 
@@ -278,35 +294,44 @@ const ChicagoHome = () => {
               </div>
 
               <div className="absolute bottom-10 left-10 bg-black px-10 py-4 rounded-lg box-border w-10/12">
+              <div className="flex flex-row justify-between">
+                  <span className="color-white">
+                    Year - {currentYear}  
+                  </span>
+                  <span className="color-white">
+                  Month - {getMonthStringGivenValue(currentMonth)}
+                  </span>
 
-                <div className='w-64'>
-                  <span className='color-white'>Year - {currentYear}</span>
+                  <span className="color-white">
+                  Day - {currentDay}
+                  </span>
+
+
+                  <TimeScaleDropDown
+                    label="Time Scale:"
+                    options={[
+                      { label: 'Year', value: 'Year' },
+                      { label: 'Month', value: 'Month' },
+                      { label: 'Day', value: 'Day' },
+                    ]}
+                    value={timeScale}
+                    onChange={handleTimeScaleChange}
+                  />
+
                 </div>
+
+
 
                 <div className="py-4">
-                  <TimeSlider
-                    timeArray={years}
-
-                    currentDate={currentYear}
-                    dateSliderHandler={yearSliderHandler}
+                <TimeSlider
+                    timeArray={timeScale === 'Year'?years: timeScale === 'Month'?  months : days}
+                    currentDate={timeScale === 'Year'?currentYear: timeScale === 'Month'?  currentMonth : currentDay}
+                    dateSliderHandler={timeScale === 'Year'?yearSliderHandler:timeScale === 'Month'?monthSliderHandler: daySliderHandler}
+                    timeScale={timeScale}
                   />
+                 
                 </div>
-
-
-                <div className='w-64 mt-4'>
-                  <span className='color-white'>Month - {currentMonth}</span>
-                </div>
-
-                <div className="py-4">
-                  <TimeSlider
-                    timeArray={months}
-
-                    currentDate={currentMonth}
-                    dateSliderHandler={monthSliderHandler}
-                  />
-                </div>
-
-
+                
               </div>
             </div>
 

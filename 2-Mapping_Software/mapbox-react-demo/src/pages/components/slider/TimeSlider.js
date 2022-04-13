@@ -1,7 +1,7 @@
 import Slider from "rc-slider";
 import React, { useState, useEffect, Fragment } from "react";
 
-const TimeSlider = ({ timeArray, currentDate, dateSliderHandler }) => {
+const TimeSlider = ({ timeArray, currentDate, dateSliderHandler, timeScale }) => {
 
 
   const [error, setError] = useState(null);
@@ -28,6 +28,20 @@ const TimeSlider = ({ timeArray, currentDate, dateSliderHandler }) => {
     }
 
   }, [])
+
+
+  useEffect(() => {
+
+
+    console.log(timeScale)
+
+      // Set slider ticks using max, min, step
+      setSliderMarksList(getSliderTicks(timeArray[timeArray.length-1], timeArray[0], 1));
+
+  }, [timeScale])
+
+
+
 
   // Create a list of slider marks. The slider marks are the individual filter values in the timeArray
   const getSliderTicks = (max, min, step) =>{

@@ -9,6 +9,7 @@ import {
 } from "chart.js";
 import { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
+import { getMonthStringGivenValue } from "../../../util/GetMonth";
 
 ChartJS.register(
   CategoryScale,
@@ -115,7 +116,7 @@ const ImpedimentsChart = ({ chartTime, currentYear, currentMonth, chartData }) =
     //Get bar graph labels
     let labels = Object.keys(groups)
 
-    const chart_name = 'count -  (' + currentYear + '-' + temp_month + ')';
+    const chart_name = 'count -  (' + currentYear + '-' + getMonthStringGivenValue(currentMonth) + ')';
     createChart(impediments_data, labels, chart_name);
 
   }

@@ -65,7 +65,8 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
             'maxzoom': 14
         });
 
-        let raw_url = "http://localhost:3000/data/chicago/";
+        let currentLocation = window.location.protocol + "//" + window.location.host;
+        let raw_url = currentLocation+ "/data/chicago/";
         const boundaryData = await getDataUsingFetch(raw_url+"chicago_boundary.geojson");        
         const ChicagoImpediments = await getDataUsingFetch(raw_url+"chicago_impediments.geojson");
 
@@ -283,19 +284,16 @@ const ChicagoMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cu
         map.current.on('click', layerName, (e) => {
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = `
+            let description_raw = ""
+            const sliced = Object.fromEntries(
+                Object.entries(e.features[0].properties).slice(5, 15)
+            );
+            for (const [key, value] of Object.entries(sliced)) {
+                description_raw += `<span class="block font-bold">${key}</span><span class="block">${value}</span>`
+            }
 
-                <span class="block font-bold">Country</span>
-                <span class="block">${e.features[0].properties.Country}</span>
-                <span class="block font-bold">State</span>
-                <span class="block">${e.features[0].properties.State}</span>
-                <span class="block font-bold">City</span>
-                <span class="block">${e.features[0].properties.City}</span>
-                
-                <span class="block font-bold">Average Acceleration</span>
-                <span class="block">${e.features[0].properties.AvgAcceleration}</span>
-               
-                `
+
+            const description = description_raw;
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;

@@ -61,8 +61,10 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
         });
 
         
-        let raw_url = "http://localhost:3000/data/france/";
-        const boundaryData = await getDataUsingFetch(raw_url+"france_boundary.geojson");        
+        let currentLocation = window.location.protocol + "//" + window.location.host;
+        let raw_url = currentLocation+ "/data/france/";
+        const boundaryData = await getDataUsingFetch(raw_url+"france_boundary.geojson");  
+        const departmentBoundaryData = await getDataUsingFetch(raw_url+"france_department_boundary.geojson");        
         const FranceImpediments = await getDataUsingFetch(raw_url+"france_impediments.geojson");
 
 
@@ -75,6 +77,11 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
         map.current.addSource("ImpedimentsData", {
             type: "geojson",
             data: FranceImpediments,
+        })
+
+        map.current.addSource("DepartmentBoundaryData", {
+            type: "geojson",
+            data: departmentBoundaryData,
         })
 
 
@@ -94,6 +101,7 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
         add_terrain_layer();
         add_building_layer();
         add_boundary_layer();
+        add_department_boundary_layer();
         add_impediments_layer();
 
         // Add all the filters to the map
@@ -178,7 +186,7 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
 
     const add_boundary_layer = () => {
 
-        const layerName = 'CityBoundaryLayer'
+        const layerName = 'CountryBoundaryLayer'
 
         map.current.addLayer({
             id: layerName,
@@ -244,6 +252,28 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
 
     }
 
+
+    const add_department_boundary_layer = () => {
+
+        const layerName = 'DepartmentBoundaryLayer'
+
+        map.current.addLayer({
+            id: layerName,
+            type: "line",
+            source: "DepartmentBoundaryData",
+            layout: {},
+            paint: {
+                "line-color": "#ffffff",
+                "line-width": 1,
+            },
+        });
+
+
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
+
+       
+    }
+
     const add_impediments_layer = () => {
 
 
@@ -285,19 +315,16 @@ const FranceMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, cur
         map.current.on('click', layerName, (e) => {
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = `
+            let description_raw = ""
+            const sliced = Object.fromEntries(
+                Object.entries(e.features[0].properties).slice(5, 15)
+            );
+            for (const [key, value] of Object.entries(sliced)) {
+                description_raw += `<span class="block font-bold">${key}</span><span class="block">${value}</span>`
+            }
 
-                <span class="block font-bold">Country</span>
-                <span class="block">${e.features[0].properties.Country}</span>
-                <span class="block font-bold">State</span>
-                <span class="block">${e.features[0].properties.State}</span>
-                <span class="block font-bold">City</span>
-                <span class="block">${e.features[0].properties.City}</span>
-                
-                <span class="block font-bold">Average Acceleration</span>
-                <span class="block">${e.features[0].properties.AvgAcceleration}</span>
-               
-                `
+
+            const description = description_raw;
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
