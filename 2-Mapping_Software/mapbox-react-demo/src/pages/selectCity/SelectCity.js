@@ -7,25 +7,25 @@ const SelectCity = () => {
     {
       'link': 'Kingston',
       'name': 'Kingston - City',
-      'img_path': `${window.location.protocol + "//" + window.location.host}/images/City/Kingston.jpg`
+      'img_path': `${window.location.protocol + "//" + window.location.host}/assets/images/City/Kingston.jpg`
 
     },
     {
       'link': 'Vancouver',
       'name': 'Vancouver - City',
-      'img_path': `${window.location.protocol + "//" + window.location.host}/images/City/Vancouver.jpg`
+      'img_path': `${window.location.protocol + "//" + window.location.host}/assets/images/City/Vancouver.jpg`
 
     },
     {
       'link': 'Chicago',
       'name': 'Chicago - City',
-      'img_path': `${window.location.protocol + "//" + window.location.host}/images/City/Chicago.jpg`
+      'img_path': `${window.location.protocol + "//" + window.location.host}/assets/images/City/Chicago.jpg`
 
     },
     {
       'link': 'France',
       'name': 'France - Country',
-      'img_path': `${window.location.protocol + "//" + window.location.host}/images/City/France.jpg`
+      'img_path': `${window.location.protocol + "//" + window.location.host}/assets/images/Country/France.jpg`
 
     },
 
