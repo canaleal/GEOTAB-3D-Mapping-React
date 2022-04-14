@@ -8,7 +8,7 @@ import Header from "./components/Header";
 function App() {
   return (
     <Fragment >
-      <Header city={'Development Server'} color={'bg-blue'}/>
+     
 
       <Outlet />
 
