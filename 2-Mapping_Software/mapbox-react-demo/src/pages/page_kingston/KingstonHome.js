@@ -100,7 +100,7 @@ const KingstonHome = () => {
         },
         {
           id: 3,
-          layer: "Pedestrians",
+          layer: "Bus Stop Pedestrian Count",
           isOn: true,
           isDynamic: false,
           layerName: "PedestriansLayer",
@@ -120,7 +120,7 @@ const KingstonHome = () => {
         },
         {
           id: 5,
-          layer: "CrossWalk Routes",
+          layer: "Sidewalk Pedestrian Count",
           isOn: true,
           isDynamic: false,
           layerName: "CrossWalkLayer",
@@ -130,10 +130,10 @@ const KingstonHome = () => {
         },
         {
           id: 6,
-          layer: "Princess and Bagot Pedestrians",
+          layer: "Princess and Bagot Pedestrian Count",
           isOn: true,
           isDynamic: false,
-          layerName: "PrincessBagotLayer",
+          layerName: "PrincessArrowLayer",
           imgPath: "Pedestrians.JPG",
           showButton: true,
           icon: "fa-person",

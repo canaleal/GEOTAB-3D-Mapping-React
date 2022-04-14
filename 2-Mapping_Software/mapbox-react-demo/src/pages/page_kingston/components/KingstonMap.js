@@ -65,11 +65,11 @@ const KingstonMap = ({ mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cur
         });
 
         let currentLocation = window.location.protocol + "//" + window.location.host;
-        let raw_url = currentLocation+ "/data/kingston/";
+        let raw_url = currentLocation + "/data/kingston/";
         const boundaryData = await getDataUsingFetch(raw_url + "city_boundary.geojson");
         const busRoutesData = await getDataUsingFetch(raw_url + "bus_routes.geojson");
         const crossWalkData = await getDataUsingFetch(raw_url + "crosswalk_lines.geojson");
-        const princessPedestrianData = await getDataUsingFetch(raw_url + "princess_arrows.geojson");
+        const princessPedestrianData = await getDataUsingFetch(raw_url + "queens_output.geojson");
         const pedestrianData = await getDataUsingFetch(raw_url + "pedestrian.geojson");
 
 
@@ -89,7 +89,7 @@ const KingstonMap = ({ mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cur
         });
 
 
-        map.current.addSource('PrincessData', {
+        map.current.addSource('PrincessArrowData', {
             'type': 'geojson',
             'data': princessPedestrianData
         });
@@ -295,7 +295,7 @@ const KingstonMap = ({ mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cur
                         7,
                         ["interpolate", ["linear"], ["get", "count"], 1, 2, 3, 4],
                         16,
-                        ["interpolate", ["linear"], ["get", "count"], 2, 4, 6, 8],
+                        ["interpolate", ["linear"], ["get", "count"], 3, 6, 9, 12],
                     ],
                     // Color circle by earthquake magnitude
                     "circle-color": [
@@ -406,12 +406,13 @@ const KingstonMap = ({ mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cur
             'type': 'line',
             'source': 'Buses',
             'layout': {
-                'line-join': 'round',
-                'line-cap': 'round'
+
+                'line-cap': 'square'
             },
             'paint': {
                 'line-color': '#870113', //Specify road color
                 'line-width': 2 //Specify width of the road
+
             }
         });
 
@@ -428,70 +429,73 @@ const KingstonMap = ({ mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cur
             'source': 'CrossWalkData',
             'layout': {
                 'line-join': 'round',
-                'line-cap': 'round'
+                'line-cap': 'butt'
             },
             'paint': {
-                'line-color': '#ffffff', //Specify road color
-                'line-width': 4 //Specify width of the road
+                'line-color': [
+                    "interpolate",
+                    ["linear"],
+                    ["get", "count"],
+                    100,
+                    "rgb(116,237,134)",
+                    200,
+                    "rgb(217, 161, 77)",
+                    300,
+                    "rgb(250, 97, 156)",
+                    400,
+                    "rgb(194, 129, 71)",
+                    500,
+                    "rgb(168, 28, 48)",
+                    600,
+                    "rgb(204, 77, 125)",
+                    700,
+                    "rgb(194, 58, 96)",
+                    800,
+                    "rgb(180, 40, 68)",
+                    900,
+                    "rgb(163, 24, 40)",
+                    1000,
+                    "rgb(144, 11, 10)",
+                ],
+                'line-width': 8,
+                'line-opacity': [
+                    'case',
+                    ['boolean', ['feature-state', 'hover'], false],
+                    1.0,
+                    0.7
+                ]
             }
         });
 
         map.current.setLayoutProperty(layerName, 'visibility', 'none')
 
-    }
 
-
-
-    const add_princess_layer = () => {
-
-        const layerName = 'PrincessBagotLayer'
-
-        map.current.addLayer({
-            id: layerName,
-            type: "fill",
-            source: "PrincessData",
-            layout: {},
-            paint: {
-                "fill-color": ["get", "fill"],
-                'fill-opacity': [
-                    'case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    0.8,
-                    0.5
-                ]
-
-            },
-        });
-
-
-        map.current.setLayoutProperty(layerName, 'visibility', 'none')
 
 
         const small_popup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false
         });
-        // When a click event occurs on a feature in the places layer, open a popup at the
-        // location of the feature, with description HTML from its properties.
+
         map.current.on('click', layerName, (e) => {
             // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates[1];
 
-
-            const coordinates = e.features[0].geometry.coordinates[0][0].slice();
             let description_raw = ""
             const sliced = Object.fromEntries(
-                Object.entries(e.features[0].properties).slice(0, 5)
+                Object.entries(e.features[0].properties).slice(0, 6)
             );
             for (const [key, value] of Object.entries(sliced)) {
                 description_raw += `<span class="block font-bold">${key}</span><span class="block">${value}</span>`
             }
 
 
-            const description = description_raw;
+            const description = description_raw
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
             }
+
 
             new mapboxgl.Popup()
                 .setLngLat(coordinates)
@@ -502,11 +506,19 @@ const KingstonMap = ({ mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cur
             pointOfInterestHandler(e.features[0]);
         });
 
+
+
+        let hoveredStateId = null;
+
+
+
+
         // Change the cursor to a pointer when the mouse is over the places layer.
         map.current.on('mouseenter', layerName, (e) => {
             map.current.getCanvas().style.cursor = 'pointer';
-            const coordinates = e.features[0].geometry.coordinates[0][0].slice();
-            const description = `<span class="block font-bold">Average Pedestrian Count</span><span># of Pedestrians: ${e.features[0].properties.count}</span>`
+            const coordinates = e.features[0].geometry.coordinates[1];
+            const description = `<span class="block font-bold">Average Pedestrian Count</span><span>People (AVG/HR) : ${e.features[0].properties.count}</span>`
+
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -517,13 +529,170 @@ const KingstonMap = ({ mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cur
                 .setHTML(description)
                 .addTo(map.current);
 
+
+
+
+            if (e.features.length > 0) {
+                if (hoveredStateId !== null) {
+                    map.current.setFeatureState(
+                        { source: 'CrossWalkData', id: hoveredStateId },
+                        { hover: false }
+                    );
+                }
+
+                hoveredStateId = e.features[0].id;
+                map.current.setFeatureState(
+                    { source: 'CrossWalkData', id: hoveredStateId },
+                    { hover: true }
+                );
+            }
+
         });
 
         // Change it back to a pointer when it leaves.
         map.current.on('mouseleave', layerName, () => {
+
+            if (hoveredStateId !== null) {
+                map.current.setFeatureState(
+                    { source: 'CrossWalkData', id: hoveredStateId },
+                    { hover: false }
+                );
+            }
+            hoveredStateId = null;
+
+
             map.current.getCanvas().style.cursor = '';
             small_popup.remove();
         });
+
+    }
+
+
+
+    const add_princess_layer = () => {
+        //Create the roads under development layer
+        const layerName = 'PrincessArrowLayer'
+        map.current.addLayer({
+            'id': layerName,
+            'type': 'line',
+            'source': 'PrincessArrowData',
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round',
+                
+            },
+            'paint': {
+                
+                'line-color': ['get', 'stroke'],
+                'line-width': 8,
+                'line-opacity': [
+                    'case',
+                    ['boolean', ['feature-state', 'hover'], false],
+                    1.0,
+                    0.7
+                ]
+                
+            }
+        });
+
+        map.current.setLayoutProperty(layerName, 'visibility', 'none')
+
+
+        const small_popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        map.current.on('click', layerName, (e) => {
+            // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates[1];
+
+            let description_raw = ""
+            const sliced = Object.fromEntries(
+                Object.entries(e.features[0].properties).slice(0, 6)
+            );
+            for (const [key, value] of Object.entries(sliced)) {
+                description_raw += `<span class="block font-bold">${key}</span><span class="block">${value}</span>`
+            }
+
+
+            const description = description_raw + `<a class="border  block w-full text-center btn-blue" href="${e.features[0].properties.Clip_Link}" target="_blank" >Video</a>`;
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+            //If the user clicks a point save it 
+            pointOfInterestHandler(e.features[0]);
+        });
+
+
+
+        let hoveredStateId = null;
+
+
+
+
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.current.on('mouseenter', layerName, (e) => {
+            map.current.getCanvas().style.cursor = 'pointer';
+            const coordinates = e.features[0].geometry.coordinates[1];
+            const description = `<span class="block font-bold">Average Pedestrian Count</span><span>People (AVG/HR) : ${e.features[0].properties.Count}</span>`
+
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            small_popup
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map.current);
+
+
+
+
+            if (e.features.length > 0) {
+                if (hoveredStateId !== null) {
+                    map.current.setFeatureState(
+                        { source: 'PrincessArrowData', id: hoveredStateId },
+                        { hover: false }
+                    );
+                }
+
+                hoveredStateId = e.features[0].id;
+                map.current.setFeatureState(
+                    { source: 'PrincessArrowData', id: hoveredStateId },
+                    { hover: true }
+                );
+            }
+
+        });
+
+        // Change it back to a pointer when it leaves.
+        map.current.on('mouseleave', layerName, () => {
+
+            if (hoveredStateId !== null) {
+                map.current.setFeatureState(
+                    { source: 'PrincessArrowData', id: hoveredStateId },
+                    { hover: false }
+                );
+            }
+            hoveredStateId = null;
+
+
+            map.current.getCanvas().style.cursor = '';
+            small_popup.remove();
+        });
+
+
+
 
 
     }
@@ -679,10 +848,17 @@ const KingstonMap = ({ mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cur
         ])
 
 
-        map.current.setFilter('PrincessBagotLayer', ["all",
+        map.current.setFilter('CrossWalkLayer', ["all",
             [">=", ['get', 'count'], currentFilterValues[0]],
             ["<=", ['get', 'count'], currentFilterValues[1]],
             ['==', ['string', ['get', 'Year']], currentYear.toString()],
+
+        ])
+
+
+        map.current.setFilter('PrincessArrowLayer', ["all",
+            [">=", ['get', 'Count'], currentFilterValues[0]],
+            ["<=", ['get', 'Count'], currentFilterValues[1]],
 
         ])
 
