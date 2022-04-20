@@ -4,10 +4,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 
-import Error from "./pages/error/Error.js";
+import Error from "./pages/error/Error";
 import reportWebVitals from "./reportWebVitals";
 
-import SelectCity from "./pages/selectCity/SelectCity";
+import SelectCityPage from "./pages/selectCity/SelectCityPage";
 
 
 //Import font awesome and some icons
@@ -61,7 +61,7 @@ render(
   <BrowserRouter>
     <Routes>
       <Route exact path="/" element={<App />}>
-        <Route index element={<SelectCity/>} />
+        <Route index element={<SelectCityPage/>} />
         <Route path="/Kingston" element={<KingstonHome/>} />
         <Route path="/Chicago" element={<ChicagoHome/>} />
         <Route path="/Vancouver" element={<VancouverHome/>} />

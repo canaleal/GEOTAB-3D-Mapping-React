@@ -12,16 +12,9 @@ const MapStyleSelector = ({ mapStyle, mapStyleChangeHandler }) => {
 
     ])
 
-
-
     return (
 
-
-
-
         <form >
-
-
             {
                 mapStyleOptions.map((item) => {
                     return (
@@ -40,13 +33,7 @@ const MapStyleSelector = ({ mapStyle, mapStyleChangeHandler }) => {
 
             }
 
-
         </form>
-
-
-
-
-
     )
 }
 

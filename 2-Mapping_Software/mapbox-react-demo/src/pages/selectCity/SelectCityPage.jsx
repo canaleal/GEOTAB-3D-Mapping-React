@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from "react-router-dom";
-import Header from '../../components/Header';
+import CityBody from './components/CityBody';
 
 const SelectCity = () => {
 
@@ -45,18 +45,7 @@ const SelectCity = () => {
         {
           cities.map((city => {
             return (
-              <div key={city.link} className="col-span-1  rounded-lg overflow-hidden shadow-lg bg-white">
-                <img className="w-full h-64" src={city.img_path} alt="Layer Image" />
-
-                <div className="p-4">
-                  <p className="font-bold mb-2">{city.name}</p>
-                  <p>View data displayed on maps to better visualize the city and surrounding area.</p>
-
-                  <Link to={{ pathname: `${city.link}` }} className={'border  block text-center  rounded-md btn-blue'} >
-                    View Map
-                  </Link>
-                </div>
-              </div>
+              <CityBody key={city.link} city={city} />
             )
           }))
 

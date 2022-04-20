@@ -28,8 +28,9 @@ const GoogleStreetview = (pointOfInterest) => {
   useEffect(() => {
 
 
-    const location_coordinates = getLocationCoordinates(pointOfInterest);
+   
     if (streetViewPanorama != null) {
+      const location_coordinates = getLocationCoordinates(pointOfInterest);
       streetViewPanorama.setPosition(location_coordinates);
     }
 
