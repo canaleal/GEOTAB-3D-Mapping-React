@@ -126,7 +126,7 @@ const Footer = ({ }) => {
               <p className='font-bold text-xs my-2'>Website Terms and Policies</p>
 
 
-              <p className='text-xs my-2'>If you require any more information or have any questions about our site's disclaimer, please feel free to contact me by email at xyz@gmail.com. The Disclaimer was generated with the help of the Disclaimer Generator.
+              <p className='text-xs my-2'>If you require any more information or have any questions about our site's disclaimer, please feel free to contact me by email at geotab@gmail.com. The Disclaimer was generated with the help of the Disclaimer Generator.
                 All the information on this website - Showcase - is published in good faith and for general information purpose only.
               </p>
 

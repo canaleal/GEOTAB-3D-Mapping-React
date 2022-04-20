@@ -429,6 +429,27 @@ const KingstonHome = () => {
             </div>
 
 
+            <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4">
+                <p className="font-bold">Intersection Frame</p>
+                <div className="grid grid-cols-4 grid-row-2 gap-4">
+                <div className="col-span-1">
+                  <img className="h-full w-auto rounded-lg" src={`${window.location.protocol + "//" + window.location.host}/assets/images/Road/3.png`} alt="road" />
+                  
+                </div>
+                <div className="col-span-1">
+                  <img className="h-full w-auto rounded-lg" src={`${window.location.protocol + "//" + window.location.host}/assets/images/Road/2.png`} alt="road" />
+                
+                </div>
+                <div className="col-span-1">
+                  <img className="h-full w-auto rounded-lg" src={`${window.location.protocol + "//" + window.location.host}/assets/images/Road/1.png`} alt="road" />
+                
+                </div>
+               
+               
+                </div>
+              </div>
+
+
             {pointOfInterest != null ? (
               <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4">
                 <p className="font-bold">Point Of Interest</p>

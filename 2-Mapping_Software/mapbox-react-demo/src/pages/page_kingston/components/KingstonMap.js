@@ -742,7 +742,7 @@ const KingstonMap = ({ mapStyle, mapBoundaries, lng, lat, zoom, currentYear, cur
 
             let description_raw = ""
             const sliced = Object.fromEntries(
-                Object.entries(e.features[0].properties).slice(0, 5)
+                Object.entries(e.features[0].properties).slice(0, 4)
             );
             for (const [key, value] of Object.entries(sliced)) {
                 description_raw += `<span class="block font-bold">${key}</span><span class="block">${value}</span>`
