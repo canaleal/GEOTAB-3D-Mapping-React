@@ -33,8 +33,6 @@ const TimeSlider = ({ timeArray, currentDate, dateSliderHandler, timeScale }) =>
   useEffect(() => {
 
 
-    console.log(timeScale)
-
       // Set slider ticks using max, min, step
       setSliderMarksList(getSliderTicks(timeArray[timeArray.length-1], timeArray[0], 1));
 
