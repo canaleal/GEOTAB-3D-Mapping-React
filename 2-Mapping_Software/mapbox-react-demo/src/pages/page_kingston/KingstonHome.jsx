@@ -51,7 +51,7 @@ const KingstonHome = () => {
   const [currentMonth, setCurrentMonth] = useState();
   const [days, setDays] = useState([]);
   const [currentDay, setCurrentDay] = useState();
- 
+
   const [timeScale, setTimeScale] = useState('Year');
 
   //Timer details
@@ -278,7 +278,7 @@ const KingstonHome = () => {
     setCurrentFilterValues(item);
   };
 
-  
+
 
   const handleTimeScaleChange = (event) => {
     setTimeScale(event.target.value);
@@ -287,7 +287,7 @@ const KingstonHome = () => {
 
   return (
     <Fragment>
-      <Header city={city}  color={'bg-blue'}/>
+      <Header city={city} color={'bg-blue'} />
 
       <Cover coverRef={coverRef} />
 
@@ -349,14 +349,14 @@ const KingstonHome = () => {
 
                 <div className="flex flex-row justify-between">
                   <span className="color-white">
-                    Year - {currentYear}  
+                    Year - {currentYear}
                   </span>
                   <span className="color-white">
-                  Month - {getMonthStringGivenValue(currentMonth)}
+                    Month - {getMonthStringGivenValue(currentMonth)}
                   </span>
 
                   <span className="color-white">
-                  Day - {currentDay}
+                    Day - {currentDay}
                   </span>
 
 
@@ -376,13 +376,13 @@ const KingstonHome = () => {
 
 
                 <div className="py-4">
-                <TimeSlider
-                    timeArray={timeScale === 'Year'?years: timeScale === 'Month'?  months : days}
-                    currentDate={timeScale === 'Year'?currentYear: timeScale === 'Month'?  currentMonth : currentDay}
-                    dateSliderHandler={timeScale === 'Year'?yearSliderHandler:timeScale === 'Month'?monthSliderHandler: daySliderHandler}
+                  <TimeSlider
+                    timeArray={timeScale === 'Year' ? years : timeScale === 'Month' ? months : days}
+                    currentDate={timeScale === 'Year' ? currentYear : timeScale === 'Month' ? currentMonth : currentDay}
+                    dateSliderHandler={timeScale === 'Year' ? yearSliderHandler : timeScale === 'Month' ? monthSliderHandler : daySliderHandler}
                     timeScale={timeScale}
                   />
-                 
+
                 </div>
               </div>
             </div>
@@ -429,7 +429,7 @@ const KingstonHome = () => {
             </div>
 
 
-            <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4">
+            {/* <div className="col-span-4 md:col-span-4  border bg-white rounded-lg p-4">
                 <p className="font-bold">Intersection Frame</p>
                 <div className="grid grid-cols-4 grid-row-2 gap-4">
                 <div className="col-span-1">
@@ -447,7 +447,7 @@ const KingstonHome = () => {
                
                
                 </div>
-              </div>
+              </div> */}
 
 
             {pointOfInterest != null ? (
