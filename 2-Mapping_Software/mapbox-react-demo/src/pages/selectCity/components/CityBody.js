@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 const CityBody = ({ city }) => {
     return (
         <div key={city.link} className="col-span-1  rounded-lg overflow-hidden shadow-lg bg-white">
-            <img height='100' weight='auto' className="w-full h-64" src={city.img_path} alt="Layer Image" />
+            <img height='100' weight='auto' className="w-full h-64" src={`${window.location.protocol + "//" + window.location.host}/assets/images/Locations/${city.img_path}`} alt="Layer Image" />
 
             <div className="p-4">
                 <p className="font-bold mb-2">{city.name}</p>

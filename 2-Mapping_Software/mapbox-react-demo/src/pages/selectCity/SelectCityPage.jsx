@@ -8,25 +8,25 @@ const SelectCity = () => {
     {
       'link': 'Kingston',
       'name': 'Kingston - City',
-      'img_path': `${window.location.protocol + "//" + window.location.host}/assets/images/City/Kingston.jpg`
+      'img_path': 'Kingston.webp'
 
     },
     {
       'link': 'Vancouver',
       'name': 'Vancouver - City',
-      'img_path': `${window.location.protocol + "//" + window.location.host}/assets/images/City/Vancouver.jpg`
+      'img_path':'Vancouver.webp'
 
     },
     {
       'link': 'Chicago',
       'name': 'Chicago - City',
-      'img_path': `${window.location.protocol + "//" + window.location.host}/assets/images/City/Chicago.jpg`
+      'img_path': 'Chicago.webp'
 
     },
     {
       'link': 'France',
       'name': 'France - Country',
-      'img_path': `${window.location.protocol + "//" + window.location.host}/assets/images/Country/France.jpg`
+      'img_path': 'France.webp'
 
     },
 
