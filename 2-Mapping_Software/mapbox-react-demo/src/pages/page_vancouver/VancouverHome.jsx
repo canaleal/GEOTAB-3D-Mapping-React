@@ -89,11 +89,11 @@ const VancouverHome = () => {
       {
         id: 3,
         layer: "Traffic Cameras",
-        isOn: true,
+        isOn: false,
         isDynamic: true,
         layerName: "TrafficLightCameraLayer",
         imgPath: "TrafficCameras.webp",
-        showButton: true,
+        showButton: false,
         icon: "fa-camera",
       },
       {
@@ -109,7 +109,7 @@ const VancouverHome = () => {
       {
         id: 5,
         layer: "Some Vancouver Trees",
-        isOn: false,
+        isOn: true,
         isDynamic: false,
         layerName: "TreesLayer",
         imgPath: "Trees.webp",

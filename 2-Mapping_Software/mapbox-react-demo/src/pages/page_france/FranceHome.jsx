@@ -102,7 +102,7 @@ const FranceHome = () => {
                 isOn: true,
                 isDynamic: false,
                 layerName: "ImpedimentsLayer",
-                imgPath: "Intersections.webp",
+                imgPath: "Impediments.webp",
                 showButton: true,
                 icon: "fa-road",
             }

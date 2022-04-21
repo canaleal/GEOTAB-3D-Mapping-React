@@ -70,6 +70,10 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
 
     const add_vancouver_map_sources = async () => {
 
+         //Reset the map size so it goes into full width and height
+         map.current.resize();
+         
+
         map.current.addSource('mapbox-dem', {
             'type': 'raster-dem',
             'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
@@ -109,12 +113,16 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
             'data': treesData
         });
 
+        
+
 
         add_vancouver_map_layers()
     }
 
 
     const add_vancouver_map_layers = () => {
+
+        
 
         add_terrain_layer();
         add_building_layer();
@@ -522,8 +530,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
             map.current.setLayoutProperty(layer.layerName, 'visibility', `${layer.isOn === true ? 'visible' : 'none'}`);
         });
 
-        //Reset the map size so it goes into full width and height
-        map.current.resize();
+       
     }
 
 
@@ -551,8 +558,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
         
         ])
 
-        //Reset the map size so it goes into full width and height
-        map.current.resize();
+       
     }
 
 
@@ -578,8 +584,7 @@ const VancouverMap = ({ cityId, mapStyle, mapBoundaries, lng, lat, zoom, years, 
         addLayerFilters();
         addMapFilters();
 
-        //Reset the map size so it goes into full width and height
-        map.current.resize();
+      
 
     }
 
